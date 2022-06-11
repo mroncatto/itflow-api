@@ -163,4 +163,4 @@ Distribuido bajo la licencia MIT. Hecha un vistazo en [Licencia MIT](https://git
 [issues-shield]: https://img.shields.io/github/issues/mroncatto/itflow-api.svg?style=for-the-badge
 [issues-url]: https://github.com/mroncatto/itflow-api/issues
 [license-shield]: https://img.shields.io/github/license/mroncatto/itflow-api?style=for-the-badge
-[license-url]: https://github.com/mroncatto/itflow-api/blob/main/LICENSE.TXT?style=for-the-badge
+[license-url]: https://github.com/mroncatto/itflow-api/blob/main/LICENSE.TXT
