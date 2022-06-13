@@ -1,16 +1,22 @@
 package io.github.mroncatto.itflow.security;
 
+import io.github.mroncatto.itflow.domain.user.service.UserService;
+import io.github.mroncatto.itflow.security.filter.AuthenticationFilter;
 import io.github.mroncatto.itflow.security.filter.AuthorizationFilter;
+import io.github.mroncatto.itflow.security.service.JwtService;
+import io.github.mroncatto.itflow.security.service.LoginAttemptService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -18,7 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
-import static io.github.mroncatto.itflow.config.SecurityConstant.*;
+import static io.github.mroncatto.itflow.config.constant.SecurityConstant.*;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -26,32 +32,39 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig {
+@AllArgsConstructor
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final UserDetailsService userDetailsService;
+    private final UserService userService;
+    private final JwtService jwtService;
+    private final LoginAttemptService loginAttemptService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
+        http.authorizeRequests().antMatchers(GET, AUTHENTICATION_URL).permitAll();
         http.authorizeRequests().antMatchers(POST, ALLOW_POST).permitAll();
         http.authorizeRequests().antMatchers(GET, ALLOW_GET).permitAll();
         http.authorizeRequests().antMatchers(PUBLIC_URL).permitAll();
         http.authorizeRequests().anyRequest().authenticated();
-        //http.addFilter();
-        http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+        http.addFilter(buildAuthenticationFilter(authenticationManagerBean()));
+        http.addFilterBefore(new AuthorizationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
     }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
 
     @Bean
     public CorsFilter corsFilter() {
@@ -68,6 +81,13 @@ public class WebSecurityConfig {
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
+    }
+
+    private AuthenticationFilter buildAuthenticationFilter(AuthenticationManager authenticationManager){
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService, jwtService, loginAttemptService);
+        authenticationFilter.setFilterProcessesUrl(AUTHENTICATION_URL);
+        authenticationFilter.setPostOnly(true);
+        return authenticationFilter;
     }
 
 

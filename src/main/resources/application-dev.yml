@@ -1,6 +1,8 @@
 app:
   version: '@project.version@'
   timezone: 'America/Asuncion'
+  login:
+    attempts: 5
 server:
   port: 8080
   error:
@@ -8,7 +10,7 @@ server:
       enabled: false
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/teste?useSSL=false&serverTimezone=app.timezone
+    url: jdbc:postgresql://localhost:5432/itflow?useSSL=false&serverTimezone=app.timezone
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -35,7 +37,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
          format_sql: true
@@ -53,7 +55,7 @@ springdoc:
     doc-expansion: none
 logging:
   level:
-    root: ERROR
+    root: DEBUG
     org:
       hibernate:
         SQL: DEBUG
@@ -67,5 +69,5 @@ logging:
       max-file-size: 20MB
       max-history: 10
 jwt:
-  secret: 123456
-  expire: 3600000
+  secret: "123456"
+  expire: 60
