@@ -8,7 +8,7 @@ import io.github.mroncatto.itflow.domain.user.service.UserService;
 import io.github.mroncatto.itflow.security.model.UserPrincipal;
 import io.github.mroncatto.itflow.security.service.JwtService;
 import io.github.mroncatto.itflow.security.service.LoginAttemptService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +28,7 @@ import java.util.Map;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.notNull;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;

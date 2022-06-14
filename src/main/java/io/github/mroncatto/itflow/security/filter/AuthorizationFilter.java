@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.security.service.JwtService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 

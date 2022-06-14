@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.security.service;
 import io.github.mroncatto.itflow.domain.user.model.User;
 import io.github.mroncatto.itflow.domain.user.service.UserService;
 import io.github.mroncatto.itflow.security.model.UserPrincipal;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 @Transactional
 public class CustomUserDetailsService implements UserDetailsService {

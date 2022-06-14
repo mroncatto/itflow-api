@@ -1,5 +1,7 @@
 package io.github.mroncatto.itflow.config.exception;
 
+import io.github.mroncatto.itflow.config.exception.model.AlreadExistingUserByEmail;
+import io.github.mroncatto.itflow.config.exception.model.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.config.exception.model.UserNotFoundException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
@@ -22,7 +24,9 @@ public class ExceptionHandling {
 
     public static final String ENOUGH_PRIVILEGES = "ACCESS DENIED, YOU DON'T HAVE ENOUGH PRIVILEGES";
     public static final String USER_NOT_FOUND = "USER NOT FOUND";
-    public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
+    public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
+    public static final String EXISTING_USER_BY_USERNAME = "ALREADY EXISTING USER BY USERNAME";
+    public static final String EXISTING_USER_BY_EMAIL = "ALREADY EXISTING USER BY USERNAME";
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomHttpResponse> internalServerErrorException(Exception exception) {
@@ -50,6 +54,16 @@ public class ExceptionHandling {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<CustomHttpResponse> userNotFoundException() {
         return buildHttpResponse(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadExistingUserByUsername.class)
+    public ResponseEntity<CustomHttpResponse> alreadExistingUserByUsername() {
+        return buildHttpResponse(HttpStatus.BAD_REQUEST, EXISTING_USER_BY_USERNAME);
+    }
+
+    @ExceptionHandler(AlreadExistingUserByEmail.class)
+    public ResponseEntity<CustomHttpResponse> alreadExistingUserByEmail() {
+        return buildHttpResponse(HttpStatus.BAD_REQUEST, EXISTING_USER_BY_EMAIL);
     }
 
     @ExceptionHandler(BadRequestException.class)
