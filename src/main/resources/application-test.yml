@@ -1,0 +1,73 @@
+app:
+  version: '@project.version@'
+  timezone: 'America/Asuncion'
+  login:
+    attempts: 5
+server:
+  port: 8084
+  error:
+    whitelabel:
+      enabled: false
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/itflow?useSSL=false&serverTimezone=app.timezone
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart.max-file-size: 5MB
+    multipart.max-request-size: 5MB
+  mail:
+    username: mailtrap_username
+    password: mailtrap_password
+    host: smtp.mailtrap.io
+    port: 25
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            enable: false
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+         format_sql: true
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs/
+    filter: false
+    path: /
+    doc-expansion: none
+logging:
+  level:
+    root: ERROR
+    org:
+      hibernate:
+        SQL: ERROR
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%clr(%5p)] %logger{36} - %msg%n"
+    file: "%d %p %c{1.} [%t] %m%n"
+  file:
+    name: ${user.home}/itflow/logs/itflow-api.test.log
+  logback:
+    rollingpolicy:
+      max-file-size: 20MB
+      max-history: 10
+jwt:
+  secret: "123456"
+  expire: 60
