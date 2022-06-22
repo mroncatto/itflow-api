@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.UUID;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.notNull;
@@ -45,7 +46,7 @@ public class UserService extends AbstractService<User> implements IUserService {
     }
 
     @Override
-    public User findUserById(Long id) throws UserNotFoundException {
+    public User findUserById(UUID id) throws UserNotFoundException {
         return this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(""));
     }
 

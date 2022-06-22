@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.mroncatto.itflow.domain.abstracts.Auditable;
-import io.github.mroncatto.itflow.domain.commons.helper.DateHelper;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -25,9 +26,12 @@ import java.util.List;
 @JsonIgnoreProperties({"id"})
 public class User extends Auditable<String> implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
     @NotNull(message = "The name field is required")
     @Column(length = 75, nullable = false)
@@ -68,7 +72,6 @@ public class User extends Auditable<String> implements Serializable {
     private boolean nonLocked;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    @JsonIgnoreProperties({"user"})
     private List<Role> role;
 
     public User buildForToken() {
