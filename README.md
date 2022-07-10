@@ -1,9 +1,13 @@
 <!-- PROJECT SHIELDS -->
+<div align="center">
+
 [![Tags][tag-shield]][tag-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
+
+</div>
 
 <!-- PROJECT LOGO -->
 
@@ -93,14 +97,12 @@ Esta API utiliza las siguientes tecnologias:
 <img align="left" alt="Java" src="https://img.icons8.com/color/48/000000/java-coffee-cup-logo--v1.png"/>
 <img align="left" alt="Spring" src="https://img.icons8.com/color/48/000000/spring-logo.png"/>
 <img align="left" alt="PostgreSQL" src="https://img.icons8.com/color/48/000000/postgreesql.png" />
-<img align="left" alt="Docker" src="https://img.icons8.com/fluent/48/000000/docker.png"/>
-<img align="left" alt="AWS" src="https://img.icons8.com/color/48/000000/amazon-web-services.png" style="background:white"/>
 <br />
 <br />
 <!-- GETTING STARTED -->
 ### Empezando
 
-Esta API funciona en conjunto con [itflow-web](`https://github.com/mroncatto/itflow-web`)
+Esta API funciona en conjunto el frontend [itflow](`https://github.com/mroncatto/itflow`)
 
 ### Requisitos
 
@@ -112,7 +114,7 @@ Esta API funciona en conjunto con [itflow-web](`https://github.com/mroncatto/itf
    ```sh
    git clone https://github.com/mroncatto/itflow-api
    ```
-2. Realiza ajustes a (`application-dev.yml`) si necesario
+2. Realiza los debidos ajustes a (`application-dev.yml`) conforme su ambiente
 3. Levanta el servicio con Eclipse o IntelliJ IDE
 
 <!-- USAGE EXAMPLES -->
