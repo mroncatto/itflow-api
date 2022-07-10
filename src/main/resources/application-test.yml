@@ -4,13 +4,13 @@ app:
   login:
     attempts: 5
 server:
-  port: 8080
+  port: 8084
   error:
     whitelabel:
       enabled: false
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/itflow?useSSL=false&serverTimezone=app.timezone
+    url: jdbc:postgresql://localhost:5432/itflow-test?useSSL=false&serverTimezone=app.timezone
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -55,15 +55,15 @@ springdoc:
     doc-expansion: none
 logging:
   level:
-    root: DEBUG
+    root: ERROR
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: ERROR
   pattern:
     console: "%d{HH:mm:ss.SSS} [%clr(%5p)] %logger{36} - %msg%n"
     file: "%d %p %c{1.} [%t] %m%n"
   file:
-    name: ${user.home}/itflow/logs/itflow-api.log
+    name: ${user.home}/itflow/logs/itflow-api.test.log
   logback:
     rollingpolicy:
       max-file-size: 20MB
