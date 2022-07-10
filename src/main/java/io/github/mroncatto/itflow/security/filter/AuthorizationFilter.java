@@ -21,7 +21,7 @@ import java.util.*;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.AUTHENTICATION_URL;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.TOKEN_CANNOT_BE_VERIFIED;
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.notNull;
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.startWith;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -37,7 +37,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (notNull(authorizationHeader) && startWith(authorizationHeader, "Bearer ")) {
+            if (nonNull(authorizationHeader) && startWith(authorizationHeader, "Bearer ")) {
                 try {
                     SecurityContextHolder.getContext().setAuthentication(buildAuthorizationToken(authorizationHeader));
                     filterChain.doFilter(request, response);

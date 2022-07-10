@@ -34,26 +34,23 @@ public class User extends Auditable<String> implements Serializable {
     private UUID id;
 
     @NotNull(message = "The name field is required")
-    @Column(length = 75, nullable = false)
-    @Size(min = 5, max = 75, message = "The name field must contain between 5 and 75 characters")
+    @Column(length = 100, nullable = false)
+    @Size(min = 5, max = 100, message = "The name field must contain between 5 and 100 characters")
     private String fullName;
 
-    @Column(length = 75)
-    @Size(max = 75, message = "The avatar field cannot contain more than 75 characters")
+    @Column()
     private String avatar;
 
     @NotNull(message = "The email field is required")
-    @Size(min = 5, max = 45, message = "The email field must contain between 5 and 75 characters")
-    @Column(length = 45, nullable = false, unique = true)
+    @Size(min = 5, max = 100, message = "The email field must contain between 10 and 100 characters")
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
 
     @NotNull(message = "The username field is required")
-    @Size(min = 5, max = 25, message = "The username field must contain between 5 and 75 characters")
-    @Column(length = 25, nullable = false, unique = true)
+    @Size(min = 5, max = 45, message = "The username field must contain between 5 and 45 characters")
+    @Column(length = 45, nullable = false, unique = true)
     private String username;
 
-    @NotNull(message = "The password field is required")
-    @Size(min = 6, message = "The password must contain at least 6 characters")
     @Column(length = 128, nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;

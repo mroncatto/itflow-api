@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class ValidationHelper {
 
-    public static boolean notNull(Object o){
+    public static boolean nonNull(Object o){
         return Objects.nonNull(o);
     }
     public static boolean isNull(Object o){

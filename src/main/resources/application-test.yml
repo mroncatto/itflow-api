@@ -10,7 +10,7 @@ server:
       enabled: false
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/itflow?useSSL=false&serverTimezone=app.timezone
+    url: jdbc:postgresql://localhost:5432/itflow-test?useSSL=false&serverTimezone=app.timezone
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver

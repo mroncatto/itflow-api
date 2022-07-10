@@ -25,4 +25,20 @@ public class CompareHelper {
         }
         return result;
     }
+
+    public static boolean match(Object a, Object b){
+        return a.equals(b);
+    }
+
+    public static boolean match(String a, String b){
+        return a.equals(b);
+    }
+
+    public static boolean distinct(Object a, Object b){
+        return !a.equals(b);
+    }
+
+    public static boolean distinct(String a, String b){
+        return !a.equals(b);
+    }
 }

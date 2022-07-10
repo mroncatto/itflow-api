@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.notNull;
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         String username = request.getParameter("username");
-        if(notNull(username)) loginAttemptService.addUserToLoginAttemptCache(username);
+        if(nonNull(username)) loginAttemptService.addUserToLoginAttemptCache(username);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(401);
         new ObjectMapper().writeValue(response.getOutputStream(), buildUnauthorizedResponse(failed));

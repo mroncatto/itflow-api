@@ -8,12 +8,12 @@ class ValidationHelperTest {
 
     @Test
     void notNull() {
-        assertTrue(ValidationHelper.notNull(new Object()));
+        assertTrue(ValidationHelper.nonNull(new Object()));
     }
 
     @Test
     void isNull() {
-        assertTrue(ValidationHelper.notNull(Object.class));
+        assertTrue(ValidationHelper.nonNull(Object.class));
     }
 
     @Test

@@ -1,9 +1,6 @@
 package io.github.mroncatto.itflow.config.exception;
 
-import io.github.mroncatto.itflow.config.exception.model.AlreadExistingUserByEmail;
-import io.github.mroncatto.itflow.config.exception.model.AlreadExistingUserByUsername;
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.config.exception.model.UserNotFoundException;
+import io.github.mroncatto.itflow.config.exception.model.*;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.NoResultException;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @RestControllerAdvice
@@ -25,8 +21,9 @@ public class ExceptionHandling {
     public static final String ENOUGH_PRIVILEGES = "ACCESS DENIED, YOU DON'T HAVE ENOUGH PRIVILEGES";
     public static final String USER_NOT_FOUND = "USER NOT FOUND";
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL SERVER ERROR";
-    public static final String EXISTING_USER_BY_USERNAME = "ALREADY EXISTING USER BY USERNAME";
-    public static final String EXISTING_USER_BY_EMAIL = "ALREADY EXISTING USER BY USERNAME";
+    public static final String EXISTING_USER_BY_USERNAME = "USER ALREADY EXISTS WITH THIS USERNAME";
+    public static final String EXISTING_USER_BY_EMAIL = "USER ALREADY EXISTS WITH THIS EMAIL";
+    public static final String INVALID_PASSWORD = "INVALID PASSWORD";
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomHttpResponse> internalServerErrorException(Exception exception) {
@@ -49,6 +46,11 @@ public class ExceptionHandling {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<CustomHttpResponse> accessDeniedException() {
         return buildHttpResponse(HttpStatus.FORBIDDEN, ENOUGH_PRIVILEGES);
+    }
+
+    @ExceptionHandler(BadPasswordException.class)
+    public ResponseEntity<CustomHttpResponse> badPasswordException() {
+        return buildHttpResponse(HttpStatus.UNAUTHORIZED, INVALID_PASSWORD);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -77,6 +79,6 @@ public class ExceptionHandling {
                 .error(status.name())
                 .message(message.toUpperCase())
                 .timestamp(currentDate())
-                .build(), UNAUTHORIZED);
+                .build(), status);
     }
 }

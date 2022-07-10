@@ -1,25 +1,23 @@
 package io.github.mroncatto.itflow.domain.user.resource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.mroncatto.itflow.domain.user.model.Role;
 import io.github.mroncatto.itflow.domain.user.model.User;
-import io.swagger.v3.core.util.Json;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -34,15 +32,23 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    //TODO: Falta criar JSON BUILDERS PARA OS TESTES
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
-    @Order(3)
-    @WithMockUser(username = "administrator")
-    void findAll() throws Exception {
-        RequestBuilder request = get(BASE_URL + "/user");
-        mvc.perform(request).andExpect(status().isOk()).andReturn();
+    @Order(1)
+    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    void save() throws Exception {
+        RequestBuilder request = post(BASE_URL + "/user")
+                .content(objectMapper.writeValueAsString(
+                        User.builder()
+                        .fullName("SpringTests")
+                        .username("springtest")
+                        .avatar("")
+                        .email("spring@test.com")
+                        .build()))
+                .contentType(APPLICATION_JSON_VALUE);
+        mvc.perform(request).andExpect(status().isCreated()).andReturn();
     }
 
     @Test
@@ -54,41 +60,67 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(1)
-    @WithMockUser(username = "administrator", authorities ="ADMIN")
-    void save() throws Exception {
-        RequestBuilder request = post(BASE_URL + "/user")
-                .content("{" +
-                        "    \"fullName\": \"SpringTests\"," +
-                        "        \"email\": \"spring@test.com\"," +
-                        "        \"username\": \"springtest\"," +
-                        "        \"password\": \"123456\"," +
-                        "        \"avatar\": \"\"," +
-                        "        \"joinDate\": \"2022-06-12T20:46:12.769+00:00\"" +
-                        "        }")
-                .contentType(APPLICATION_JSON_VALUE);
-        mvc.perform(request).andExpect(status().isCreated()).andReturn();
+    @Order(3)
+    @WithMockUser(username = "administrator")
+    void findAll() throws Exception {
+        RequestBuilder request = get(BASE_URL + "/user");
+        mvc.perform(request).andExpect(status().isOk()).andReturn();
     }
 
     @Test
     @Order(4)
     @WithMockUser(username = "administrator", authorities ="ADMIN")
-    void update() throws Exception {
-        RequestBuilder request = put(BASE_URL + "/user/springtest")
-                .content("{" +
-                        "    \"fullName\": \"SpringTests updated\"," +
-                        "        \"email\": \"spring@test.com\"," +
-                        "        \"username\": \"springtest\"," +
-                        "        \"password\": \"123456\"," +
-                        "        \"avatar\": \"\"," +
-                        "        \"joinDate\": \"2022-06-12T20:46:12.769+00:00\"" +
-                        "        }")
-                .contentType(APPLICATION_JSON_VALUE);
+    void findAllRoles() throws Exception {
+        RequestBuilder request = get(BASE_URL + "/user/role");
         mvc.perform(request).andExpect(status().isOk()).andReturn();
     }
 
     @Test
     @Order(5)
+    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    void update() throws Exception {
+        RequestBuilder request = put(BASE_URL + "/user/springtest")
+                .content(objectMapper.writeValueAsString(
+                                User.builder()
+                                        .fullName("SpringTests updated")
+                                        .username("springtest")
+                                        .avatar("")
+                                        .email("spring@test.com")
+                                        .build()))
+                .contentType(APPLICATION_JSON_VALUE);
+        mvc.perform(request).andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    @Order(6)
+    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    void updateUserRoles() throws Exception {
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.builder().id(1L).role("ADMIN").build());
+        roles.add(Role.builder().id(2L).role("MANAGER").build());
+        RequestBuilder request = put(BASE_URL + "/user/springtest/role")
+                .content(objectMapper.writeValueAsString(roles))
+                .contentType(APPLICATION_JSON_VALUE);
+        mvc.perform(request).andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    @Order(7)
+    @WithMockUser(username = "springtest")
+    void updateProfile() throws Exception {
+        RequestBuilder request = put(BASE_URL + "/user/profile")
+                .content(objectMapper.writeValueAsString(
+                        User.builder()
+                                .fullName("SpringTests updated profile")
+                                .email("spring@test.com")
+                                .avatar("")
+                                .build()))
+                .contentType(APPLICATION_JSON_VALUE);
+        mvc.perform(request).andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    @Order(8)
     @WithMockUser(username = "administrator", authorities ="ADMIN")
     void delete() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.delete(BASE_URL + "/user/springtest");
