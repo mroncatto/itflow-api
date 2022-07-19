@@ -19,6 +19,7 @@ public interface IUserController {
     ResponseEntity<?> updateUserPassword(String oldPassword, String newPassword) throws BadPasswordException;
     ResponseEntity<?> resetUserPassword(String username);
     ResponseEntity<?> unlockUser(String username);
+    ResponseEntity<User> findUserByUsername(String username);
 
 
 
