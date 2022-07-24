@@ -75,8 +75,9 @@ public class User extends Auditable<String> implements Serializable {
         return User.builder()
                 .username(this.username)
                 .fullName(this.fullName)
-                .active(active)
-                .nonLocked(nonLocked)
+                .avatar(this.avatar)
+                .joinDate(this.joinDate)
+                .lastLoginDate(this.lastLoginDate)
                 .build();
     }
 

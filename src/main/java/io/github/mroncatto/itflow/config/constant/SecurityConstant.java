@@ -7,6 +7,6 @@ public class SecurityConstant {
     public static final String[] PUBLIC_URL = {"/", "/swagger-ui/**", "/v3/api-docs/**"};
     public static final String[] ALLOW_GET = {};
     public static final String[] ALLOW_POST = { BASE_URL + "/user/resetpassword" };
-    public static final String[] ALLOW_CORS = {};
+    public static final String[] ALLOW_CORS = { "http://localhost:4200", "https://itflow.herokuapp.com", "http://itflow.website", "http://www.itflow.website"};
 
 }

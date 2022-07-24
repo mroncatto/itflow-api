@@ -63,6 +63,18 @@ public class UserController extends AbstractController<User> implements IUserCon
         return new ResponseEntity<>(this.userService.findAll(PageRequest.of(page, 10)), OK);
     }
 
+    @Operation(summary = "Get user by username", security = {
+            @SecurityRequirement(name = "bearerAuth")}, responses = {
+            @ApiResponse(responseCode = "200", description = "Successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Authentication Failure", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @GetMapping("/{username}")
+    @Override
+    public ResponseEntity<User> findUserByUsername(@PathVariable("username")  String username) {
+        return new ResponseEntity<>(this.userService.findUserByUsername(username), OK);
+    }
+
     @Operation(summary = "Create a new user account", security = {
             @SecurityRequirement(name = "bearerAuth")}, responses = {
             @ApiResponse(responseCode = "200", description = "Successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
@@ -169,11 +181,11 @@ public class UserController extends AbstractController<User> implements IUserCon
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = "401", description = "Authentication Failure", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping("/unlock/{username}")
+    @PutMapping("/lockunlock/{username}")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
     @Override
-    public ResponseEntity<?> unlockUser(@PathVariable("username") String username) {
-        this.userService.unlockUser(username);
+    public ResponseEntity<?> lockUnlockUser(@PathVariable("username") String username) {
+        this.userService.lockUnlockUser(username);
         return new ResponseEntity<>(null, OK);
     }
 }

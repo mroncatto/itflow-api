@@ -5,6 +5,7 @@ import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,25 +17,35 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
 
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.AUTHENTICATION_URL;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.TOKEN_CANNOT_BE_VERIFIED;
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.startWith;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AuthorizationFilter extends OncePerRequestFilter {
+    public static final String METHOD_NOT_ALLOWED = "METHOD NOT ALLOWED";
     private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals(AUTHENTICATION_URL)) {
-            filterChain.doFilter(request, response);
+            if(request.getMethod().equals(HttpMethod.POST.toString()))
+                filterChain.doFilter(request, response);
+
+            new ObjectMapper().writeValue(responseUnauthorized(response).getOutputStream(),
+                    CustomHttpResponse.builder()
+                            .timestamp(currentDate())
+                            .status(405)
+                            .error(METHOD_NOT_ALLOWED)
+                            .message(METHOD_NOT_ALLOWED)
+                            .build());
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (nonNull(authorizationHeader) && startWith(authorizationHeader, "Bearer ")) {

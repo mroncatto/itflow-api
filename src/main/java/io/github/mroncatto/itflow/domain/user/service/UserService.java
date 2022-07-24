@@ -118,11 +118,10 @@ public class UserService extends AbstractService<User> implements IUserService {
         String username = getContext().getAuthentication().getName();
         User user = this.findUserByUsername(username);
         validateExistingEmailUpdateUser(user, entity);
-        validateNullFields(entity.getEmail(), entity.getFullName(), entity.getAvatar());
+        validateNullFields(entity.getEmail(), entity.getFullName());
         validateEmptyFields(entity.getEmail(), entity.getFullName());
         validateEmailField(entity.getEmail());
         user.setEmail(entity.getEmail());
-        user.setAvatar(entity.getAvatar());
         user.setFullName(entity.getFullName());
         return this.userRepository.save(user);
     }
@@ -151,10 +150,10 @@ public class UserService extends AbstractService<User> implements IUserService {
     }
 
     @Override
-    public void unlockUser(String username) {
+    public void lockUnlockUser(String username) {
         User user = this.findUserByUsername(username);
         if(!user.isActive()) throw new UsernameNotFoundException("");
-        user.setNonLocked(true);
+        user.setNonLocked(!user.isNonLocked());
         this.userRepository.save(user);
     }
 

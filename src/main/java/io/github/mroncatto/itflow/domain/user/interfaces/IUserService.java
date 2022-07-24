@@ -19,6 +19,6 @@ public interface IUserService {
     void updateUserPassword(String oldPassword, String newPassword) throws BadPasswordException;
     void resetUserPassword(String username);
 
-    void unlockUser(String username);
+    void lockUnlockUser(String username);
 
 }
