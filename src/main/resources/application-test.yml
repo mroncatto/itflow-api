@@ -37,15 +37,15 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
     properties:
       hibernate:
          format_sql: true
          dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
   flyway:
-    enabled: true
-    validate-on-migrate: true
+    enabled: false
+    validate-on-migrate: false
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

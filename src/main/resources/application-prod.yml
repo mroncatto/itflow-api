@@ -1,1 +1,74 @@
 
+app:
+  version: '@project.version@'
+  timezone: ${ITFLOW_TIMEZONE}
+  login:
+    attempts: 5
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+spring:
+  datasource:
+    url: jdbc:postgresql://${ITFLOW_DB_URL}/${ITFLOW_DB_NAME}?useSSL=${ITFLOW_DB_SSL}&serverTimezone=app.timezone
+    username: ${ITFLOW_DB_USER}
+    password: ${ITFLOW_DB_PWD}
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart.max-file-size: 5MB
+    multipart.max-request-size: 5MB
+  mail:
+    username: ${ITFLOW_MAIL_USER}
+    password: ${ITFLOW_MAIL_PWD}
+    host: ${ITFLOW_MAIL_HOST}
+    port: ${ITFLOW_MAIL_PORT}
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            enable: ${ITFLOW_MAIL_TLS}
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs/
+    filter: false
+    path: /
+    doc-expansion: none
+logging:
+  level:
+    root: DEBUG
+    org:
+      hibernate:
+        SQL: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%clr(%5p)] %logger{36} - %msg%n"
+    file: "%d %p %c{1.} [%t] %m%n"
+  file:
+    name: ${user.home}/itflow/logs/itflow-api.log
+  logback:
+    rollingpolicy:
+      max-file-size: 20MB
+      max-history: 10
+jwt:
+  secret: ${ITFLOW_JWT_SECRET}
+  expire: ${ITFLOW_JWT_EXPIRE}

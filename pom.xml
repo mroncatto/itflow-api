@@ -23,7 +23,7 @@
 
 	<groupId>io.github.mroncatto</groupId>
 	<artifactId>itflow-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>itflow-api</name>
 	<description>Gestión de servicios de tecnologías de la información</description>
 	<properties>
@@ -119,6 +119,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
