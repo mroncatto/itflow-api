@@ -18,7 +18,7 @@ public interface IUserController {
     ResponseEntity<User> updateProfile(User entity) throws AlreadExistingUserByEmail, BadRequestException;
     ResponseEntity<?> updateUserPassword(String oldPassword, String newPassword) throws BadPasswordException;
     ResponseEntity<?> resetUserPassword(String username);
-    ResponseEntity<?> unlockUser(String username);
+    ResponseEntity<?> lockUnlockUser(String username);
     ResponseEntity<User> findUserByUsername(String username);
 
 

@@ -181,11 +181,11 @@ public class UserController extends AbstractController<User> implements IUserCon
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = "401", description = "Authentication Failure", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping("/unlock/{username}")
+    @PutMapping("/lockunlock/{username}")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
     @Override
-    public ResponseEntity<?> unlockUser(@PathVariable("username") String username) {
-        this.userService.unlockUser(username);
+    public ResponseEntity<?> lockUnlockUser(@PathVariable("username") String username) {
+        this.userService.lockUnlockUser(username);
         return new ResponseEntity<>(null, OK);
     }
 }
