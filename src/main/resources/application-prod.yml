@@ -29,9 +29,10 @@ spring:
         smtp:
           auth: true
           starttls:
-            enable: true
-          ssl:
             enable: ${ITFLOW_MAIL_TLS}
+          ssl:
+            enable: ${ITFLOW_MAIL_SSL}
+            protocols: ${ITFLOW_MAIL_SSL_PROTOCOLS}
   output:
     ansi:
       enabled: always
