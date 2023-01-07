@@ -31,6 +31,7 @@ spring:
             enable: true
           ssl:
             enable: false
+            protocols: 'TLSv1.2'
   output:
     ansi:
       enabled: always

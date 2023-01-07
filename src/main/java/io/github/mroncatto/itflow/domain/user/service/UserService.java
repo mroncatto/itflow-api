@@ -2,7 +2,7 @@ package io.github.mroncatto.itflow.domain.user.service;
 
 import io.github.mroncatto.itflow.config.exception.model.*;
 import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.commons.service.EmailService;
+import io.github.mroncatto.itflow.domain.email.service.EmailService;
 import io.github.mroncatto.itflow.domain.user.interfaces.IUserService;
 import io.github.mroncatto.itflow.domain.user.model.Role;
 import io.github.mroncatto.itflow.domain.user.model.User;
@@ -24,7 +24,8 @@ import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.dis
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.match;
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 import static io.github.mroncatto.itflow.domain.commons.helper.GeneratorHelper.generateRandomAlphanumeric;
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.*;
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.isNull;
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @Service
@@ -87,6 +88,7 @@ public class UserService extends AbstractService implements IUserService {
         validateEmailField(entity.getEmail());
         String randomPassword = generateRandomAlphanumeric(6, false);
         entity.setPassword(passwordEncoder.encode(randomPassword));
+        entity.setPassword_expired(true);
         entity.setJoinDate(new Date());
         this.emailService.welcome(entity, randomPassword);
         return this.userRepository.save(entity);
@@ -138,6 +140,7 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.findUserByUsername(username);
         if (validateUserPassword(oldPassword, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(newPassword));
+            user.setPassword_expired(false);
             this.userRepository.save(user);
         } else {
             throw new BadPasswordException("");
@@ -150,6 +153,7 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.findUserByUsername(username);
         String randomPassword = generateRandomAlphanumeric(6, false);
         user.setPassword(passwordEncoder.encode(randomPassword));
+        user.setPassword_expired(true);
         this.emailService.resetPassword(user, randomPassword);
         //TODO: Improve this method to use tokens
         this.userRepository.save(user);

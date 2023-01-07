@@ -69,6 +69,9 @@ public class User extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean nonLocked;
 
+    @Column(nullable = false)
+    private boolean password_expired;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private List<Role> role;
 
@@ -83,6 +86,7 @@ public class User extends Auditable<String> implements Serializable {
                 .avatar(this.avatar)
                 .joinDate(this.joinDate)
                 .lastLoginDate(this.lastLoginDate)
+                .password_expired(this.password_expired)
                 .build();
     }
 
