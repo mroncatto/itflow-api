@@ -83,7 +83,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
-    @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'ADMIN'})")
     @Override
     public ResponseEntity<User> save(@Valid @RequestBody User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
         return new ResponseEntity<>(this.userService.save(entity, result), CREATED);
@@ -97,7 +97,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping("/{username}")
-    @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
     @Override
     public ResponseEntity<User> update(@PathVariable("username") String username, @Valid @RequestBody User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
         return new ResponseEntity<>(this.userService.update(username, entity, result), OK);
@@ -110,7 +110,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping("/{username}")
-    @PreAuthorize("hasAnyAuthority({'COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'ADMIN'})")
     @Override
     public ResponseEntity<User> delete(@PathVariable("username") String username) throws BadRequestException {
         this.userService.delete(username);
@@ -123,7 +123,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/role")
-    @PreAuthorize("hasAnyAuthority({'COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
     @Override
     public ResponseEntity<List<Role>> findAllRoles() {
         return new ResponseEntity<>(this.roleService.findAll(), OK);
@@ -135,7 +135,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping("/{username}/role")
-    @PreAuthorize("hasAnyAuthority({'MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
     @Override
     public ResponseEntity<User> updateUserRoles(@PathVariable("username") String username, @RequestBody List<Role> roles) {
         return new ResponseEntity<>(this.userService.updateUserRoles(username, roles), OK);
@@ -168,7 +168,7 @@ public class UserController implements IUserController {
     @Operation(summary = "Reset user password", responses = {@ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PostMapping("/resetpassword")
-    @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
     @Override
     public ResponseEntity<?> resetUserPassword(@RequestParam("username") String username) {
         this.userService.resetUserPassword(username);
@@ -183,7 +183,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PutMapping("/lockunlock/{username}")
-    @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
     @Override
     public ResponseEntity<?> lockUnlockUser(@PathVariable("username") String username) {
         this.userService.lockUnlockUser(username);

@@ -44,7 +44,7 @@ public class JwtService implements IJwtService {
                     .withIssuedAt(currentDate())
                     .withExpiresAt(increaseDate(expire))
                     .withIssuer(ServletUriComponentsBuilder.fromCurrentContextPath().path("").toUriString())
-                    .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                    .withClaim("credentials", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                     .sign(algorithm);
         } catch (Exception e) {
             log.error("Failed to generate token: {}", e.getMessage());
@@ -76,6 +76,6 @@ public class JwtService implements IJwtService {
 
     @Override
     public String[] getClaims(String token) {
-        return decodedJWT(token).getClaim("roles").asArray(String.class);
+        return decodedJWT(token).getClaim("credentials").asArray(String.class);
     }
 }
