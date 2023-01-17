@@ -11,8 +11,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/itflow-test?useSSL=false&serverTimezone=app.timezone
-    username: postgres
-    password: postgres
+    username: itflow
+    password: itflow
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart.max-file-size: 5MB
@@ -31,6 +31,7 @@ spring:
             enable: true
           ssl:
             enable: false
+            protocols: 'TLSv1.2'
   output:
     ansi:
       enabled: always
@@ -46,6 +47,11 @@ spring:
   flyway:
     enabled: false
     validate-on-migrate: false
+  cache:
+    type: redis
+    redis:
+      host: localhost
+      port: 6379
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
@@ -59,11 +65,14 @@ logging:
     org:
       hibernate:
         SQL: ERROR
+      springframework:
+        boot:
+          autoconfigure: ERROR
   pattern:
     console: "%d{HH:mm:ss.SSS} [%clr(%5p)] %logger{36} - %msg%n"
     file: "%d %p %c{1.} [%t] %m%n"
   file:
-    name: ${user.home}/itflow/logs/itflow-api.test.log
+    name: ${user.home}/logs/itflow/itflow-test-api.log
   logback:
     rollingpolicy:
       max-file-size: 20MB

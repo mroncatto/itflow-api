@@ -37,7 +37,7 @@ class UserControllerTest {
 
     @Test
     @Order(1)
-    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    @WithMockUser(username = "admin", authorities ="ADMIN")
     void save() throws Exception {
         RequestBuilder request = post(BASE_URL + "/user")
                 .content(objectMapper.writeValueAsString(
@@ -46,6 +46,7 @@ class UserControllerTest {
                         .username("springtest")
                         .avatar("")
                         .email("spring@test.com")
+                        .active(true)
                         .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpect(status().isCreated()).andReturn();
@@ -53,7 +54,7 @@ class UserControllerTest {
 
     @Test
     @Order(2)
-    @WithMockUser(username = "administrator")
+    @WithMockUser(username = "admin")
     void testFindAll() throws Exception {
         RequestBuilder request = get(BASE_URL + "/user/page/1");
         mvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -61,7 +62,7 @@ class UserControllerTest {
 
     @Test
     @Order(3)
-    @WithMockUser(username = "administrator")
+    @WithMockUser(username = "admin")
     void findAll() throws Exception {
         RequestBuilder request = get(BASE_URL + "/user");
         mvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -69,7 +70,7 @@ class UserControllerTest {
 
     @Test
     @Order(4)
-    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    @WithMockUser(username = "admin", authorities ="ADMIN")
     void findAllRoles() throws Exception {
         RequestBuilder request = get(BASE_URL + "/user/role");
         mvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -77,7 +78,7 @@ class UserControllerTest {
 
     @Test
     @Order(5)
-    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    @WithMockUser(username = "admin", authorities ="ADMIN")
     void update() throws Exception {
         RequestBuilder request = put(BASE_URL + "/user/springtest")
                 .content(objectMapper.writeValueAsString(
@@ -93,7 +94,7 @@ class UserControllerTest {
 
     @Test
     @Order(6)
-    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    @WithMockUser(username = "admin", authorities ="ADMIN")
     void updateUserRoles() throws Exception {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.builder().id(1L).role("ADMIN").build());
@@ -121,7 +122,7 @@ class UserControllerTest {
 
     @Test
     @Order(8)
-    @WithMockUser(username = "administrator", authorities ="ADMIN")
+    @WithMockUser(username = "admin", authorities ="ADMIN")
     void delete() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.delete(BASE_URL + "/user/springtest");
         mvc.perform(request).andExpect(status().isOk()).andReturn();
