@@ -30,7 +30,7 @@ import java.util.List;
 
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
-import static io.github.mroncatto.itflow.domain.commons.helper.ApiResponseHelper.*;
+import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -43,9 +43,9 @@ public class UserController implements IUserController {
     private final RoleService roleService;
 
     @Operation(summary = "Get all users", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, array = @ArraySchema(schema = @Schema(implementation = User.class)))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = User.class)))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
     @Override
@@ -54,9 +54,9 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Get all users with pagination", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = Page.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
@@ -65,10 +65,10 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Get user by username", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = response404, description = notFound, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/{username}")
     @Override
@@ -77,10 +77,10 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Create a new user account", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = response400, description = badRequest, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize("hasAnyAuthority({'ADMIN'})")
@@ -90,11 +90,11 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Update a specific user account", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = response400, description = badRequest, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response404, description = notFound, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping("/{username}")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
@@ -104,10 +104,10 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Inactive a specific user account", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson)),
-            @ApiResponse(responseCode = response404, description = notFound, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON)),
+            @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping("/{username}")
     @PreAuthorize("hasAnyAuthority({'ADMIN'})")
@@ -118,9 +118,9 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Get all roles", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, array = @ArraySchema(schema = @Schema(implementation = Role.class)))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Role.class)))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/role")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
@@ -130,9 +130,9 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Update user roles", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping("/{username}/role")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
@@ -142,9 +142,9 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Update user profile", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping("/profile")
     @Override
@@ -153,9 +153,9 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Update user password with old password", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping("/updatepassword")
     @Override
@@ -165,7 +165,7 @@ public class UserController implements IUserController {
         return new ResponseEntity<>(null, OK);
     }
 
-    @Operation(summary = "Reset user password", responses = {@ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @Operation(summary = "Reset user password", responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PostMapping("/resetpassword")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
@@ -176,11 +176,11 @@ public class UserController implements IUserController {
     }
 
     @Operation(summary = "Unlock a specific user account", security = {
-            @SecurityRequirement(name = bearerAuth)}, responses = {
-            @ApiResponse(responseCode = response200, description = successful, content = @Content(mediaType = applicationJson)),
-            @ApiResponse(responseCode = response400, description = badRequest, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response404, description = notFound, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = response401, description = unauthorized, content = @Content(mediaType = applicationJson, schema = @Schema(implementation = CustomHttpResponse.class)))})
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON)),
+            @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PutMapping("/lockunlock/{username}")
     @PreAuthorize("hasAnyAuthority({'HELPDESK','ADMIN'})")
