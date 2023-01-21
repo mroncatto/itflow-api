@@ -1,8 +1,7 @@
 package io.github.mroncatto.itflow.domain.company.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
@@ -15,6 +14,9 @@ import java.io.Serializable;
 @Table
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Company implements Serializable {
 

@@ -27,6 +27,7 @@ import java.util.List;
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
+import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -66,7 +67,7 @@ public class StaffController implements IStaffController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
-    @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
     public ResponseEntity<Staff> save(@Valid @RequestBody Staff entity, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.staffService.save(entity, result), CREATED);
@@ -80,7 +81,7 @@ public class StaffController implements IStaffController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping()
-    @PreAuthorize("hasAnyAuthority({'HELPDESK','COORDINATOR','MANAGER','ADMIN'})")
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
     public ResponseEntity<Staff> update(@Valid @RequestBody Staff entity, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.staffService.update(entity, result), OK);

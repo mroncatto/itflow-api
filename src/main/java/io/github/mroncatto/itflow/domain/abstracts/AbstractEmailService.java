@@ -62,8 +62,8 @@ public abstract class AbstractEmailService {
         variables.stream().forEach(v -> {
             eventDataList.add(
                     EmailEventData.builder()
-                            .variable(v)
-                            .value(values[variables.indexOf(v)])
+                            .variableName(v)
+                            .variableValue(values[variables.indexOf(v)])
                             .build());
         });
         return eventDataList;

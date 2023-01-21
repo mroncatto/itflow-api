@@ -57,7 +57,7 @@ public class EmailSendService extends AbstractEmailService {
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
         values.forEach(v -> {
-            model.put(v.getVariable(), v.getValue());
+            model.put(v.getVariableName(), v.getVariableValue());
         });
         configuration.getTemplate(template.toString() + ".ftlh").process(model, stringWriter);
         return stringWriter.getBuffer().toString();

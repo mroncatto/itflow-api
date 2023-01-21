@@ -1,10 +1,13 @@
 package io.github.mroncatto.itflow.security.service;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import io.github.mroncatto.itflow.domain.user.model.User;
 import io.github.mroncatto.itflow.domain.user.model.Role;
+import io.github.mroncatto.itflow.domain.user.model.User;
 import io.github.mroncatto.itflow.security.model.UserPrincipal;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
@@ -13,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static io.github.mroncatto.itflow.config.constant.ApplicationConstant.APP_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootConfiguration
 @SpringBootTest
@@ -26,7 +31,7 @@ class JwtServiceTest {
 
     @Order(1)
     @Test
-    void generateToken() {
+    void shouldGenerateAToken() {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.builder().role("TEST").build());
         User account = User.builder()
@@ -40,14 +45,14 @@ class JwtServiceTest {
 
     @Order(2)
     @Test
-    void decodedJWT() {
+    void shouldDecodeToken() {
         decoded =  jwtService.decodedJWT(token);
-        Assert.isInstanceOf(DecodedJWT.class, decoded);
+        assertTrue(decoded.getAudience().iterator().next().equals(APP_NAME));
     }
 
     @Order(3)
     @Test
-    void getSubject() {
+    void shouldReturnSubjectFromToken() {
         assertEquals("integration_test", jwtService.getSubject(token));
     }
 
@@ -55,13 +60,13 @@ class JwtServiceTest {
 
     @Order(4)
     @Test
-    void getAuthorities() {
+    void shouldReturnCredentials() {
         assertEquals("TEST", jwtService.getAuthorities(token).stream().iterator().next().getAuthority());
     }
 
     @Order(5)
     @Test
-    void getClaims() {
+    void shouldReturnCredentialsClaims() {
         assertEquals("[TEST]", Arrays.toString(jwtService.getClaims(token)));
     }
 }

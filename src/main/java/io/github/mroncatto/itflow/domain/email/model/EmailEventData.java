@@ -26,8 +26,8 @@ public class EmailEventData implements Serializable {
     private EmailSendEvent sendEvent;
 
     @Column(nullable = false)
-    private String variable;
+    private String variableName;
 
     @Column(nullable = false)
-    private String value;
+    private String variableValue;
 }

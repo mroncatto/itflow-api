@@ -7,17 +7,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class ValidationHelperTest {
 
     @Test
-    void notNull() {
+    void shouldBeNonNull() {
         assertTrue(ValidationHelper.nonNull(new Object()));
     }
 
     @Test
-    void isNull() {
+    void shouldBeNull() {
         assertTrue(ValidationHelper.nonNull(Object.class));
     }
 
     @Test
-    void startWith() {
+    void shouldStartsWith() {
         assertTrue(ValidationHelper.startWith("Testing ", "Testing "));
     }
 }

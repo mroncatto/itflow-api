@@ -3,80 +3,22 @@ app:
   timezone: 'America/Asuncion'
   login:
     attempts: 5
-server:
-  port: 8084
-  error:
-    whitelabel:
-      enabled: false
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/itflow-test?useSSL=false&serverTimezone=app.timezone
-    username: itflow
-    password: itflow
-    driver-class-name: org.postgresql.Driver
-  servlet:
-    multipart.max-file-size: 5MB
-    multipart.max-request-size: 5MB
+    url: jdbc:h2:mem:test
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: create-drop
+        dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    locations: classpath:/db/specific/h2
   mail:
-    username: mailtrap_username
-    password: mailtrap_password
+    username: username
+    password: password
     host: smtp.mailtrap.io
     port: 25
     protocol: smtp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          ssl:
-            enable: false
-            protocols: 'TLSv1.2'
-  output:
-    ansi:
-      enabled: always
-  jpa:
-    show-sql: false
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-         format_sql: true
-         dialect: org.hibernate.dialect.PostgreSQLDialect
-    open-in-view: false
-  flyway:
-    enabled: false
-    validate-on-migrate: false
-  cache:
-    type: redis
-    redis:
-      host: localhost
-      port: 6379
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs/
-    filter: false
-    path: /
-    doc-expansion: none
-logging:
-  level:
-    root: ERROR
-    org:
-      hibernate:
-        SQL: ERROR
-      springframework:
-        boot:
-          autoconfigure: ERROR
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%clr(%5p)] %logger{36} - %msg%n"
-    file: "%d %p %c{1.} [%t] %m%n"
-  file:
-    name: ${user.home}/logs/itflow/itflow-test-api.log
-  logback:
-    rollingpolicy:
-      max-file-size: 20MB
-      max-history: 10
 jwt:
   secret: "123456"
   expire: 60
