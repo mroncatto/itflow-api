@@ -83,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationFilter buildAuthenticationFilter(AuthenticationManager authenticationManager){
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService, jwtService, loginAttemptService);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService, loginAttemptService);
         authenticationFilter.setFilterProcessesUrl(AUTHENTICATION_URL);
         authenticationFilter.setPostOnly(true);
         return authenticationFilter;

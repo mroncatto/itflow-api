@@ -9,8 +9,10 @@ import java.util.Collection;
 public interface IJwtService {
 
     String generateToken(UserPrincipal userPrincipal);
+    String generateRefreshToken(UserPrincipal userPrincipal);
     String getSubject(String token);
     DecodedJWT decodedJWT(String token);
+    DecodedJWT decodedJWT(String token, boolean refresh);
     Collection<SimpleGrantedAuthority> getAuthorities(String token);
     String[] getClaims(String token);
 

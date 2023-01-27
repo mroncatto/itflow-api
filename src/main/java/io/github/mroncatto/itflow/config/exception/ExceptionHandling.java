@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import javax.persistence.NoResultException;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
@@ -26,6 +27,7 @@ public class ExceptionHandling {
     public static final String EXISTING_USER_BY_EMAIL = "USER ALREADY EXISTS WITH THIS EMAIL";
     public static final String INVALID_PASSWORD = "INVALID PASSWORD";
     public static final String DATABASE_ERROR = "DATABASE ERROR";
+    public static final String UNSUCCESSFUL_AUTHENTICATION = "UNSUCCESSFUL AUTHENTICATION";
 
     @ExceptionHandler(NoResultException.class)
     public ResponseEntity<CustomHttpResponse> notFoundException(NoResultException exception) {
@@ -78,6 +80,11 @@ public class ExceptionHandling {
     public ResponseEntity<CustomHttpResponse> internalServerErrorException(Exception exception) {
         log.error("Error logging in {}", exception.getMessage());
         return buildHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<CustomHttpResponse> authenticationException(Exception exception) {
+        return buildHttpResponse(HttpStatus.UNAUTHORIZED, UNSUCCESSFUL_AUTHENTICATION);
     }
 
     private ResponseEntity<CustomHttpResponse> buildHttpResponse(HttpStatus status, String message){

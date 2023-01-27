@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class JwtServiceTest {
 
-    static JwtService jwtService = new JwtService("123456", 10);
+    static JwtService jwtService = new JwtService("123456", "54321", 10, 30);
     static String token;
     static DecodedJWT decoded;
 

@@ -1,24 +1,28 @@
 package io.github.mroncatto.itflow.domain.user.service;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.github.mroncatto.itflow.config.exception.model.*;
 import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
+import io.github.mroncatto.itflow.domain.commons.service.RedisService;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
 import io.github.mroncatto.itflow.domain.user.interfaces.IUserService;
 import io.github.mroncatto.itflow.domain.user.model.Role;
 import io.github.mroncatto.itflow.domain.user.model.User;
 import io.github.mroncatto.itflow.domain.user.repository.IUserRepository;
+import io.github.mroncatto.itflow.security.model.UserPrincipal;
+import io.github.mroncatto.itflow.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import javax.naming.AuthenticationException;
+import java.util.*;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.match;
@@ -30,10 +34,13 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 
 @Service
 @RequiredArgsConstructor
+@EnableRedisRepositories
 public class UserService extends AbstractService implements IUserService {
     private final IUserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final JwtService jwtService;
+    private final RedisService redisService;
 
     public User login(String username) {
         User user = this.userRepository.findUserByUsername(username);
@@ -65,9 +72,9 @@ public class UserService extends AbstractService implements IUserService {
         return user;
     }
 
-    public User findUserByUsernameActiveOnly(String username){
+    public User findUserByUsernameActiveOnly(String username) {
         User user = this.findUserByUsername(username);
-        if(!user.isActive()) throw new UsernameNotFoundException("USER NOT FOUND OR INACTIVE");
+        if (!user.isActive()) throw new UsernameNotFoundException("USER NOT FOUND OR INACTIVE");
         return user;
     }
 
@@ -162,7 +169,7 @@ public class UserService extends AbstractService implements IUserService {
     @Override
     public void lockUnlockUser(String username) {
         User user = this.findUserByUsername(username);
-        if(!user.isActive()) throw new UsernameNotFoundException("");
+        if (!user.isActive()) throw new UsernameNotFoundException("");
         user.setNonLocked(!user.isNonLocked());
         this.userRepository.save(user);
     }
@@ -180,12 +187,46 @@ public class UserService extends AbstractService implements IUserService {
     private void validateExistingEmailUpdateUser(User user, User userDto) throws AlreadExistingUserByEmail {
         User userByEmail = this.userRepository.findUserByEmail(userDto.getEmail());
         if (nonNull(userByEmail)) {
-            if(distinct(userByEmail.getId(), user.getId()) && match(userByEmail.getEmail(),userDto.getEmail()))
+            if (distinct(userByEmail.getId(), user.getId()) && match(userByEmail.getEmail(), userDto.getEmail()))
                 throw new AlreadExistingUserByEmail("");
         }
     }
 
     private boolean validateUserPassword(String planePassword, String hashPassword) {
         return this.passwordEncoder.matches(planePassword, hashPassword);
+    }
+
+    public Map<String, Object> refreshToken(String token) throws AuthenticationException {
+        DecodedJWT decodedJWT = this.jwtService.decodedJWT(token, true);
+        User user = this.findUserByUsername(decodedJWT.getSubject());
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        validateRefreshToken(token, userPrincipal);
+        String newToken = this.generateToken(userPrincipal);
+        String refreshToken = this.generateRefreshToken(userPrincipal);
+        return this.buildToken(newToken, refreshToken, user);
+    }
+
+    private void validateRefreshToken(String token, UserPrincipal userPrincipal) throws AuthenticationException {
+        String cacheToken = redisService.getValue("refresh_token." + userPrincipal.getUsername());
+        if (isNull(cacheToken) || distinct(cacheToken, token))
+            throw new AuthenticationException();
+    }
+
+    public String generateToken(UserPrincipal userPrincipal) {
+        return this.jwtService.generateToken(userPrincipal);
+    }
+
+    public String generateRefreshToken(UserPrincipal userPrincipal) {
+        String token = this.jwtService.generateRefreshToken(userPrincipal);
+        redisService.saveValue("refresh_token." + userPrincipal.getUsername(), token, jwtService.getExpireRefresh());
+        return token;
+    }
+
+    public Map<String, Object> buildToken(String token, String refresh_token, User user) {
+        Map<java.lang.String, java.lang.Object> response = new HashMap<>();
+        response.put("access_token", token);
+        response.put("refresh_token", refresh_token);
+        response.put("user", user.buildForToken());
+        return response;
     }
 }

@@ -79,4 +79,6 @@ logging:
       max-history: 10
 jwt:
   secret: "123456"
-  expire: 60
+  secret_refresh: "54321"
+  expire: 2
+  expire_refresh: 10

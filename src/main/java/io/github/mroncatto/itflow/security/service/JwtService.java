@@ -26,11 +26,18 @@ import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.increa
 @Slf4j
 public class JwtService implements IJwtService {
     private final String secret;
+    private final String secret_refresh;
     private final int expire;
+    private final int expire_refresh;
 
-    public JwtService(@Value("${jwt.secret}") String secret, @Value("${jwt.expire}") int expire) {
+    public JwtService(@Value("${jwt.secret}") String secret,
+                      @Value("${jwt.secret_refresh}") String secret_refresh,
+                      @Value("${jwt.expire}") int expire,
+                      @Value("${jwt.expire_refresh}") int expire_refresh) {
         this.secret = secret;
+        this.secret_refresh = secret_refresh;
         this.expire = expire;
+        this.expire_refresh = expire_refresh;
     }
 
     @Override
@@ -53,13 +60,36 @@ public class JwtService implements IJwtService {
     }
 
     @Override
+    public String generateRefreshToken(UserPrincipal user) {
+        String token = "";
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret_refresh.getBytes());
+            token = JWT.create()
+                    .withAudience(APP_NAME)
+                    .withSubject(user.getUsername())
+                    .withIssuedAt(currentDate())
+                    .withExpiresAt(increaseDate(expire_refresh))
+                    .withIssuer(ServletUriComponentsBuilder.fromCurrentContextPath().path("").toUriString())
+                    .sign(algorithm);
+        } catch (Exception e) {
+            log.error("Failed to generate refresh token: {}", e.getMessage());
+        }
+        return token;
+    }
+
+    @Override
     public String getSubject(String token) {
         return decodedJWT(token).getSubject();
     }
 
     @Override
     public DecodedJWT decodedJWT(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
+        return decodedJWT(token, false);
+    }
+
+    @Override
+    public DecodedJWT decodedJWT(String token, boolean refresh) {
+        Algorithm algorithm = Algorithm.HMAC256(refresh ? secret_refresh.getBytes() : secret.getBytes());
         JWTVerifier verifier = JWT.require(algorithm).build();
         return verifier.verify(token);
     }
@@ -77,5 +107,9 @@ public class JwtService implements IJwtService {
     @Override
     public String[] getClaims(String token) {
         return decodedJWT(token).getClaim("credentials").asArray(String.class);
+    }
+
+    public int getExpireRefresh() {
+        return this.expire_refresh;
     }
 }
