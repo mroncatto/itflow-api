@@ -20,6 +20,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -31,7 +33,8 @@ import java.util.List;
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
-import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.*;
+import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.ADMIN_ONLY;
+import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -42,6 +45,16 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserController implements IUserController {
     private final UserService userService;
     private final RoleService roleService;
+
+    @QueryMapping
+    Iterable<User> users() {
+        return this.userService.findAll();
+    }
+
+    @QueryMapping
+    User userByUsername(@Argument String username) {
+        return this.userService.findUserByUsername(username);
+    }
 
     @Operation(summary = "Get all users", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {

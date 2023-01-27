@@ -1,0 +1,9 @@
+type Query {
+    users: [User]
+    userByUsername(username: String!): User
+}
+
+type User {
+    username: String!
+    fullName: String
+}

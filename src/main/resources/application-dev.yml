@@ -52,6 +52,9 @@ spring:
     redis:
       host: localhost
       port: 6379
+  graphql:
+    graphiql:
+      enabled: true
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
