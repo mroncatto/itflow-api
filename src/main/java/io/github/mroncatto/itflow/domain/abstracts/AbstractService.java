@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.validation.BindingResult;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.Objects;
 
 @Slf4j
-public abstract class AbstractService{
+public abstract class AbstractService {
 
     protected void validateResult(BindingResult result) throws BadRequestException {
         if(result.hasErrors()){
@@ -41,5 +44,13 @@ public abstract class AbstractService{
         if (!EmailValidator.getInstance().isValid(email)){
             throw new BadRequestException("INVALID FORMAT EMAIL");
         }
+    }
+
+    protected static Predicate filterAndLike(Predicate predicate, CriteriaBuilder builder, Root<?> root, String filter, String param) {
+        return builder.and(predicate, builder.like(builder.lower(root.get(param)), "%" + filter.toLowerCase() + "%"));
+    }
+
+    protected static Predicate filterOrLike(Predicate predicate, CriteriaBuilder builder, Root<?> root, String filter, String param) {
+        return builder.or(predicate, builder.like(builder.lower(root.get(param)), "%" + filter.toLowerCase() + "%"));
     }
 }

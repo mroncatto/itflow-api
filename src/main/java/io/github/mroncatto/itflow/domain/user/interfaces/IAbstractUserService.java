@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface IAbstractUserService {
     List<User> findAll();
-    Page<User> findAll(Pageable pageable);
+    Page<User> findAll(Pageable pageable, String param);
     User save(User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail;
     User update(String username, User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail, NoResultException;
 }

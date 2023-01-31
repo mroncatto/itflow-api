@@ -6,6 +6,7 @@ import io.github.mroncatto.itflow.config.exception.model.BadPasswordException;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.user.model.Role;
 import io.github.mroncatto.itflow.domain.user.model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -22,8 +23,5 @@ public interface IUserController extends IAbstractUserController<User> {
     ResponseEntity<?> resetUserPassword(String username);
     ResponseEntity<?> lockUnlockUser(String username);
     ResponseEntity<User> findUserByUsername(String username);
-
-
-
-
+    ResponseEntity<Page<User>> findAll(int page, String param);
 }

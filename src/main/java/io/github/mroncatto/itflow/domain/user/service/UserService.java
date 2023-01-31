@@ -10,15 +10,15 @@ import io.github.mroncatto.itflow.domain.user.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import javax.persistence.criteria.*;
+import java.util.*;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.match;
@@ -48,8 +48,20 @@ public class UserService extends AbstractService implements IUserService {
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable) {
-        return this.userRepository.findAll(pageable);
+    public Page<User> findAll(Pageable pageable,
+                              String filter) {
+
+        return this.userRepository.findAll(
+                (Specification<User>) (root, query, builder) -> {
+                    Predicate predicate = builder.conjunction();
+                    if (nonNull(filter)){
+                        predicate = filterAndLike(predicate, builder, root, filter, "fullName");
+                        predicate = filterOrLike(predicate, builder, root, filter, "username");
+                        predicate = filterOrLike(predicate, builder, root, filter, "email");
+                    }
+                    return predicate;
+
+                }, pageable);
     }
 
     @Override
@@ -65,9 +77,9 @@ public class UserService extends AbstractService implements IUserService {
         return user;
     }
 
-    public User findUserByUsernameActiveOnly(String username){
+    public User findUserByUsernameActiveOnly(String username) {
         User user = this.findUserByUsername(username);
-        if(!user.isActive()) throw new UsernameNotFoundException("USER NOT FOUND OR INACTIVE");
+        if (!user.isActive()) throw new UsernameNotFoundException("USER NOT FOUND OR INACTIVE");
         return user;
     }
 
@@ -162,7 +174,7 @@ public class UserService extends AbstractService implements IUserService {
     @Override
     public void lockUnlockUser(String username) {
         User user = this.findUserByUsername(username);
-        if(!user.isActive()) throw new UsernameNotFoundException("");
+        if (!user.isActive()) throw new UsernameNotFoundException("");
         user.setNonLocked(!user.isNonLocked());
         this.userRepository.save(user);
     }
@@ -180,7 +192,7 @@ public class UserService extends AbstractService implements IUserService {
     private void validateExistingEmailUpdateUser(User user, User userDto) throws AlreadExistingUserByEmail {
         User userByEmail = this.userRepository.findUserByEmail(userDto.getEmail());
         if (nonNull(userByEmail)) {
-            if(distinct(userByEmail.getId(), user.getId()) && match(userByEmail.getEmail(),userDto.getEmail()))
+            if (distinct(userByEmail.getId(), user.getId()) && match(userByEmail.getEmail(), userDto.getEmail()))
                 throw new AlreadExistingUserByEmail("");
         }
     }

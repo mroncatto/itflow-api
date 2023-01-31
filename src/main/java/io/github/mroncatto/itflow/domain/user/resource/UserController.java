@@ -31,7 +31,8 @@ import java.util.List;
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
-import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.*;
+import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.ADMIN_ONLY;
+import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -61,8 +62,9 @@ public class UserController implements IUserController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<User>> findAll(@PathVariable("page") int page) {
-        return new ResponseEntity<>(this.userService.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
+    public ResponseEntity<Page<User>> findAll(@PathVariable("page") int page,
+                                              @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.userService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Get user by username", security = {
