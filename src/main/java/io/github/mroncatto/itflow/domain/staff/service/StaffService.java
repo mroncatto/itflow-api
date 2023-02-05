@@ -30,32 +30,21 @@ public class StaffService extends AbstractService implements IStaffService {
     }
 
     @Override
-    public Page<Staff> findAll(Pageable pageable, String filter, List<String> departments) {
+    public Page<Staff> findAll(Pageable pageable, String filter, List<String> departments, List<String> occupations) {
         return this.entityRepository.findAll((Specification<Staff>) (root, query, builder) -> {
-            Predicate predicateActiveStaff = filterEquals(builder,root,"active", true);
+            Predicate predicateActiveStaff = filterEquals(builder, root, "active", true);
             Predicate filterPredicate = null;
             Predicate departmentPredicate = null;
-            if(nonNull(filter)){
-                Predicate predicateFullname = filterLike(builder, root,"fullName", filter);
-                Predicate predicateEmail = filterLike(builder, root,"email", filter);
+            Predicate occupationPredicate = null;
+            if (nonNull(filter)) {
+                Predicate predicateFullname = filterLike(builder, root, "fullName", filter);
+                Predicate predicateEmail = filterLike(builder, root, "email", filter);
                 filterPredicate = builder.and(predicateFullname, predicateEmail);
             }
-            if(nonNull(departments)){
-                departmentPredicate = filterInWhereID(root, "department", departments);
-            }
+            if (nonNull(departments)) departmentPredicate = filterInWhereID(root, "department", departments);
+            if (nonNull(occupations)) occupationPredicate = filterInWhereID(root, "occupation", occupations);
 
-            if(nonNull(departmentPredicate) && nonNull(filterPredicate))
-                return builder.and(predicateActiveStaff, departmentPredicate, filterPredicate);
-
-            if(nonNull(filterPredicate))
-                return builder.and(predicateActiveStaff, filterPredicate);
-
-            if(nonNull(departmentPredicate))
-                return builder.and(predicateActiveStaff, departmentPredicate);
-
-            return predicateActiveStaff;
-
-            //TODO: Melhorar o filtro, criar metodo para validar lista de predicates!!!!
+            return builder.and(removeNullPredicates(predicateActiveStaff, filterPredicate, departmentPredicate, occupationPredicate));
 
         }, pageable);
     }

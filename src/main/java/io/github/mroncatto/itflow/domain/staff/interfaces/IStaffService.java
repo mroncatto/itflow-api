@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface IStaffService extends IAbstractService<Staff> {
     Staff findById(String uuid) throws NoResultException;
-    Page<Staff> findAll(Pageable pageable, String filter, List<String> departments);
+    Page<Staff> findAll(Pageable pageable, String filter, List<String> departments, List<String> occupations);
     Staff deleteById(String uuid) throws NoResultException;
 }

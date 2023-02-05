@@ -76,4 +76,29 @@ public abstract class AbstractService {
     protected static Predicate filterEndWith(CriteriaBuilder builder, Root<?> root, String param, String filter) {
         return builder.like(builder.lower(root.get(param)), "%" + filter.toLowerCase());
     }
+
+    protected static Predicate[] removeNullPredicates(Predicate... predicates) {
+        return Arrays.stream(predicates).filter(Objects::nonNull).toArray(Predicate[]::new);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

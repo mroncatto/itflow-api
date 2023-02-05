@@ -58,8 +58,9 @@ public class StaffController implements IStaffController {
     @Override
     public ResponseEntity<Page<Staff>> findAll(@PathVariable("page") int page,
                                                @RequestParam(required = false, name = "filter") String filter,
-                                               @RequestParam(required = false, name = "departments") List<String> departments) {
-        return new ResponseEntity<>(this.staffService.findAll(PageRequest.of(page, PAGE_SIZE), filter, departments), OK);
+                                               @RequestParam(required = false, name = "departments") List<String> departments,
+                                               @RequestParam(required = false, name = "occupations") List<String> occupations) {
+        return new ResponseEntity<>(this.staffService.findAll(PageRequest.of(page, PAGE_SIZE), filter, departments, occupations), OK);
     }
 
     @Operation(summary = "Create a new worker", security = {

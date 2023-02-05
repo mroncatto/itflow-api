@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface IStaffController extends IAbstractController<Staff> {
     ResponseEntity<Staff> findById(String id) throws NoResultException;
-    ResponseEntity<Page<Staff>> findAll(int page, String filter, List<String> departments);
+    ResponseEntity<Page<Staff>> findAll(int page, String filter, List<String> departments, List<String> occupations);
     ResponseEntity<Staff> deleteById(String id) throws NoResultException;
 }
