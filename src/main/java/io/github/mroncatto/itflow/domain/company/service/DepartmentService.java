@@ -8,6 +8,7 @@ import io.github.mroncatto.itflow.domain.company.repository.IDepartmentRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -26,11 +27,11 @@ public class DepartmentService extends AbstractService implements IDepartmentSer
 
     @Override
     public List<Department> findAll() {
-        return this.departmentRepository.findAllByActiveTrue();
+        return this.departmentRepository.findAllByActiveTrue(Sort.by(Sort.Direction.ASC, "branch.name", "name"));
     }
 
     @Override
-    public Page<Department> findAll(Pageable pageable) {
+    public Page<Department> findAll(Pageable pageable, String filter) {
         return this.departmentRepository.findAllByActiveTrue(pageable);
     }
 

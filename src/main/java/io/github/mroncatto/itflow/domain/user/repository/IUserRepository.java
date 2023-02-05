@@ -9,4 +9,6 @@ public interface IUserRepository extends IAbstractUserRepository<User, UUID>, Jp
 
     User findUserByUsername(String username);
     User findUserByEmail(String email);
+
+
 }

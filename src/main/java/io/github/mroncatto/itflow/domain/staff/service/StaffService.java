@@ -8,12 +8,16 @@ import io.github.mroncatto.itflow.domain.staff.repository.IStaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.NoResultException;
+import javax.persistence.criteria.Predicate;
 import java.util.List;
 import java.util.UUID;
+
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +30,34 @@ public class StaffService extends AbstractService implements IStaffService {
     }
 
     @Override
-    public Page<Staff> findAll(Pageable pageable) {
-        return this.entityRepository.findAllByActiveTrue(pageable);
+    public Page<Staff> findAll(Pageable pageable, String filter, List<String> departments) {
+        return this.entityRepository.findAll((Specification<Staff>) (root, query, builder) -> {
+            Predicate predicateActiveStaff = filterEquals(builder,root,"active", true);
+            Predicate filterPredicate = null;
+            Predicate departmentPredicate = null;
+            if(nonNull(filter)){
+                Predicate predicateFullname = filterLike(builder, root,"fullName", filter);
+                Predicate predicateEmail = filterLike(builder, root,"email", filter);
+                filterPredicate = builder.and(predicateFullname, predicateEmail);
+            }
+            if(nonNull(departments)){
+                departmentPredicate = filterInWhereID(root, "department", departments);
+            }
+
+            if(nonNull(departmentPredicate) && nonNull(filterPredicate))
+                return builder.and(predicateActiveStaff, departmentPredicate, filterPredicate);
+
+            if(nonNull(filterPredicate))
+                return builder.and(predicateActiveStaff, filterPredicate);
+
+            if(nonNull(departmentPredicate))
+                return builder.and(predicateActiveStaff, departmentPredicate);
+
+            return predicateActiveStaff;
+
+            //TODO: Melhorar o filtro, criar metodo para validar lista de predicates!!!!
+
+        }, pageable);
     }
 
     @Override

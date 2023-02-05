@@ -53,13 +53,15 @@ public class UserService extends AbstractService implements IUserService {
 
         return this.userRepository.findAll(
                 (Specification<User>) (root, query, builder) -> {
-                    Predicate predicate = builder.conjunction();
+                    Predicate predicateActiveUser = filterEquals(builder,root,"active", true);
                     if (nonNull(filter)){
-                        predicate = filterAndLike(predicate, builder, root, filter, "fullName");
-                        predicate = filterOrLike(predicate, builder, root, filter, "username");
-                        predicate = filterOrLike(predicate, builder, root, filter, "email");
+                        Predicate predicateFullName = filterLike(builder, root,"fullName", filter);
+                        Predicate predicateUsername = filterLike(builder, root,"username", filter);
+                        Predicate predicateEmail = filterLike(builder, root,"email", filter);
+                        Predicate predicateFilter = builder.or(predicateFullName, predicateUsername, predicateEmail);
+                        return builder.and(predicateActiveUser, predicateFilter);
                     }
-                    return predicate;
+                    return predicateActiveUser;
 
                 }, pageable);
     }

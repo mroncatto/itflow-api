@@ -56,8 +56,10 @@ public class StaffController implements IStaffController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Staff>> findAll(@PathVariable("page") int page) {
-        return new ResponseEntity<>(this.staffService.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
+    public ResponseEntity<Page<Staff>> findAll(@PathVariable("page") int page,
+                                               @RequestParam(required = false, name = "filter") String filter,
+                                               @RequestParam(required = false, name = "departments") List<String> departments) {
+        return new ResponseEntity<>(this.staffService.findAll(PageRequest.of(page, PAGE_SIZE), filter, departments), OK);
     }
 
     @Operation(summary = "Create a new worker", security = {

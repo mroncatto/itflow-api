@@ -56,8 +56,8 @@ public class OccupationController implements IOccupationController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Occupation>> findAll(@PathVariable("page") int page) {
-        return new ResponseEntity<>(this.occupationService.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
+    public ResponseEntity<Page<Occupation>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.occupationService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Create a new occupation", security = {

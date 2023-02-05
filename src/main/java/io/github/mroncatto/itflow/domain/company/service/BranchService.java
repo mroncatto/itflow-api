@@ -30,7 +30,7 @@ public class BranchService extends AbstractService implements IBranchService {
     }
 
     @Override
-    public Page<Branch> findAll(Pageable pageable) {
+    public Page<Branch> findAll(Pageable pageable, String filter) {
         return this.branchRepository.findAllByActiveTrue(pageable);
     }
 

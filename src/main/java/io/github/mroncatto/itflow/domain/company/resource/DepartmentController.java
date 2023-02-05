@@ -57,8 +57,8 @@ public class DepartmentController implements IDepartmentController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Department>> findAll(@PathVariable("page") int page) {
-        return new ResponseEntity<>(this.departmentService.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
+    public ResponseEntity<Page<Department>> findAll(@PathVariable("page") int page,  @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.departmentService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Create a new department", security = {

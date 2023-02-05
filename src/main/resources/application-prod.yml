@@ -9,6 +9,14 @@ server:
   error:
     whitelabel:
       enabled: false
+  ssl:
+    key-store-type: PKCS12
+    key-store: itflow.p12
+    key-store-password: itflow
+    key-alias: itflow
+    enabled: false
+  security:
+    require-ssl: false
 spring:
   datasource:
     url: jdbc:postgresql://${ITFLOW_DB_HOST}/${POSTGRES_DB}?useSSL=${ITFLOW_DB_SSL}&serverTimezone=app.timezone

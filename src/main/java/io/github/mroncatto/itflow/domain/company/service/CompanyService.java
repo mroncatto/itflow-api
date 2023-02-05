@@ -30,7 +30,7 @@ public class CompanyService extends AbstractService implements ICompanyService {
     }
 
     @Override
-    public Page<Company> findAll(Pageable pageable) {
+    public Page<Company> findAll(Pageable pageable, String filter) {
         return this.companyRepository.findAllByActiveTrue(pageable);
     }
 

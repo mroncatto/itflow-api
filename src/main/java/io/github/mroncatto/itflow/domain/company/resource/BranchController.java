@@ -57,8 +57,8 @@ public class BranchController implements IBranchController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Branch>> findAll(@PathVariable("page") int page) {
-        return new ResponseEntity<>(this.branchService.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
+    public ResponseEntity<Page<Branch>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.branchService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Create a new company branch", security = {

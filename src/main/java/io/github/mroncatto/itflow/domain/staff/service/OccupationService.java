@@ -25,7 +25,7 @@ public class OccupationService extends AbstractService implements IOccupationSer
     }
 
     @Override
-    public Page<Occupation> findAll(Pageable pageable) {
+    public Page<Occupation> findAll(Pageable pageable, String filter) {
         return this.occupationRepository.findAllByActiveTrue(pageable);
     }
 

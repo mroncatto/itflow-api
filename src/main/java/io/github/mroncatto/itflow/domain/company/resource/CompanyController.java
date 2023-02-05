@@ -59,8 +59,8 @@ public class CompanyController implements ICompanyController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Company>> findAll(@PathVariable("page") int page) {
-        return new ResponseEntity<>(this.companyService.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
+    public ResponseEntity<Page<Company>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.companyService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Create a new company", security = {
