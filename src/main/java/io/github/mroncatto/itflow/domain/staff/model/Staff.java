@@ -17,9 +17,6 @@ import java.util.UUID;
 @Table
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Staff implements Serializable {
 

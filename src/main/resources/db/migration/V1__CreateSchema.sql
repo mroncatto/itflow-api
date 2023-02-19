@@ -9,6 +9,8 @@ CREATE SEQUENCE OCCUPATION_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE EMAIL_SEND_EVENT_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE EMAIL_SEND_RECIPIENT_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE EMAIL_EVENT_DATA_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE DEVICE_CATEGORY_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE DEVICE_SEQ START WITH 1 INCREMENT BY 1;
 
 -- DDL
 CREATE TABLE IF NOT EXISTS "account"
@@ -29,18 +31,17 @@ CREATE TABLE IF NOT EXISTS "account"
     "created_by" varchar(75),
     "last_modified_by" varchar(75),
     "staff_id" uuid NULL,
-    CONSTRAINT "ACCOUNT_ACCOUNT_EMAIL_UQ" UNIQUE ("email"),
-    CONSTRAINT "ACCOUNT_ACCOUNT_USERNAME_UQ" UNIQUE ("username"),
-    CONSTRAINT "ACCOUNT_STAFF_UQ" UNIQUE ("staff_id"),
-    CONSTRAINT "ACCOUNT_PK" PRIMARY KEY ("id")
+    CONSTRAINT "ACCOUNT_ACCOUNT_USERNAME_UQ" UNIQUE (username),
+    CONSTRAINT "ACCOUNT_STAFF_UQ" UNIQUE (staff_id),
+    CONSTRAINT "ACCOUNT_PK" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS "role"
 (
     "id" bigint NOT NULL,
     "role" varchar(75) NOT NULL,
-    CONSTRAINT "ROLE_PK" PRIMARY KEY ("id"),
-    CONSTRAINT "ROLE_ROLE_NAME_UQ" UNIQUE ("role")
+    CONSTRAINT "ROLE_PK" PRIMARY KEY (id),
+    CONSTRAINT "ROLE_ROLE_NAME_UQ" UNIQUE (role)
 );
 
 CREATE TABLE IF NOT EXISTS "account_role"
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS "company" (
     "name" varchar(45) NOT NULL,
     "document" varchar(45),
     "active" boolean NOT NULL DEFAULT true,
-    CONSTRAINT "COMPANY_PK" PRIMARY KEY ("id")
+    CONSTRAINT "COMPANY_PK" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS "branch" (
@@ -64,7 +65,7 @@ CREATE TABLE IF NOT EXISTS "branch" (
     "name" varchar(45) NOT NULL,
     "company_id" bigint NOT NULL,
     "active" boolean NOT NULL DEFAULT true,
-    CONSTRAINT "BRANCH_PK" PRIMARY KEY ("id"),
+    CONSTRAINT "BRANCH_PK" PRIMARY KEY (id),
     CONSTRAINT "BRANCH_COMPANY_FK" FOREIGN KEY (company_id) REFERENCES company(id)
 );
 
@@ -74,7 +75,7 @@ CREATE TABLE IF NOT EXISTS "department" (
     "name" varchar(45) NOT NULL,
     "branch_id" bigint NOT NULL,
     "active" boolean NOT NULL DEFAULT true,
-    CONSTRAINT "DEPARTMENT_PK" PRIMARY KEY ("id"),
+    CONSTRAINT "DEPARTMENT_PK" PRIMARY KEY (id),
     CONSTRAINT "DEPARTMENT_BRANCH_FK" FOREIGN KEY (branch_id) REFERENCES branch(id)
 );
 
@@ -82,7 +83,7 @@ CREATE TABLE IF NOT EXISTS "occupation" (
     "id" bigint DEFAULT nextval('OCCUPATION_SEQ') NOT NULL ,
     "name" varchar(45) NOT NULL,
     "active" boolean NOT NULL DEFAULT true,
-    CONSTRAINT "OCCUPATION_PK" PRIMARY KEY ("id")
+    CONSTRAINT "OCCUPATION_PK" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS "staff" (
@@ -92,13 +93,12 @@ CREATE TABLE IF NOT EXISTS "staff" (
     "department_id" bigint NOT NULL,
     "occupation_id" bigint NOT NULL,
     "active" boolean NOT NULL DEFAULT true,
-    CONSTRAINT "STAFF_EMAIL_UQ" UNIQUE (email),
     CONSTRAINT "STAFF_DEPARTMENT_FK" FOREIGN KEY (department_id) REFERENCES department(id),
     CONSTRAINT "STAFF_OCCUPATION_FK" FOREIGN KEY (occupation_id) REFERENCES occupation(id),
     CONSTRAINT "STAFF_PK" PRIMARY KEY (id)
 );
 
-ALTER TABLE "account" ADD FOREIGN KEY ("staff_id") REFERENCES "staff" ("id") ON DELETE SET NULL ON UPDATE SET NULL;
+ALTER TABLE "account" ADD FOREIGN KEY (staff_id) REFERENCES "staff" (id) ON DELETE SET NULL ON UPDATE SET NULL;
 
 CREATE TABLE IF NOT EXISTS "email_send_event" (
     "id" bigint DEFAULT nextval('EMAIL_SEND_EVENT_SEQ') NOT NULL ,
@@ -107,14 +107,14 @@ CREATE TABLE IF NOT EXISTS "email_send_event" (
     "event_date" timestamp NOT NULL,
     "send_date" timestamp,
     "sent" boolean NOT NULL DEFAULT false,
-    CONSTRAINT "EMAIL_SEND_EVENT_PK" PRIMARY KEY ("id")
+    CONSTRAINT "EMAIL_SEND_EVENT_PK" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS "email_send_recipient" (
     "id" bigint DEFAULT nextval('EMAIL_SEND_RECIPIENT_SEQ') NOT NULL ,
     "send_event_id" bigint NOT NULL,
     "recipient" varchar(75) NOT NULL,
-    CONSTRAINT "EMAIL_SEND_RECIPIENT_PK" PRIMARY KEY ("id"),
+    CONSTRAINT "EMAIL_SEND_RECIPIENT_PK" PRIMARY KEY (id),
     CONSTRAINT "SEND_RECIPIENT_SEND_EVENT_FK" FOREIGN KEY (send_event_id) REFERENCES email_send_event(id) ON DELETE CASCADE
 );
 
@@ -123,8 +123,34 @@ CREATE TABLE IF NOT EXISTS "email_event_data" (
     "send_event_id" bigint NOT NULL,
     "variable_name" varchar(75) NOT NULL,
     "variable_value" varchar(75) NOT NULL,
-    CONSTRAINT "EMAIL_EVENT_DATA_PK" PRIMARY KEY ("id"),
+    CONSTRAINT "EMAIL_EVENT_DATA_PK" PRIMARY KEY (id),
     CONSTRAINT "EVENT_DATA_SEND_EVENT_FK" FOREIGN KEY (send_event_id) REFERENCES email_send_event(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS "device_category" (
+    "id" bigint DEFAULT nextval('DEVICE_CATEGORY_SEQ') NOT NULL,
+    "name" varchar(75) NOT NULL,
+    "active" boolean NOT NULL DEFAULT true,
+    CONSTRAINT "DEVICE_CATEGORY_PK" PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS "device" (
+    "id" bigint DEFAULT nextval('DEVICE_SEQ') NOT NULL,
+    "code" varchar(45),
+    "tag" varchar(45),
+    "serial_number" varchar(45),
+    "description" text,
+    "hostname" varchar(75) NOT NULL,
+    "device_category_id" bigint NOT NULL,
+    "department_id" bigint NOT NULL,
+    "active" boolean NOT NULL DEFAULT true,
+    "created_date" timestamp,
+    "last_modified_date" timestamp,
+    "created_by" varchar(75),
+    "last_modified_by" varchar(75),
+    CONSTRAINT "DEVICE_PK" PRIMARY KEY (id),
+    CONSTRAINT "DEVICE_CATEGORY_DEVICE_FK" FOREIGN KEY (device_category_id) REFERENCES device_category(id),
+    CONSTRAINT "DEVICE_DEPARTMENT_DEVICE_FK" FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
 -- DML

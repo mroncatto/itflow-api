@@ -26,6 +26,10 @@ public class CompareHelper {
         return result;
     }
 
+    public static boolean biggerThanZero(Long value) {
+        return value > 0;
+    }
+
     public static boolean match(Object a, Object b){
         return a.equals(b);
     }

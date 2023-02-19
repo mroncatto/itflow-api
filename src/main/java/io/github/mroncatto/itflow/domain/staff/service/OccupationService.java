@@ -6,6 +6,8 @@ import io.github.mroncatto.itflow.domain.staff.interfaces.IOccupationService;
 import io.github.mroncatto.itflow.domain.staff.model.Occupation;
 import io.github.mroncatto.itflow.domain.staff.repository.IOccupationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,13 @@ public class OccupationService extends AbstractService implements IOccupationSer
     private final IOccupationRepository occupationRepository;
 
     @Override
+    @Cacheable(value = "Occupation", key = "#root.method.name")
     public List<Occupation> findAll() {
         return this.occupationRepository.findAllByActiveTrue();
+    }
+
+    public List<Occupation> findByStaffIsNotNull() {
+        return this.occupationRepository.findByStaffIsNotNull();
     }
 
     @Override
@@ -30,12 +37,14 @@ public class OccupationService extends AbstractService implements IOccupationSer
     }
 
     @Override
+    @CacheEvict(value = "Occupation", allEntries = true)
     public Occupation save(Occupation entity, BindingResult result) throws BadRequestException {
         validateResult(result);
         return this.occupationRepository.save(entity);
     }
 
     @Override
+    @CacheEvict(value = "Occupation", allEntries = true)
     public Occupation update(Occupation entity, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
         Occupation occupation = this.findById(entity.getId());
@@ -49,6 +58,7 @@ public class OccupationService extends AbstractService implements IOccupationSer
     }
 
     @Override
+    @CacheEvict(value = "Occupation", allEntries = true)
     public Occupation deleteById(Long id) throws NoResultException {
         Occupation occupation = this.findById(id);
         occupation.setActive(false);

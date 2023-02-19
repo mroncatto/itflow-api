@@ -1,12 +1,12 @@
-version: '3.1'
+version: '3.7'
 
 services:
   db:
     image: postgres
     container_name: postgres-itflow
-    restart: always
+    restart: unless-stopped
     ports:
-    - 5432:5432
+    - "5432:5432"
     environment:
       POSTGRES_USER: itflow
       POSTGRES_PASSWORD: itflow
@@ -15,19 +15,21 @@ services:
     image: redis
     container_name: redis-itflow
     hostname: redis
+    restart: unless-stopped
     ports:
-       - 6379:6379
+      - "6379:6379"
   redis-commander:
     container_name: redis-commander-itflow
     hostname: redis-commander
     image: rediscommander/redis-commander:latest
+    restart: unless-stopped
     environment:
       - REDIS_HOSTS=local:redis:6379
     ports:
-         - 8000:8081
+         - "8000:8081"
   adminer:
     image: adminer
     container_name: adminer-itflow
-    restart: always
+    restart: unless-stopped
     ports:
-      - 8090:8080
+      - "8090:8080"

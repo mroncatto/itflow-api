@@ -1,7 +1,6 @@
-
 app:
   version: '@project.version@'
-  timezone: ${ITFLOW_TIMEZONE}
+  timezone: ${TIMEZONE}
   login:
     attempts: 5
 server:
@@ -9,38 +8,38 @@ server:
   error:
     whitelabel:
       enabled: false
-  ssl:
-    key-store-type: PKCS12
-    key-store: itflow.p12
-    key-store-password: itflow
-    key-alias: itflow
-    enabled: false
-  security:
-    require-ssl: false
+#  ssl:
+#    key-store-type: PKCS12
+#    key-store: itflow.p12
+#    key-store-password: itflow
+#    key-alias: itflow
+#    enabled: false
+#  security:
+#    require-ssl: false
 spring:
   datasource:
-    url: jdbc:postgresql://${ITFLOW_DB_HOST}/${POSTGRES_DB}?useSSL=${ITFLOW_DB_SSL}&serverTimezone=app.timezone
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_DB}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=${DB_USE_SSL}&serverTimezone=app.timezone
+    username: ${DB_USER}
+    password: ${DB_PWD}
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart.max-file-size: 5MB
     multipart.max-request-size: 5MB
   mail:
-    username: ${ITFLOW_MAIL_USER}
-    password: ${ITFLOW_MAIL_PWD}
-    host: ${ITFLOW_MAIL_HOST}
-    port: ${ITFLOW_MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PWD}
+    host: ${MAIL_SERVER}
+    port: ${MAIL_PORT}
     protocol: smtp
     properties:
       mail:
         smtp:
-          auth: true
+          auth: ${MAIL_AUTH}
           starttls:
-            enable: ${ITFLOW_MAIL_TLS}
+            enable: ${ENABLE_TLS}
           ssl:
-            enable: ${ITFLOW_MAIL_SSL}
-            protocols: ${ITFLOW_MAIL_SSL_PROTOCOLS}
+            enable: ${ENABLE_SSL}
+            protocols: ${MAIL_SSL_PROTOCOLS}
   output:
     ansi:
       enabled: always
@@ -87,5 +86,5 @@ logging:
       max-file-size: 20MB
       max-history: 10
 jwt:
-  secret: ${ITFLOW_JWT_SECRET}
-  expire: ${ITFLOW_JWT_EXPIRE}
+  secret: ${JWT_SECRET}
+  expire: ${JWT_EXPIRE}

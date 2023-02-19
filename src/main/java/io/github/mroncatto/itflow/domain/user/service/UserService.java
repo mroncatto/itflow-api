@@ -2,6 +2,7 @@ package io.github.mroncatto.itflow.domain.user.service;
 
 import io.github.mroncatto.itflow.config.exception.model.*;
 import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
+import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
 import io.github.mroncatto.itflow.domain.user.interfaces.IUserService;
 import io.github.mroncatto.itflow.domain.user.model.Role;
@@ -17,11 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.criteria.*;
-import java.util.*;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
-import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.match;
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 import static io.github.mroncatto.itflow.domain.commons.helper.GeneratorHelper.generateRandomAlphanumeric;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.isNull;
@@ -34,6 +37,7 @@ public class UserService extends AbstractService implements IUserService {
     private final IUserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final FilterService filterService;
 
     public User login(String username) {
         User user = this.userRepository.findUserByUsername(username);
@@ -53,15 +57,18 @@ public class UserService extends AbstractService implements IUserService {
 
         return this.userRepository.findAll(
                 (Specification<User>) (root, query, builder) -> {
-                    Predicate predicateActiveUser = filterEquals(builder,root,"active", true);
+
+                    List<Predicate> predicates = new ArrayList<>();
+                    predicates.add(filterService.equalsFilter(builder,root,"active", true));
+
                     if (nonNull(filter)){
-                        Predicate predicateFullName = filterLike(builder, root,"fullName", filter);
-                        Predicate predicateUsername = filterLike(builder, root,"username", filter);
-                        Predicate predicateEmail = filterLike(builder, root,"email", filter);
-                        Predicate predicateFilter = builder.or(predicateFullName, predicateUsername, predicateEmail);
-                        return builder.and(predicateActiveUser, predicateFilter);
+                        Predicate predicateFullName = filterService.likeFilter(builder, root,"fullName", filter);
+                        Predicate predicateUsername = filterService.likeFilter(builder, root,"username", filter);
+                        Predicate predicateEmail = filterService.likeFilter(builder, root,"email", filter);
+                        predicates.add(builder.or(predicateFullName, predicateUsername, predicateEmail));
                     }
-                    return predicateActiveUser;
+
+                    return builder.and(predicates.toArray(Predicate[]::new));
 
                 }, pageable);
     }
@@ -97,8 +104,8 @@ public class UserService extends AbstractService implements IUserService {
     @Transactional
     public User save(User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
         validateResult(result);
-        validateExistingUsernameCreateUser(entity);
-        validateExistingEmailCreateUser(entity);
+        validateUniqueUsername(entity);
+        validateUniqueEmail(entity);
         validateEmailField(entity.getEmail());
         String randomPassword = generateRandomAlphanumeric(6, false);
         entity.setPassword(passwordEncoder.encode(randomPassword));
@@ -112,7 +119,7 @@ public class UserService extends AbstractService implements IUserService {
     public User update(String username, User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
         validateResult(result);
         User user = this.findUserByUsername(username);
-        validateExistingEmailUpdateUser(user, entity);
+        validateUniqueEmail(entity);
         validateEmailField(entity.getEmail());
         user.setFullName(entity.getFullName());
         user.setEmail(entity.getEmail());
@@ -139,7 +146,7 @@ public class UserService extends AbstractService implements IUserService {
     public User updateProfile(User entity) throws AlreadExistingUserByEmail, BadRequestException {
         String username = getContext().getAuthentication().getName();
         User user = this.findUserByUsername(username);
-        validateExistingEmailUpdateUser(user, entity);
+        validateUniqueEmail(entity);
         validateNullFields(entity.getEmail(), entity.getFullName());
         validateEmptyFields(entity.getEmail(), entity.getFullName());
         validateEmailField(entity.getEmail());
@@ -181,23 +188,22 @@ public class UserService extends AbstractService implements IUserService {
         this.userRepository.save(user);
     }
 
-    private void validateExistingUsernameCreateUser(User user) throws AlreadExistingUserByUsername {
+    private void validateUniqueEmail(User user) throws AlreadExistingUserByEmail {
+        User anyuser = this.userRepository.findAllByEmail(user.getEmail())
+                .stream()
+                .filter(User::isActive)
+                .findFirst()
+                .orElse(null);
+
+        if (nonNull(anyuser) && distinct(anyuser.getUsername(), user.getUsername()))
+            throw new AlreadExistingUserByEmail("");
+}
+
+    private void validateUniqueUsername(User user) throws AlreadExistingUserByUsername {
         if (nonNull(this.userRepository.findUserByUsername(user.getUsername())))
             throw new AlreadExistingUserByUsername("");
     }
 
-    private void validateExistingEmailCreateUser(User user) throws AlreadExistingUserByEmail {
-        if (nonNull(this.userRepository.findUserByEmail(user.getEmail())))
-            throw new AlreadExistingUserByEmail("");
-    }
-
-    private void validateExistingEmailUpdateUser(User user, User userDto) throws AlreadExistingUserByEmail {
-        User userByEmail = this.userRepository.findUserByEmail(userDto.getEmail());
-        if (nonNull(userByEmail)) {
-            if (distinct(userByEmail.getId(), user.getId()) && match(userByEmail.getEmail(), userDto.getEmail()))
-                throw new AlreadExistingUserByEmail("");
-        }
-    }
 
     private boolean validateUserPassword(String planePassword, String hashPassword) {
         return this.passwordEncoder.matches(planePassword, hashPassword);

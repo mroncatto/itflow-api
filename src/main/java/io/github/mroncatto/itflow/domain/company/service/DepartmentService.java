@@ -6,6 +6,8 @@ import io.github.mroncatto.itflow.domain.company.interfaces.IDepartmentService;
 import io.github.mroncatto.itflow.domain.company.model.Department;
 import io.github.mroncatto.itflow.domain.company.repository.IDepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,9 +27,15 @@ public class DepartmentService extends AbstractService implements IDepartmentSer
         return this.departmentRepository.findById(id).orElseThrow(() -> new NoResultException("DEPARTMENT NOT FOUND"));
     }
 
+
     @Override
+    @Cacheable(value = "Department", key = "#root.method.name")
     public List<Department> findAll() {
         return this.departmentRepository.findAllByActiveTrue(Sort.by(Sort.Direction.ASC, "branch.name", "name"));
+    }
+
+    public List<Department> findByStaffIsNotNull() {
+        return this.departmentRepository.findByStaffIsNotNull();
     }
 
     @Override
@@ -36,12 +44,14 @@ public class DepartmentService extends AbstractService implements IDepartmentSer
     }
 
     @Override
+    @CacheEvict(value = "Department", allEntries = true)
     public Department save(Department entity, BindingResult result) throws BadRequestException {
         validateResult(result);
         return this.departmentRepository.save(entity);
     }
 
     @Override
+    @CacheEvict(value = "Department", allEntries = true)
     public Department update(Department entity, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
         Department dpto = this.findById(entity.getId());
@@ -52,6 +62,7 @@ public class DepartmentService extends AbstractService implements IDepartmentSer
 
 
     @Override
+    @CacheEvict(value = "Department", allEntries = true)
     public Department deleteById(Long id) throws NoResultException {
         Department  department = findById(id);
         department.setActive(false);

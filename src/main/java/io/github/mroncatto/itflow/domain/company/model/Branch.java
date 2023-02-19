@@ -28,7 +28,7 @@ public class Branch implements Serializable {
 
     @NotNull(message = "The name field is required")
     @Column(length = 45, nullable = false)
-    @Size(min = 5, max = 45, message = "The name field must contain between 5 and 45 characters")
+    @Size(max = 45, message = "The name field must contain max 45 characters")
     private String name;
 
     @NotNull(message = "The company field is required")

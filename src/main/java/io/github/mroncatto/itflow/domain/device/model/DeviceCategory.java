@@ -1,10 +1,10 @@
-package io.github.mroncatto.itflow.domain.staff.model;
+package io.github.mroncatto.itflow.domain.device.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Occupation implements Serializable {
+public class DeviceCategory implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -26,9 +26,11 @@ public class Occupation implements Serializable {
 
     @NotNull(message = "The name field is required")
     @Column(length = 45, nullable = false)
-    @Size(min = 5, max = 45, message = "The name field must contain between 5 and 45 characters")
+    @Size(max = 45, message = "The name field must contain max 45 characters")
     private String name;
 
     @Column(nullable = false)
     private boolean active;
+
+
 }

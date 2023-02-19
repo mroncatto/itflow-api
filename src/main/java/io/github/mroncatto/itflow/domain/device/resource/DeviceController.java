@@ -1,10 +1,10 @@
-package io.github.mroncatto.itflow.domain.company.resource;
+package io.github.mroncatto.itflow.domain.device.resource;
 
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.company.interfaces.IDepartmentController;
-import io.github.mroncatto.itflow.domain.company.model.Department;
-import io.github.mroncatto.itflow.domain.company.service.DepartmentService;
+import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceController;
+import io.github.mroncatto.itflow.domain.device.model.Device;
+import io.github.mroncatto.itflow.domain.device.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,65 +28,54 @@ import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN;
-import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.MANAGER_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = BASE_URL + "/department")
-@Tag(name = "Company", description = "Companies, branches, and departments")
+@RequestMapping(value = BASE_URL + "/device")
+@Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
-public class DepartmentController implements IDepartmentController {
-    private final DepartmentService departmentService;
+public class DeviceController implements IDeviceController {
+    private final DeviceService service;
 
-    @Operation(summary = "Get all department", security = {
+    @Operation(summary = "Get all devices", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Department.class)))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Device.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
     @Override
-    public ResponseEntity<List<Department>> findAll() {
-        return new ResponseEntity<>(this.departmentService.findAll(), OK);
+    public ResponseEntity<List<Device>> findAll() {
+        return new ResponseEntity<>(this.service.findAll(), OK);
     }
 
-    @Operation(summary = "Get all distinct departments being used by the staff module", security = {
-            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Department.class)))),
-            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
-    @ResponseStatus(value = OK)
-    @GetMapping("/filter/staff")
-    public ResponseEntity<List<Department>> findAllUsingByStaff() {
-        return new ResponseEntity<>(this.departmentService.findByStaffIsNotNull(), OK);
-    }
-
-    @Operation(summary = "Get all department with pagination", security = {
+    @Operation(summary = "Get all devices with pagination", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Department>> findAll(@PathVariable("page") int page,  @RequestParam(required = false, name = "filter") String filter) {
-        return new ResponseEntity<>(this.departmentService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
+    public ResponseEntity<Page<Device>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
-    @Operation(summary = "Create a new department", security = {
+    @Operation(summary = "Create a new device", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
-            @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<Department> save(@Valid @RequestBody Department entity, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.departmentService.save(entity, result), CREATED);
+    public ResponseEntity<Device> save(@Valid @RequestBody Device entity, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(entity, result), CREATED);
     }
 
-    @Operation(summary = "Update a specific department", security = {
+    @Operation(summary = "Update a specific device", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
@@ -94,32 +83,32 @@ public class DepartmentController implements IDepartmentController {
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<Department> update(@Valid @RequestBody Department entity, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.departmentService.update(entity, result), OK);
+    public ResponseEntity<Device> update(@Valid @RequestBody Device entity, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(entity, result), OK);
     }
 
-    @Operation(summary = "Get department by ID", security = {
+    @Operation(summary = "Get device by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<Department> findById(@PathVariable("id") Long id) throws NoResultException {
-        return new ResponseEntity<>(this.departmentService.findById(id), OK);
+    public ResponseEntity<Device> findById(@PathVariable("id") Long id) throws NoResultException {
+        return new ResponseEntity<>(this.service.findById(id), OK);
     }
 
-    @Operation(summary = "Disable a department by ID", security = {
+    @Operation(summary = "Disable a device by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping("/{id}")
-    @PreAuthorize(MANAGER_OR_ADMIN)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<Department> deleteById(@PathVariable("id") Long id) throws NoResultException {
-        return new ResponseEntity<>(this.departmentService.deleteById(id), OK);
+    public ResponseEntity<Device> deleteById(@PathVariable("id") Long id) throws NoResultException {
+        return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
 }

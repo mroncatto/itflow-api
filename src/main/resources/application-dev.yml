@@ -87,4 +87,4 @@ logging:
       max-history: 10
 jwt:
   secret: "123456"
-  expire: 60
+  expire: 720
