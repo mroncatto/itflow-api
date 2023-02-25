@@ -56,8 +56,11 @@ public class DeviceController implements IDeviceController {
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<Device>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
-        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
+    public ResponseEntity<Page<Device>> findAll(@PathVariable("page") int page,
+                                                @RequestParam(required = false, name = "filter") String filter,
+                                                @RequestParam(required = false, name = "departments") List<String> departments,
+                                                @RequestParam(required = false, name = "categories") List<String> categories) {
+        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter, departments, categories), OK);
     }
 
     @Operation(summary = "Create a new device", security = {

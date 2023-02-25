@@ -43,6 +43,12 @@ public abstract class AbstractService {
         }
     }
 
+    protected static Long convertToLong(Object value) {
+        String data = value.toString().replaceAll("[^0-9]", "");
+        if(data.isEmpty() || data.isBlank()) data = "0";
+        return Long.parseLong(data);
+    }
+
 }
 
 

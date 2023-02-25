@@ -88,7 +88,7 @@ public class DeviceCategoryController implements IDeviceCategoryController {
     @GetMapping("/{id}")
     @Override
     public ResponseEntity<DeviceCategory> findById(@PathVariable("id") Long id) throws NoResultException {
-        return new ResponseEntity<>(this.service.findById(id),OK);
+        return new ResponseEntity<>(this.service.findById(id), OK);
     }
 
     @Operation(summary = "Get all device categories with pagination", security = {
@@ -100,6 +100,16 @@ public class DeviceCategoryController implements IDeviceCategoryController {
     @Override
     public ResponseEntity<Page<DeviceCategory>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
+    }
+
+    @Operation(summary = "Get all distinct device categories being used by the device module", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = DeviceCategory.class)))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @GetMapping("/filter/device")
+    public ResponseEntity<List<DeviceCategory>> findAllUsingByDevice() {
+        return new ResponseEntity<>(this.service.findByDeviceIsNotNull(), OK);
     }
 
     @Operation(summary = "Disable a device category by ID", security = {

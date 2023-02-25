@@ -25,6 +25,10 @@ public class DeviceCategoryService extends AbstractService implements IDeviceCat
         return this.repository.findAllByActiveTrue();
     }
 
+    public List<DeviceCategory> findByDeviceIsNotNull() {
+        return this.repository.findByDeviceIsNotNull();
+    }
+
     @Override
     public DeviceCategory save(DeviceCategory entity, BindingResult result) throws BadRequestException {
         validateResult(result);
@@ -46,7 +50,6 @@ public class DeviceCategoryService extends AbstractService implements IDeviceCat
 
     @Override
     public Page<DeviceCategory> findAll(Pageable pageable, String filter) {
-        //TODO: Falta implementar filtro
         return this.repository.findAllByActiveTrue(pageable);
     }
 

@@ -2,16 +2,20 @@ package io.github.mroncatto.itflow.domain.device.service;
 
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
+import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.model.Device;
 import io.github.mroncatto.itflow.domain.device.repository.IDeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.NoResultException;
+import javax.persistence.criteria.Predicate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
@@ -21,11 +25,34 @@ import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.
 @RequiredArgsConstructor
 public class DeviceService extends AbstractService implements IDeviceService {
     private final IDeviceRepository repository;
+    private final FilterService filterService;
 
 
     @Override
     public List<Device> findAll() {
         return this.repository.findAll();
+    }
+
+    @Override
+    public Page<Device> findAll(Pageable pageable, String filter, List<String> departments, List<String> categories) {
+        return this.repository.findAll((Specification<Device>) (root, query, builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            //TODO: Improve situacion device to many types
+
+            if(nonNull(filter)){
+                Predicate predicateID = filterService.equalsFilter(builder, root, "id", convertToLong(filter));
+                Predicate predicateCode = filterService.equalsFilter(builder, root, "code", filter);
+                Predicate predicateTag = filterService.likeFilter(builder, root, "tag", filter);
+                Predicate predicateHost = filterService.likeFilter(builder, root, "hostname", filter);
+                predicates.add(builder.or(predicateID, predicateCode, predicateTag, predicateHost));
+            }
+
+            if (nonNull(departments)) predicates.add(filterService.whereInFilter(root, "department", "id", departments));
+            if (nonNull(categories)) predicates.add(filterService.whereInFilter(root, "deviceCategory", "id", categories));
+
+            return builder.and(predicates.toArray(Predicate[]::new));
+
+        } ,pageable);
     }
 
     @Override
@@ -57,12 +84,6 @@ public class DeviceService extends AbstractService implements IDeviceService {
     @Override
     public Device findById(Long id) throws NoResultException {
         return this.repository.findById(id).orElseThrow(() -> new NoResultException("DEVICE NOT FOUND"));
-    }
-
-    @Override
-    public Page<Device> findAll(Pageable pageable, String filter) {
-        return this.repository.findAll(pageable);
-        //TODO: Montar filtro criteria
     }
 
     @Override
