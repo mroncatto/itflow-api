@@ -1,9 +1,11 @@
 package io.github.mroncatto.itflow.domain.device.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.mroncatto.itflow.domain.abstracts.Auditable;
 import io.github.mroncatto.itflow.domain.company.model.Department;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -56,4 +58,8 @@ public class Device extends Auditable<String> implements Serializable {
 
     @Column(nullable = false)
     private boolean active;
+
+    @OneToOne(mappedBy = "device")
+    @JsonIgnoreProperties("device")
+    private DeviceStaff deviceStaff;
 }

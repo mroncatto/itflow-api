@@ -153,6 +153,19 @@ CREATE TABLE IF NOT EXISTS "device" (
     CONSTRAINT "DEVICE_DEPARTMENT_DEVICE_FK" FOREIGN KEY (department_id) REFERENCES department(id)
 );
 
+CREATE TABLE IF NOT EXISTS "device_staff" (
+    "device_id" bigint NOT NULL,
+    "staff_id" uuid NOT NULL,
+    "login" varchar(45),
+    "created_date" timestamp,
+    "last_modified_date" timestamp,
+    "created_by" varchar(75),
+    "last_modified_by" varchar(75),
+    CONSTRAINT "DEVICE_USER_PK" PRIMARY KEY (device_id),
+    CONSTRAINT "DEVICE_STAFF_DEVICE_FK" FOREIGN KEY (device_id) REFERENCES device(id),
+    CONSTRAINT "DEVICE_STAFF_STAFF_DEVICE_FK" FOREIGN KEY (staff_id) REFERENCES staff(id)
+);
+
 -- DML
 INSERT INTO "account" ("full_name", "avatar", "email", "username", "password", "last_login_date", "join_date", "active",
                        "non_locked") VALUES ('Administrator', '', 'admin@itflow.com', 'admin', '$2a$10$MNsNLmxb1HnkGgO56021eu.Er4omFxesT0CEm.FH2kKWGkLQNPpPC', NULL, now(), '1', '1');
