@@ -102,7 +102,7 @@ public class DeviceService extends AbstractService implements IDeviceService {
         device.setActive(false);
         return this.repository.save(device);
     }
-    
+
     public Device deleteStaffFromDevice(Long id) throws NoResultException {
         Device device = this.findById(id);
         device.setDeviceStaff(null);
