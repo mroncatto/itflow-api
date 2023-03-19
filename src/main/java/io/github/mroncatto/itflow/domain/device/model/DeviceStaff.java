@@ -21,8 +21,11 @@ public class DeviceStaff extends Auditable<String> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @NotNull(message = "The device field is required")
+    @Column(name = "device_id")
+    private Long id;
+
     @OneToOne(optional = false)
+    @JoinColumn(insertable = false, updatable = false)
     private Device device;
 
     @NotNull(message = "The staff field is required")

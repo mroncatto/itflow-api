@@ -5,6 +5,7 @@ import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.model.Device;
+import io.github.mroncatto.itflow.domain.device.model.DeviceStaff;
 import io.github.mroncatto.itflow.domain.device.repository.IDeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -65,6 +66,15 @@ public class DeviceService extends AbstractService implements IDeviceService {
         return this.repository.save(entity);
     }
 
+    public Device updateStaff(DeviceStaff entity, Long id, BindingResult result) throws BadRequestException {
+        validateResult(result);
+        Device device = this.findById(id);
+        entity.setId(id);
+        entity.setDevice(device);
+        device.setDeviceStaff(entity);
+        return this.repository.save(device);
+    }
+
     @Override
     public Device update(Device entity, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
@@ -90,6 +100,12 @@ public class DeviceService extends AbstractService implements IDeviceService {
     public Device deleteById(Long id) throws NoResultException {
         Device device = this.findById(id);
         device.setActive(false);
+        return this.repository.save(device);
+    }
+    
+    public Device deleteStaffFromDevice(Long id) throws NoResultException {
+        Device device = this.findById(id);
+        device.setDeviceStaff(null);
         return this.repository.save(device);
     }
 

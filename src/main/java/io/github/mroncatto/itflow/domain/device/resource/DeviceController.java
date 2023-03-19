@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceController;
 import io.github.mroncatto.itflow.domain.device.model.Device;
+import io.github.mroncatto.itflow.domain.device.model.DeviceStaff;
 import io.github.mroncatto.itflow.domain.device.service.DeviceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -76,6 +77,18 @@ public class DeviceController implements IDeviceController {
         return new ResponseEntity<>(this.service.save(entity, result), CREATED);
     }
 
+    @Operation(summary = "Add or update an employee to a device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = CREATED)
+    @PutMapping("/staff/{id}")
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<Device> updateStaff(@PathVariable("id") Long id, @Valid @RequestBody DeviceStaff entity, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.updateStaff(entity, id, result), CREATED);
+    }
+
     @Operation(summary = "Update a specific device", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
@@ -113,5 +126,17 @@ public class DeviceController implements IDeviceController {
     @Override
     public ResponseEntity<Device> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
+    }
+
+    @Operation(summary = "Remove employee from device by ID", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @DeleteMapping("/staff/{id}")
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<Device> deleteStaffFromDevice(@PathVariable("id") Long id) throws NoResultException {
+        return new ResponseEntity<>(this.service.deleteStaffFromDevice(id), OK);
     }
 }
