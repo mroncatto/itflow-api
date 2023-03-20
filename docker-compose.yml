@@ -11,6 +11,10 @@ services:
       POSTGRES_USER: itflow
       POSTGRES_PASSWORD: itflow
       POSTGRES_DB: itflow
+    volumes:
+      - type: volume
+        source: itflow-db-data
+        target: /var/lib/postgresql/data
   redis:
     image: redis
     container_name: redis-itflow
@@ -33,3 +37,5 @@ services:
     restart: unless-stopped
     ports:
       - "8090:8080"
+volumes:
+  itflow-db-data:
