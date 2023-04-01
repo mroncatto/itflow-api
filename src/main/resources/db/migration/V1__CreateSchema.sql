@@ -11,6 +11,7 @@ CREATE SEQUENCE EMAIL_SEND_RECIPIENT_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE EMAIL_EVENT_DATA_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE DEVICE_CATEGORY_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE DEVICE_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE DEVICE_COMPUTER_CATEGORY_SEQ START WITH 1 INCREMENT BY 1;
 
 -- DDL
 CREATE TABLE IF NOT EXISTS "account"
@@ -166,6 +167,26 @@ CREATE TABLE IF NOT EXISTS "device_staff" (
     CONSTRAINT "DEVICE_STAFF_STAFF_DEVICE_FK" FOREIGN KEY (staff_id) REFERENCES staff(id)
 );
 
+CREATE TABLE IF NOT EXISTS "device_computer_categ" (
+    "id" BIGINT DEFAULT NEXTVAL('DEVICE_COMPUTER_CATEGORY_SEQ') NOT NULL,
+    "name" VARCHAR(45) NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT TRUE,
+    CONSTRAINT "DEVICE_COMPUTER_CATEGORY_PK" PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS "device_computer" (
+    "device_id" BIGINT NOT NULL,
+    "computer_categ_id" BIGINT NOT NULL,
+    "description" VARCHAR(75),
+    "virtual" BOOLEAN NOT NULL DEFAULT TRUE,
+    "created_date" TIMESTAMP,
+    "last_modified_date" TIMESTAMP,
+    "created_by" VARCHAR(75),
+    "last_modified_by" VARCHAR(75),
+    CONSTRAINT "DEVICE_COMPUTER_PK" PRIMARY KEY (device_id),
+    CONSTRAINT "DEVICE_COMPUTER_DEVICE_FK" FOREIGN KEY (device_id) REFERENCES device(id),
+    CONSTRAINT "DEVICE_COMPUTER_CATEG_FK" FOREIGN KEY (computer_categ_id) REFERENCES device(id)
+);
 -- DML
 INSERT INTO "account" ("full_name", "avatar", "email", "username", "password", "last_login_date", "join_date", "active",
                        "non_locked") VALUES ('Administrator', '', 'admin@itflow.com', 'admin', '$2a$10$MNsNLmxb1HnkGgO56021eu.Er4omFxesT0CEm.FH2kKWGkLQNPpPC', NULL, now(), '1', '1');
