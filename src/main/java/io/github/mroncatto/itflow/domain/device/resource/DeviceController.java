@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.device.resource;
 
+import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceController;
@@ -27,14 +28,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
-import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = BASE_URL + "/device")
+@RequestMapping(value = EndpointUrlConstant.device)
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
 public class DeviceController implements IDeviceController, IDeviceStaffController {
@@ -56,7 +56,7 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/page/{page}")
+    @GetMapping(EndpointUrlConstant.page)
     @Override
     public ResponseEntity<Page<Device>> findAll(@PathVariable("page") int page,
                                                 @RequestParam(required = false, name = "filter") String filter,
@@ -84,7 +84,7 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping("/staff/{id}")
+    @PutMapping(EndpointUrlConstant.staffId)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
     public ResponseEntity<Device> updateStaff(@PathVariable("id") Long id, @Valid @RequestBody DeviceStaff entity, BindingResult result) throws BadRequestException {
@@ -111,7 +111,7 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/{id}")
+    @GetMapping(EndpointUrlConstant.id)
     @Override
     public ResponseEntity<Device> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
@@ -123,7 +123,7 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping("/{id}")
+    @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
     public ResponseEntity<Device> deleteById(@PathVariable("id") Long id) throws NoResultException {
@@ -136,7 +136,7 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping("/staff/{id}")
+    @DeleteMapping(EndpointUrlConstant.staffId)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
     public ResponseEntity<Device> deleteStaffFromDevice(@PathVariable("id") Long id) throws NoResultException {

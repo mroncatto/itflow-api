@@ -22,7 +22,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         CustomHttpResponse httpResponse = CustomHttpResponse.builder()
                 .status(UNAUTHORIZED.value())
                 .error(UNAUTHORIZED.getReasonPhrase())
-                .message("UNAUTHORIZED FALTA ALTERAR")
+                .message("UNAUTHORIZED FALTA ALTERAR")//TODO:
                 .build();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(UNAUTHORIZED.value());

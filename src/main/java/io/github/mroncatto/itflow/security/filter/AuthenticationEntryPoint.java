@@ -22,7 +22,7 @@ public class AuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
         CustomHttpResponse httpResponse = CustomHttpResponse.builder()
                 .status(FORBIDDEN.value())
                 .error(FORBIDDEN.getReasonPhrase())
-                .message("FORBIDDEN FALTA ALTERAR")
+                .message("FORBIDDEN FALTA ALTERAR")//TODO:
                 .build();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(FORBIDDEN.value());

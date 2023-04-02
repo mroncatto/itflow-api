@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.user.resource;
 
+import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.config.exception.model.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.config.exception.model.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.config.exception.model.BadPasswordException;
@@ -29,7 +30,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
-import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.ADMIN_ONLY;
 import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_ADMIN;
@@ -37,7 +37,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = BASE_URL + "/user")
+@RequestMapping(value = EndpointUrlConstant.user)
 @Tag(name = "User", description = "User accounts")
 @RequiredArgsConstructor
 public class UserController implements IUserController {
@@ -60,7 +60,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/page/{page}")
+    @GetMapping(EndpointUrlConstant.page)
     @Override
     public ResponseEntity<Page<User>> findAll(@PathVariable("page") int page,
                                               @RequestParam(required = false, name = "filter") String filter) {
@@ -73,7 +73,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/{username}")
+    @GetMapping(EndpointUrlConstant.username)
     @Override
     public ResponseEntity<User> findUserByUsername(@PathVariable("username")  String username) {
         return new ResponseEntity<>(this.userService.findUserByUsername(username), OK);
@@ -99,7 +99,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @PutMapping("/{username}")
+    @PutMapping(EndpointUrlConstant.username)
     @PreAuthorize(HELPDESK_OR_ADMIN)
     @Override
     public ResponseEntity<User> update(@PathVariable("username") String username, @Valid @RequestBody User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
@@ -112,7 +112,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping("/{username}")
+    @DeleteMapping(EndpointUrlConstant.username)
     @PreAuthorize(ADMIN_ONLY)
     @Override
     public ResponseEntity<User> delete(@PathVariable("username") String username) throws BadRequestException {
@@ -125,7 +125,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Role.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/role")
+    @GetMapping(EndpointUrlConstant.role)
     @PreAuthorize(HELPDESK_OR_ADMIN)
     @Override
     public ResponseEntity<List<Role>> findAllRoles() {
@@ -137,7 +137,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @PutMapping("/{username}/role")
+    @PutMapping(EndpointUrlConstant.usernameRole)
     @PreAuthorize(HELPDESK_OR_ADMIN)
     @Override
     public ResponseEntity<User> updateUserRoles(@PathVariable("username") String username, @RequestBody List<Role> roles) {
@@ -149,7 +149,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @PutMapping("/profile")
+    @PutMapping(EndpointUrlConstant.profile)
     @Override
     public ResponseEntity<User> updateProfile(@RequestBody User entity) throws AlreadExistingUserByEmail, BadRequestException {
         return new ResponseEntity<>(this.userService.updateProfile(entity), OK);
@@ -160,7 +160,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @PutMapping("/updatepassword")
+    @PutMapping(EndpointUrlConstant.updatePassword)
     @Override
     public ResponseEntity<?> updateUserPassword(@RequestParam("oldPassword") String oldPassword,
                                                 @RequestParam("newPassword") String newPassword) throws BadPasswordException {
@@ -170,7 +170,7 @@ public class UserController implements IUserController {
 
     @Operation(summary = "Reset user password", responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @PostMapping("/resetpassword")
+    @PostMapping(EndpointUrlConstant.resetPassword)
     @PreAuthorize(HELPDESK_OR_ADMIN)
     @Override
     public ResponseEntity<?> resetUserPassword(@RequestParam("username") String username) {
@@ -185,7 +185,7 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping("/lockunlock/{username}")
+    @PutMapping(EndpointUrlConstant.lockUnlockUsername)
     @PreAuthorize(HELPDESK_OR_ADMIN)
     @Override
     public ResponseEntity<?> lockUnlockUser(@PathVariable("username") String username) {

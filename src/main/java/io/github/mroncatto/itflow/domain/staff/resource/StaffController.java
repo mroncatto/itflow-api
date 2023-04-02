@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.staff.resource;
 
+import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.staff.interfaces.IStaffController;
@@ -25,14 +26,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
-import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = BASE_URL + "/staff")
+@RequestMapping(value = EndpointUrlConstant.staff)
 @Tag(name = "Staff", description = "Employees, customers and stakeholders.")
 @RequiredArgsConstructor
 public class StaffController implements IStaffController {
@@ -54,7 +54,7 @@ public class StaffController implements IStaffController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/page/{page}")
+    @GetMapping(EndpointUrlConstant.page)
     @Override
     public ResponseEntity<Page<Staff>> findAll(@PathVariable("page") int page,
                                                @RequestParam(required = false, name = "filter") String filter,
@@ -96,7 +96,7 @@ public class StaffController implements IStaffController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/{uuid}")
+    @GetMapping(EndpointUrlConstant.uuid)
     @Override
     public ResponseEntity<Staff> findById(@PathVariable("uuid") String id) throws NoResultException {
         return new ResponseEntity<>(this.staffService.findById(id.toString()), OK);
@@ -108,7 +108,7 @@ public class StaffController implements IStaffController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping(EndpointUrlConstant.uuid)
     @Override
     public ResponseEntity<Staff> deleteById(@PathVariable("uuid") String id) throws NoResultException {
         return new ResponseEntity<>(this.staffService.deleteById(id), OK);

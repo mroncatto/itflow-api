@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.computer.resource;
 
+import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.computer.interfaces.IComputerCpuController;
@@ -25,14 +26,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.config.constant.ControllerConstant.PAGE_SIZE;
-import static io.github.mroncatto.itflow.config.constant.SecurityConstant.BASE_URL;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static io.github.mroncatto.itflow.domain.user.helper.RolesHelper.HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = BASE_URL + "/computer/cpu")
+@RequestMapping(value = EndpointUrlConstant.computerCpu)
 @Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
 public class ComputerCpuController implements IComputerCpuController {
@@ -82,7 +82,7 @@ public class ComputerCpuController implements IComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/{id}")
+    @GetMapping(EndpointUrlConstant.id)
     @Override
     public ResponseEntity<ComputerCpu> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
@@ -93,7 +93,7 @@ public class ComputerCpuController implements IComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping("/page/{page}")
+    @GetMapping(EndpointUrlConstant.page)
     @Override
     public ResponseEntity<Page<ComputerCpu>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
@@ -105,7 +105,7 @@ public class ComputerCpuController implements IComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping("/{id}")
+    @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
     public ResponseEntity<ComputerCpu> deleteById(@PathVariable("id") Long id) throws NoResultException {
