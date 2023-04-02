@@ -171,16 +171,16 @@ CREATE TABLE IF NOT EXISTS "device_staff" (
     CONSTRAINT "DEVICE_STAFF_STAFF_DEVICE_FK" FOREIGN KEY (staff_id) REFERENCES staff(id)
 );
 
-CREATE TABLE IF NOT EXISTS "device_computer_categ" (
+CREATE TABLE IF NOT EXISTS "computer_category" (
     "id" BIGINT DEFAULT NEXTVAL('DEVICE_COMPUTER_CATEGORY_SEQ') NOT NULL,
     "name" VARCHAR(45) NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT TRUE,
-    CONSTRAINT "DEVICE_COMPUTER_CATEGORY_PK" PRIMARY KEY (id)
+    CONSTRAINT "COMPUTER_CATEGORY_PK" PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS "device_computer" (
     "device_id" BIGINT NOT NULL,
-    "computer_categ_id" BIGINT NOT NULL,
+    "computer_category_id" BIGINT NOT NULL,
     "description" VARCHAR(75),
     "virtual" BOOLEAN NOT NULL DEFAULT TRUE,
     "created_date" TIMESTAMP,
@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS "device_computer" (
     "last_modified_by" VARCHAR(75),
     CONSTRAINT "DEVICE_COMPUTER_PK" PRIMARY KEY (device_id),
     CONSTRAINT "DEVICE_COMPUTER_DEVICE_FK" FOREIGN KEY (device_id) REFERENCES device(id),
-    CONSTRAINT "DEVICE_COMPUTER_CATEG_FK" FOREIGN KEY (computer_categ_id) REFERENCES device(id)
+    CONSTRAINT "COMPUTER_CATEGORY_FK" FOREIGN KEY (computer_category_id) REFERENCES device(id)
 );
 
 CREATE TABLE IF NOT EXISTS "computer_memory" (

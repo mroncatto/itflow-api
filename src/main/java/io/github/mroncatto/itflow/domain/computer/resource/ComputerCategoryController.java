@@ -1,11 +1,10 @@
-package io.github.mroncatto.itflow.domain.device.resource;
+package io.github.mroncatto.itflow.domain.computer.resource;
 
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceCategoryController;
-import io.github.mroncatto.itflow.domain.device.model.DeviceCategory;
-import io.github.mroncatto.itflow.domain.device.service.DeviceCategoryService;
-import io.github.mroncatto.itflow.domain.user.helper.RolesHelper;
+import io.github.mroncatto.itflow.domain.computer.interfaces.IComputerCategoryController;
+import io.github.mroncatto.itflow.domain.computer.model.ComputerCategory;
+import io.github.mroncatto.itflow.domain.computer.service.ComputerCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,40 +32,36 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = BASE_URL + "/device/category")
-@Tag(name = "Device", description = "Devices")
+@RequestMapping(value = BASE_URL + "/computer/category")
+@Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
-public class DeviceCategoryController implements IDeviceCategoryController {
-
-    private final DeviceCategoryService service;
-
-    @Operation(summary = "Get all device categories", security = {
+public class ComputerCategoryController implements IComputerCategoryController {
+    private final ComputerCategoryService service;
+    @Operation(summary = "Get all computer categories", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = DeviceCategory.class)))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerCategory.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
     @Override
-    public ResponseEntity<List<DeviceCategory>> findAll() {
+    public ResponseEntity<List<ComputerCategory>> findAll() {
         return new ResponseEntity<>(this.service.findAll(), OK);
     }
-
-    @Operation(summary = "Create a new device category", security = {
+    @Operation(summary = "Create a new computer category", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
-    @PreAuthorize(RolesHelper.HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<DeviceCategory> save(@RequestBody @Valid DeviceCategory entity, BindingResult result) throws BadRequestException {
+    public ResponseEntity<ComputerCategory> save(@RequestBody @Valid ComputerCategory entity, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.service.save(entity, result), CREATED);
     }
-
-    @Operation(summary = "Update a specific device category", security = {
+    @Operation(summary = "Update a specific computer category", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
@@ -74,53 +69,40 @@ public class DeviceCategoryController implements IDeviceCategoryController {
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<DeviceCategory> update(@RequestBody @Valid DeviceCategory entity, BindingResult result) throws BadRequestException, NoResultException {
+    public ResponseEntity<ComputerCategory> update(@RequestBody @Valid ComputerCategory entity, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.service.update(entity, result), OK);
     }
-
-    @Operation(summary = "Get device category by ID", security = {
+    @Operation(summary = "Get computer category by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/{id}")
     @Override
-    public ResponseEntity<DeviceCategory> findById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<ComputerCategory> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
-
-    @Operation(summary = "Get all device categories with pagination", security = {
+    @Operation(summary = "Get all computer categories with pagination", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping("/page/{page}")
     @Override
-    public ResponseEntity<Page<DeviceCategory>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
+    public ResponseEntity<Page<ComputerCategory>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
-
-    @Operation(summary = "Get all distinct device categories being used by the device module", security = {
+    @Operation(summary = "Disable a computer category by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = DeviceCategory.class)))),
-            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
-    @ResponseStatus(value = OK)
-    @GetMapping("/filter/device")
-    public ResponseEntity<List<DeviceCategory>> findAllUsingByDevice() {
-        return new ResponseEntity<>(this.service.findByDeviceIsNotNull(), OK);
-    }
-
-    @Operation(summary = "Disable a device category by ID", security = {
-            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping("/{id}")
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<DeviceCategory> deleteById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<ComputerCategory> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
 }

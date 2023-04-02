@@ -1,6 +1,7 @@
 package io.github.mroncatto.itflow.domain.device.model;
 
 import io.github.mroncatto.itflow.domain.abstracts.Auditable;
+import io.github.mroncatto.itflow.domain.computer.model.ComputerCategory;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
@@ -31,7 +32,7 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
 
     @NotNull(message = "The computer category field is required")
     @ManyToOne(optional = false)
-    private DeviceComputerCateg computerCateg;
+    private ComputerCategory computerCategory;
 
     @Column(length = 75)
     @Size(max = 75, message = "The description field must contain max 75 characters")

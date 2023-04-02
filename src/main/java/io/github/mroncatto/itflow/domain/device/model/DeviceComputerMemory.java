@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.device.model;
 
+import io.github.mroncatto.itflow.domain.computer.model.ComputerMemory;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;

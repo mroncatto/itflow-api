@@ -1,4 +1,4 @@
-package io.github.mroncatto.itflow.domain.device.model;
+package io.github.mroncatto.itflow.domain.computer.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table
 @Getter
 @Setter
-public class DeviceComputerCateg implements Serializable {
+public class ComputerCategory implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -34,7 +34,7 @@ public class DeviceComputerCateg implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        DeviceComputerCateg that = (DeviceComputerCateg) o;
+        ComputerCategory that = (ComputerCategory) o;
         return id != null && Objects.equals(id, that.id);
     }
 

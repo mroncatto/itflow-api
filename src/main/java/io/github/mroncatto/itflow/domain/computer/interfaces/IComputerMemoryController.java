@@ -1,7 +1,7 @@
-package io.github.mroncatto.itflow.domain.device.interfaces;
+package io.github.mroncatto.itflow.domain.computer.interfaces;
 
 import io.github.mroncatto.itflow.domain.abstracts.IAbstractController;
-import io.github.mroncatto.itflow.domain.device.model.ComputerMemory;
+import io.github.mroncatto.itflow.domain.computer.model.ComputerMemory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 

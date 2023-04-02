@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.device.model;
 
+import io.github.mroncatto.itflow.domain.computer.model.ComputerCpu;
 import io.github.mroncatto.itflow.domain.device.model.pk.DeviceComputerCpuPK;
 import lombok.Getter;
 import lombok.Setter;
