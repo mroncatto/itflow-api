@@ -6,12 +6,14 @@ import io.github.mroncatto.itflow.domain.abstracts.Auditable;
 import io.github.mroncatto.itflow.domain.company.model.Department;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -62,4 +64,17 @@ public class Device extends Auditable<String> implements Serializable {
     @OneToOne(mappedBy = "device", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties("device")
     private DeviceStaff deviceStaff;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Device device = (Device) o;
+        return id != null && Objects.equals(id, device.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

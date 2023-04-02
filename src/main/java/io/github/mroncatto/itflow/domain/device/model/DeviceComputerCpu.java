@@ -1,11 +1,13 @@
 package io.github.mroncatto.itflow.domain.device.model;
 
+import io.github.mroncatto.itflow.domain.device.model.pk.DeviceComputerCpuPK;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,37 +16,42 @@ import java.util.Objects;
 @Table
 @Getter
 @Setter
-public class DeviceComputerMemory implements Serializable {
+public class DeviceComputerCpu implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private DeviceComputerCpuPK id;
 
-    @NotNull(message = "The device computer field is required")
     @ManyToOne(optional = false)
-    @JoinColumn(name = "device_computer_id")
+    @JoinColumn(name = "device_computer_id", updatable = false, insertable = false)
     private DeviceComputer deviceComputer;
 
-    @NotNull(message = "The computer memory field is required")
     @ManyToOne(optional = false)
-    private ComputerMemory computerMemory;
+    @JoinColumn(updatable = false, insertable = false)
+    private ComputerCpu computerCpu;
 
+    @Column(length = 11, nullable = false)
+    @NotNull(message = "The vcpu field is required")
+    @Size(min = 1, max = 11, message = "The vcpu field must contain between 1 and 11 digits")
+    private int vcpu;
+
+    @Column(length = 11, nullable = false)
     @NotNull(message = "The unit field is required")
+    @Size(min = 1, max = 11, message = "The unit field must contain between 1 and 11 digits")
     private int unit;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        DeviceComputerMemory that = (DeviceComputerMemory) o;
+        DeviceComputerCpu that = (DeviceComputerCpu) o;
         return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
     }
 }

@@ -3,12 +3,14 @@ package io.github.mroncatto.itflow.domain.device.model;
 import io.github.mroncatto.itflow.domain.abstracts.Auditable;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -37,4 +39,17 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
 
     @Column(nullable = false)
     private boolean virtual;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DeviceComputer that = (DeviceComputer) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

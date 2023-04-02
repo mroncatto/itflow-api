@@ -15,7 +15,7 @@ import java.util.Objects;
 @Table
 @Getter
 @Setter
-public class ComputerMemory implements Serializable {
+public class ComputerCpu implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -29,27 +29,37 @@ public class ComputerMemory implements Serializable {
     @Size(max = 45, message = "The brand name field must contain max 45 characters")
     private String brandName;
 
-    @Column(length = 25)
-    @NotNull(message = "The type field is required")
-    @Size(max = 25, message = "The type field must contain max 25 characters")
-    private String type;
+    @Column(length = 45)
+    @NotNull(message = "The model field is required")
+    @Size(max = 45, message = "The model field must contain max 45 characters")
+    private String model;
 
     @Column(length = 25)
-    @Size(max = 25, message = "The size field must contain max 25 characters")
-    private String size;
+    @Size(max = 25, message = "The generation field must contain max 25 characters")
+    private String generation;
+
+    @Column(length = 25)
+    @NotNull(message = "The socket field is required")
+    @Size(max = 25, message = "The socket field must contain max 25 characters")
+    private String socket;
+
+    @Column(length = 25)
+    @Size(max = 25, message = "The core field must contain max 25 characters")
+    private String core;
 
     @Column(length = 25)
     @Size(max = 25, message = "The frequency field must contain max 25 characters")
     private String frequency;
 
-    @Column(nullable = false)
-    private boolean active;
+    @Column(length = 25)
+    @Size(max = 25, message = "The fsb field must contain max 25 characters")
+    private String fsb;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        ComputerMemory that = (ComputerMemory) o;
+        ComputerCpu that = (ComputerCpu) o;
         return id != null && Objects.equals(id, that.id);
     }
 

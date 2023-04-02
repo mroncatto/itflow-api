@@ -4,12 +4,14 @@ import io.github.mroncatto.itflow.domain.abstracts.Auditable;
 import io.github.mroncatto.itflow.domain.staff.model.Staff;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -35,4 +37,17 @@ public class DeviceStaff extends Auditable<String> implements Serializable {
     @Column(length = 45)
     @Size(max = 45, message = "The login field must contain max 45 characters")
     private String login;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DeviceStaff that = (DeviceStaff) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
