@@ -3,6 +3,7 @@ package io.github.mroncatto.itflow.domain.device.resource;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceController;
+import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceStaffController;
 import io.github.mroncatto.itflow.domain.device.model.Device;
 import io.github.mroncatto.itflow.domain.device.model.DeviceStaff;
 import io.github.mroncatto.itflow.domain.device.service.DeviceService;
@@ -36,7 +37,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = BASE_URL + "/device")
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
-public class DeviceController implements IDeviceController {
+public class DeviceController implements IDeviceController, IDeviceStaffController {
     private final DeviceService service;
 
     @Operation(summary = "Get all devices", security = {
@@ -85,6 +86,7 @@ public class DeviceController implements IDeviceController {
     @ResponseStatus(value = CREATED)
     @PutMapping("/staff/{id}")
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    @Override
     public ResponseEntity<Device> updateStaff(@PathVariable("id") Long id, @Valid @RequestBody DeviceStaff entity, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.service.updateStaff(entity, id, result), CREATED);
     }
@@ -136,6 +138,7 @@ public class DeviceController implements IDeviceController {
     @ResponseStatus(value = OK)
     @DeleteMapping("/staff/{id}")
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    @Override
     public ResponseEntity<Device> deleteStaffFromDevice(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteStaffFromDevice(id), OK);
     }

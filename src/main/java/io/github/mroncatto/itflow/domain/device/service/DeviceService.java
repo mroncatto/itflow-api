@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceService;
+import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceStaffService;
 import io.github.mroncatto.itflow.domain.device.model.Device;
 import io.github.mroncatto.itflow.domain.device.model.DeviceStaff;
 import io.github.mroncatto.itflow.domain.device.repository.IDeviceRepository;
@@ -24,7 +25,7 @@ import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.
 
 @Service
 @RequiredArgsConstructor
-public class DeviceService extends AbstractService implements IDeviceService {
+public class DeviceService extends AbstractService implements IDeviceService, IDeviceStaffService {
     private final IDeviceRepository repository;
     private final FilterService filterService;
 
@@ -66,6 +67,7 @@ public class DeviceService extends AbstractService implements IDeviceService {
         return this.repository.save(entity);
     }
 
+    @Override
     public Device updateStaff(DeviceStaff entity, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
@@ -103,6 +105,7 @@ public class DeviceService extends AbstractService implements IDeviceService {
         return this.repository.save(device);
     }
 
+    @Override
     public Device deleteStaffFromDevice(Long id) throws NoResultException {
         Device device = this.findById(id);
         device.setDeviceStaff(null);

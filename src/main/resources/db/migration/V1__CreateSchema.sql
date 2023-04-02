@@ -221,6 +221,7 @@ CREATE TABLE IF NOT EXISTS "computer_cpu" (
     "core" VARCHAR(25),
     "frequency" VARCHAR(25),
     "fsb" VARCHAR(25),
+    "active" BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT "COMPUTER_CPU_PK" PRIMARY KEY (id)
 );
 

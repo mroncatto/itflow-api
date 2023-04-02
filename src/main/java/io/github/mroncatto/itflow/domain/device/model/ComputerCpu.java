@@ -55,6 +55,9 @@ public class ComputerCpu implements Serializable {
     @Size(max = 25, message = "The fsb field must contain max 25 characters")
     private String fsb;
 
+    @Column(nullable = false)
+    private boolean active;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
