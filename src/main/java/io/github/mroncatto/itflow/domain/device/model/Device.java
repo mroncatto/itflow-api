@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.mroncatto.itflow.domain.abstracts.Auditable;
 import io.github.mroncatto.itflow.domain.company.model.Department;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -19,6 +18,9 @@ import java.util.Objects;
 @Table
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device extends Auditable<String> implements Serializable {
 

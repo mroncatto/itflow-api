@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import static io.github.mroncatto.itflow.config.constant.SecurityConstant.AUTHENTICATION_URL;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(
@@ -30,8 +31,21 @@ class AuthControllerTest {
         RequestBuilder requestLogin = post(AUTHENTICATION_URL)
                 .content("")
                 .param("username", "admin")
-                .param("password", "admin")
+                .param("password", "123456")
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(requestLogin).andExpect(status().isUnauthorized()).andReturn();
+    }
+
+    @Test
+    void shouldReturnAccessToken() throws Exception {
+        RequestBuilder requestLogin = post(AUTHENTICATION_URL)
+                .content("")
+                .param("username", "admin")
+                .param("password", "admin")
+                .contentType(APPLICATION_JSON_VALUE);
+        mvc.perform(requestLogin)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("access_token").exists())
+                .andReturn();
     }
 }

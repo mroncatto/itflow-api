@@ -14,6 +14,9 @@ import java.io.Serializable;
 @Table
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Occupation implements Serializable {
 
