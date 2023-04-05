@@ -96,7 +96,7 @@ public class ComputerMemoryController implements IComputerMemoryController {
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
     @Override
-    public ResponseEntity<Page<ComputerMemory>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
+    public ResponseEntity<Page<ComputerMemory>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 

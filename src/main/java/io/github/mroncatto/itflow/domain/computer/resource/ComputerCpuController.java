@@ -95,7 +95,7 @@ public class ComputerCpuController implements IComputerCpuController {
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
     @Override
-    public ResponseEntity<Page<ComputerCpu>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
+    public ResponseEntity<Page<ComputerCpu>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
