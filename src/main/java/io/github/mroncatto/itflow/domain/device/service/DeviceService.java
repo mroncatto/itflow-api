@@ -3,9 +3,11 @@ package io.github.mroncatto.itflow.domain.device.service;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
+import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceComputerService;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceStaffService;
 import io.github.mroncatto.itflow.domain.device.model.Device;
+import io.github.mroncatto.itflow.domain.device.model.DeviceComputer;
 import io.github.mroncatto.itflow.domain.device.model.DeviceStaff;
 import io.github.mroncatto.itflow.domain.device.repository.IDeviceRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.
 
 @Service
 @RequiredArgsConstructor
-public class DeviceService extends AbstractService implements IDeviceService, IDeviceStaffService {
+public class DeviceService extends AbstractService implements IDeviceService, IDeviceStaffService, IDeviceComputerService {
     private final IDeviceRepository repository;
     private final FilterService filterService;
 
@@ -78,6 +80,16 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     }
 
     @Override
+    public Device updateComputer(DeviceComputer entity, Long id, BindingResult result) throws BadRequestException {
+        validateResult(result);
+        Device device = this.findById(id);
+        entity.setId(id);
+        entity.setDevice(device);
+        device.setDeviceComputer(entity);
+        return this.repository.save(device);
+    }
+
+    @Override
     public Device update(Device entity, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
         if (nonNull(entity.getCode()) && !entity.getCode().isBlank())
@@ -109,6 +121,13 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device deleteStaffFromDevice(Long id) throws NoResultException {
         Device device = this.findById(id);
         device.setDeviceStaff(null);
+        return this.repository.save(device);
+    }
+
+    @Override
+    public Device deleteComputerFromDevice(Long id) throws NoResultException {
+        Device device = this.findById(id);
+        device.setDeviceComputer(null);
         return this.repository.save(device);
     }
 
