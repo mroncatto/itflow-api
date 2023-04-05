@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceCategoryController;
+import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceCategoryFilterController;
 import io.github.mroncatto.itflow.domain.device.model.DeviceCategory;
 import io.github.mroncatto.itflow.domain.device.service.DeviceCategoryService;
 import io.github.mroncatto.itflow.domain.user.helper.RolesHelper;
@@ -36,7 +37,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.deviceCategory)
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
-public class DeviceCategoryController implements IDeviceCategoryController {
+public class DeviceCategoryController implements IDeviceCategoryController, IDeviceCategoryFilterController {
 
     private final DeviceCategoryService service;
 
@@ -97,7 +98,7 @@ public class DeviceCategoryController implements IDeviceCategoryController {
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
     @Override
-    public ResponseEntity<Page<DeviceCategory>> findAll(@PathVariable("page") @RequestParam(required = false, name = "filter") int page, String filter) {
+    public ResponseEntity<Page<DeviceCategory>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
@@ -107,6 +108,7 @@ public class DeviceCategoryController implements IDeviceCategoryController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.filterDevice)
+    @Override
     public ResponseEntity<List<DeviceCategory>> findAllUsingByDevice() {
         return new ResponseEntity<>(this.service.findByDeviceIsNotNull(), OK);
     }

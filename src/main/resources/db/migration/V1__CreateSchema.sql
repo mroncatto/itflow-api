@@ -251,3 +251,4 @@ INSERT INTO "company" ("name", "document") VALUES ('IT FLOW', '000000000');
 INSERT INTO "branch" ("name", "company_id") VALUES ('TECHNOLOGY', '1');
 INSERT INTO "department" ("name", "branch_id") VALUES ('IT', '1');
 INSERT INTO "occupation" ("name") VALUES ('Manager');
+INSERT INTO "device_category" ("name", "active") VALUES ('Computer', '1');
