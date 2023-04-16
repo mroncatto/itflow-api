@@ -59,7 +59,7 @@ public abstract class AbstractEmailService {
     protected List<EmailEventData> getVariables(List<String> variables, String... values) throws Exception {
         if (variables.size() != values.length) throw new Exception("ERROR COMPOSING EMAIL: The parameters and variables do not match");
         List<EmailEventData> eventDataList = new ArrayList<>();
-        variables.stream().forEach(v -> {
+        variables.forEach(v -> {
             eventDataList.add(
                     EmailEventData.builder()
                             .variableName(v)

@@ -29,5 +29,6 @@ public class EndpointUrlConstant {
     public static final String computerCategory = BASE_URL + "/computer/category";
     public static final String computerCpu = BASE_URL + "/computer/cpu";
     public static final String computerMemory = BASE_URL + "/computer/memory";
+    public static final String computerStorage = BASE_URL + "/computer/storage";
 
 }

@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.mroncatto.itflow.domain.company.model.Department;
 import io.github.mroncatto.itflow.domain.user.model.User;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +22,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Staff implements Serializable {
 
@@ -54,4 +57,16 @@ public class Staff implements Serializable {
     @Column(nullable = false)
     private boolean active;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Staff staff = (Staff) o;
+        return id != null && Objects.equals(id, staff.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

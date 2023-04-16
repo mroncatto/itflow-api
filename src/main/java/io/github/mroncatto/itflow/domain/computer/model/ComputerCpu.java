@@ -17,6 +17,7 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ComputerCpu implements Serializable {
 
     @Serial

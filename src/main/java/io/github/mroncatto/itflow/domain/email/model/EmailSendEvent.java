@@ -3,12 +3,14 @@ package io.github.mroncatto.itflow.domain.email.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.mroncatto.itflow.domain.email.model.vo.EmailTemplate;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class EmailSendEvent implements Serializable {
 
     @Serial
@@ -36,10 +39,12 @@ public class EmailSendEvent implements Serializable {
 
     @OneToMany(mappedBy = "sendEvent", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties(value = "sendEvent")
+    @ToString.Exclude
     private List<EmailSendRecipient> recipients;
 
     @OneToMany(mappedBy = "sendEvent", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @JsonIgnoreProperties(value = "sendEvent")
+    @ToString.Exclude
     private List<EmailEventData> eventDataList;
 
     @Column(nullable = false)
@@ -62,5 +67,18 @@ public class EmailSendEvent implements Serializable {
     public void persistElement(){
         recipients.forEach(e -> e.setSendEvent(this));
         eventDataList.forEach(e -> e.setSendEvent(this));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        EmailSendEvent that = (EmailSendEvent) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

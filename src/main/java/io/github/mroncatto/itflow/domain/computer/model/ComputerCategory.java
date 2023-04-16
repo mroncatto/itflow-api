@@ -16,6 +16,7 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ComputerCategory implements Serializable {
 
     @Serial

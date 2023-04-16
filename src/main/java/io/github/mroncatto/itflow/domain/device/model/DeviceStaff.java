@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.domain.abstracts.Auditable;
 import io.github.mroncatto.itflow.domain.staff.model.Staff;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Table
 @Getter
 @Setter
+@ToString
 public class DeviceStaff extends Auditable<String> implements Serializable {
 
     @Serial

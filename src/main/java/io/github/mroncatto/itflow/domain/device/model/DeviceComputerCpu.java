@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.domain.computer.model.ComputerCpu;
 import io.github.mroncatto.itflow.domain.device.model.pk.DeviceComputerCpuPK;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @Table
 @Getter
 @Setter
+@ToString
 public class DeviceComputerCpu implements Serializable {
 
     @Serial

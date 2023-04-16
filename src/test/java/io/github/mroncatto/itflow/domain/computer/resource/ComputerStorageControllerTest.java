@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.domain.computer.resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.computer.model.ComputerMemory;
+import io.github.mroncatto.itflow.domain.computer.model.ComputerStorage;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles(profiles = "test")
-class ComputerMemoryControllerTest {
+class ComputerStorageControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -36,18 +36,17 @@ class ComputerMemoryControllerTest {
 
     @Test
     @Order(1)
-    @DisplayName("Should create a computer memory and return code 201")
+    @DisplayName("Should create a computer storage and return code 201")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
-        final String brandName = "Memory brand";
-        RequestBuilder request = post(EndpointUrlConstant.computerMemory)
+        final String brandName = "Storage brand";
+        RequestBuilder request = post(EndpointUrlConstant.computerStorage)
                 .content(objectMapper.writeValueAsString(
-                        ComputerMemory.builder()
+                        ComputerStorage.builder()
                                 .active(true)
                                 .brandName(brandName)
-                                .size("2000")
-                                .frequency("2333")
-                                .type("DDR3")
+                                .type("test")
+                                .transferRate("test")
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpectAll(
@@ -59,19 +58,18 @@ class ComputerMemoryControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("Should update a computer memory and return code 200")
+    @DisplayName("Should update a computer storage and return code 200")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
-        final String brandName = "Memory brand edit";
-        RequestBuilder request = put(EndpointUrlConstant.computerMemory)
+        final String brandName = "Storage brand edited";
+        RequestBuilder request = put(EndpointUrlConstant.computerStorage)
                 .content(objectMapper.writeValueAsString(
-                        ComputerMemory.builder()
+                        ComputerStorage.builder()
                                 .id(1L)
                                 .active(true)
                                 .brandName(brandName)
-                                .size("2000")
-                                .frequency("2333")
-                                .type("DDR3")
+                                .type("test")
+                                .transferRate("test")
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpectAll(
@@ -83,10 +81,10 @@ class ComputerMemoryControllerTest {
 
     @Test
     @Order(3)
-    @DisplayName("Should find all computer memories and return not empty list and code 200")
+    @DisplayName("Should find all computer storages and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = get(EndpointUrlConstant.computerMemory);
+        RequestBuilder request = get(EndpointUrlConstant.computerStorage);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -96,11 +94,11 @@ class ComputerMemoryControllerTest {
 
     @Test
     @Order(4)
-    @DisplayName("Should find all computer memories and return page format and code 200")
+    @DisplayName("Should find all computer storages and return page format and code 200")
     @WithMockUser(username = "admin")
-    void findAllPagination() throws Exception {
+    void findAllPagination() throws Exception  {
         final String page = "/page/1";
-        RequestBuilder request = get(EndpointUrlConstant.computerMemory + page);
+        RequestBuilder request = get(EndpointUrlConstant.computerStorage + page);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -109,12 +107,12 @@ class ComputerMemoryControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("Should find a computer memories by ID and return code 200")
+    @DisplayName("Should find a computer storage by ID and return code 200")
     @WithMockUser(username = "admin")
     void findById() throws Exception {
-        final String brandName = "Memory brand edit";
+        final String brandName = "Storage brand edited";
         final String id = "/1";
-        RequestBuilder request = get(EndpointUrlConstant.computerMemory + id);
+        RequestBuilder request = get(EndpointUrlConstant.computerStorage + id);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -124,11 +122,11 @@ class ComputerMemoryControllerTest {
 
     @Test
     @Order(6)
-    @DisplayName("Should find and disable a computer memories by ID and return code 200")
+    @DisplayName("Should find and disable a computer storage by ID and return code 200")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = delete(EndpointUrlConstant.computerMemory + id);
+        RequestBuilder request = delete(EndpointUrlConstant.computerStorage + id);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),

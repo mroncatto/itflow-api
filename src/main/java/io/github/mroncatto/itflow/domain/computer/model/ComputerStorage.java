@@ -1,6 +1,5 @@
-package io.github.mroncatto.itflow.domain.device.model;
+package io.github.mroncatto.itflow.domain.computer.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -19,9 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class DeviceCategory implements Serializable {
-
+public class ComputerStorage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -29,10 +26,20 @@ public class DeviceCategory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "The name field is required")
-    @Column(length = 45, nullable = false)
-    @Size(max = 45, message = "The name field must contain max 45 characters")
-    private String name;
+    @Column(length = 45)
+    @NotNull(message = "The brand name field is required")
+    @Size(max = 45, message = "The brand name field must contain max 45 characters")
+    private String brandName;
+
+    @Column(length = 25)
+    @NotNull(message = "The transfer rate field is required")
+    @Size(max = 25, message = "The transfer rate field must contain max 25 characters")
+    private String transferRate;
+
+    @Column(length = 25)
+    @NotNull(message = "The type field is required")
+    @Size(max = 25, message = "The type field must contain max 25 characters")
+    private String type;
 
     @Column(nullable = false)
     private boolean active;
@@ -41,8 +48,8 @@ public class DeviceCategory implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        DeviceCategory category = (DeviceCategory) o;
-        return id != null && Objects.equals(id, category.id);
+        ComputerStorage that = (ComputerStorage) o;
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
