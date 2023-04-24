@@ -1,10 +1,10 @@
 package io.github.mroncatto.itflow.domain.device.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceCategoryService;
-import io.github.mroncatto.itflow.domain.device.model.DeviceCategory;
-import io.github.mroncatto.itflow.domain.device.repository.IDeviceCategoryRepository;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.device.model.IDeviceCategoryService;
+import io.github.mroncatto.itflow.domain.device.entity.DeviceCategory;
+import io.github.mroncatto.itflow.infrastructure.persistence.IDeviceCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

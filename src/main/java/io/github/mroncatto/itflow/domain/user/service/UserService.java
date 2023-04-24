@@ -1,13 +1,17 @@
 package io.github.mroncatto.itflow.domain.user.service;
 
-import io.github.mroncatto.itflow.config.exception.model.*;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
-import io.github.mroncatto.itflow.domain.user.interfaces.IUserService;
-import io.github.mroncatto.itflow.domain.user.model.Role;
-import io.github.mroncatto.itflow.domain.user.model.User;
-import io.github.mroncatto.itflow.domain.user.repository.IUserRepository;
+import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
+import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
+import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
+import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
+import io.github.mroncatto.itflow.domain.user.exception.UserNotFoundException;
+import io.github.mroncatto.itflow.domain.user.model.IUserService;
+import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.User;
+import io.github.mroncatto.itflow.infrastructure.persistence.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

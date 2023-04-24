@@ -2,16 +2,14 @@ package io.github.mroncatto.itflow.domain.email.service;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractEmailService;
-import io.github.mroncatto.itflow.domain.email.model.EmailEventData;
-import io.github.mroncatto.itflow.domain.email.model.EmailSendEvent;
-import io.github.mroncatto.itflow.domain.email.model.vo.EmailTemplate;
+import io.github.mroncatto.itflow.domain.email.model.AbstractEmailService;
+import io.github.mroncatto.itflow.domain.email.entity.EmailEventData;
+import io.github.mroncatto.itflow.domain.email.entity.EmailSendEvent;
+import io.github.mroncatto.itflow.domain.email.entity.vo.EmailTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -28,13 +26,10 @@ public class EmailSendService extends AbstractEmailService {
     private final Configuration configuration;
     private final JavaMailSender sender;
     private final EmailSendEventService eventService;
-
-    @Transactional
-    @Scheduled(fixedDelay = 60000, initialDelay = 60000) // Every 60 seconds
     public void sendEmail() {
         log.info(">>> Email sending service starting...");
         List<EmailSendEvent> pendingEvents = this.eventService.getSendEventPending();
-        pendingEvents.stream().forEach(event -> send(event));
+        pendingEvents.forEach(this::send);
         log.info(">>> Email sending service done!");
     }
 

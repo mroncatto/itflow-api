@@ -1,10 +1,10 @@
 package io.github.mroncatto.itflow.domain.computer.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.computer.interfaces.IComputerCategoryService;
-import io.github.mroncatto.itflow.domain.computer.model.ComputerCategory;
-import io.github.mroncatto.itflow.domain.computer.repository.IComputerCategoryRepository;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.computer.model.IComputerCategoryService;
+import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
+import io.github.mroncatto.itflow.infrastructure.persistence.IComputerCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

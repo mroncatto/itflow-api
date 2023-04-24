@@ -1,10 +1,10 @@
 package io.github.mroncatto.itflow.domain.staff.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.staff.interfaces.IOccupationService;
-import io.github.mroncatto.itflow.domain.staff.model.Occupation;
-import io.github.mroncatto.itflow.domain.staff.repository.IOccupationRepository;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.staff.model.IOccupationService;
+import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
+import io.github.mroncatto.itflow.infrastructure.persistence.IOccupationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

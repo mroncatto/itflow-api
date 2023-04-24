@@ -1,15 +1,15 @@
 package io.github.mroncatto.itflow.domain.device.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
-import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceComputerService;
-import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceService;
-import io.github.mroncatto.itflow.domain.device.interfaces.IDeviceStaffService;
-import io.github.mroncatto.itflow.domain.device.model.Device;
-import io.github.mroncatto.itflow.domain.device.model.DeviceComputer;
-import io.github.mroncatto.itflow.domain.device.model.DeviceStaff;
-import io.github.mroncatto.itflow.domain.device.repository.IDeviceRepository;
+import io.github.mroncatto.itflow.domain.device.model.IDeviceComputerService;
+import io.github.mroncatto.itflow.domain.device.model.IDeviceService;
+import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffService;
+import io.github.mroncatto.itflow.domain.device.entity.Device;
+import io.github.mroncatto.itflow.domain.device.entity.DeviceComputer;
+import io.github.mroncatto.itflow.domain.device.entity.DeviceStaff;
+import io.github.mroncatto.itflow.infrastructure.persistence.IDeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
