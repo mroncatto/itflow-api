@@ -1,11 +1,11 @@
 package io.github.mroncatto.itflow.domain.staff.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
-import io.github.mroncatto.itflow.domain.staff.interfaces.IStaffService;
-import io.github.mroncatto.itflow.domain.staff.model.Staff;
-import io.github.mroncatto.itflow.domain.staff.repository.IStaffRepository;
+import io.github.mroncatto.itflow.domain.staff.model.IStaffService;
+import io.github.mroncatto.itflow.domain.staff.entity.Staff;
+import io.github.mroncatto.itflow.infrastructure.persistence.IStaffRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

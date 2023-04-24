@@ -1,11 +1,11 @@
 package io.github.mroncatto.itflow.domain.software.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.software.interfaces.ISoftwareService;
-import io.github.mroncatto.itflow.domain.software.model.Software;
-import io.github.mroncatto.itflow.domain.software.model.SoftwareLicense;
-import io.github.mroncatto.itflow.domain.software.repository.ISoftwareRepository;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.software.model.ISoftwareService;
+import io.github.mroncatto.itflow.domain.software.entity.Software;
+import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicense;
+import io.github.mroncatto.itflow.infrastructure.persistence.ISoftwareRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;

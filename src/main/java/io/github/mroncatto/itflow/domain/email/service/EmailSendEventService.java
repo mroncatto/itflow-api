@@ -1,7 +1,7 @@
 package io.github.mroncatto.itflow.domain.email.service;
 
-import io.github.mroncatto.itflow.domain.email.repository.IEmailSendEventRepository;
-import io.github.mroncatto.itflow.domain.email.model.EmailSendEvent;
+import io.github.mroncatto.itflow.infrastructure.persistence.IEmailSendEventRepository;
+import io.github.mroncatto.itflow.domain.email.entity.EmailSendEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

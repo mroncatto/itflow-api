@@ -1,11 +1,11 @@
 package io.github.mroncatto.itflow.domain.email.service;
 
-import io.github.mroncatto.itflow.domain.abstracts.AbstractEmailService;
-import io.github.mroncatto.itflow.domain.email.model.EmailSendEvent;
-import io.github.mroncatto.itflow.domain.email.model.vo.EmailTemplate;
-import io.github.mroncatto.itflow.domain.email.model.vo.ResetPasswordVariable;
-import io.github.mroncatto.itflow.domain.email.model.vo.WelcomeVariable;
-import io.github.mroncatto.itflow.domain.user.model.User;
+import io.github.mroncatto.itflow.domain.email.model.AbstractEmailService;
+import io.github.mroncatto.itflow.domain.email.entity.EmailSendEvent;
+import io.github.mroncatto.itflow.domain.email.entity.vo.EmailTemplate;
+import io.github.mroncatto.itflow.domain.email.entity.vo.ResetPasswordVariable;
+import io.github.mroncatto.itflow.domain.email.entity.vo.WelcomeVariable;
+import io.github.mroncatto.itflow.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

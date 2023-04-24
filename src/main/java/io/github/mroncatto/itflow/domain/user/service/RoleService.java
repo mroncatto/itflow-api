@@ -1,8 +1,8 @@
 package io.github.mroncatto.itflow.domain.user.service;
 
-import io.github.mroncatto.itflow.domain.user.interfaces.IRoleService;
-import io.github.mroncatto.itflow.domain.user.model.Role;
-import io.github.mroncatto.itflow.domain.user.repository.IRoleRepository;
+import io.github.mroncatto.itflow.domain.user.model.IRoleService;
+import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.infrastructure.persistence.IRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

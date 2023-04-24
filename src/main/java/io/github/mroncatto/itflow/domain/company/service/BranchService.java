@@ -1,10 +1,10 @@
 package io.github.mroncatto.itflow.domain.company.service;
 
-import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
-import io.github.mroncatto.itflow.domain.abstracts.AbstractService;
-import io.github.mroncatto.itflow.domain.company.interfaces.IBranchService;
-import io.github.mroncatto.itflow.domain.company.model.Branch;
-import io.github.mroncatto.itflow.domain.company.repository.IBranchRepository;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.company.model.IBranchService;
+import io.github.mroncatto.itflow.domain.company.entity.Branch;
+import io.github.mroncatto.itflow.infrastructure.persistence.IBranchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
