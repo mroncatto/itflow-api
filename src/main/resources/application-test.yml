@@ -11,6 +11,7 @@ spring:
       hibernate:
         ddl-auto: validate
         dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: true
   flyway:
     locations: classpath:/db/specific/h2
   mail:

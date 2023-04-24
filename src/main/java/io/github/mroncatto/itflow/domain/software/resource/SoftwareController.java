@@ -1,11 +1,12 @@
-package io.github.mroncatto.itflow.domain.computer.resource;
+package io.github.mroncatto.itflow.domain.software.resource;
 
 import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.config.exception.model.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.model.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.computer.interfaces.IComputerCategoryController;
-import io.github.mroncatto.itflow.domain.computer.model.ComputerCategory;
-import io.github.mroncatto.itflow.domain.computer.service.ComputerCategoryService;
+import io.github.mroncatto.itflow.domain.software.interfaces.ISoftwareController;
+import io.github.mroncatto.itflow.domain.software.model.Software;
+import io.github.mroncatto.itflow.domain.software.model.SoftwareLicense;
+import io.github.mroncatto.itflow.domain.software.service.SoftwareService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,36 +33,50 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.computerCategory)
+@RequestMapping(value = EndpointUrlConstant.computerSoftware)
 @Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
-public class ComputerCategoryController implements IComputerCategoryController {
-    private final ComputerCategoryService service;
-    @Operation(summary = "Get all computer categories", security = {
+public class SoftwareController implements ISoftwareController {
+    private final SoftwareService service;
+
+    @Operation(summary = "Get all software", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerCategory.class)))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Software.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
     @Override
-    public ResponseEntity<List<ComputerCategory>> findAll() {
+    public ResponseEntity<List<Software>> findAll() {
         return new ResponseEntity<>(this.service.findAll(), OK);
     }
-    @Operation(summary = "Create a new computer category", security = {
+
+    @Operation(summary = "Get all software with pagination", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @GetMapping(EndpointUrlConstant.page)
+    @Override
+    public ResponseEntity<Page<Software>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
+        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
+    }
+
+    @Operation(summary = "Create a new software", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Software.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<ComputerCategory> save(@RequestBody @Valid ComputerCategory entity, BindingResult result) throws BadRequestException {
+    public ResponseEntity<Software> save(@RequestBody @Valid Software entity, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.service.save(entity, result), CREATED);
     }
-    @Operation(summary = "Update a specific computer category", security = {
+
+    @Operation(summary = "Update a specific software", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Software.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
@@ -69,40 +84,45 @@ public class ComputerCategoryController implements IComputerCategoryController {
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<ComputerCategory> update(@RequestBody @Valid ComputerCategory entity, BindingResult result) throws BadRequestException, NoResultException {
+    public ResponseEntity<Software> update(@RequestBody @Valid Software entity, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.service.update(entity, result), OK);
     }
-    @Operation(summary = "Get computer category by ID", security = {
+
+    @Operation(summary = "Get software by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Software.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.id)
     @Override
-    public ResponseEntity<ComputerCategory> findById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<Software> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
-    @Operation(summary = "Get all computer categories with pagination", security = {
+
+    @Operation(summary = "Disable a software by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
-            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
-    @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.page)
-    @Override
-    public ResponseEntity<Page<ComputerCategory>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
-        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
-    }
-    @Operation(summary = "Disable a computer category by ID", security = {
-            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ComputerCategory.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Software.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     @Override
-    public ResponseEntity<ComputerCategory> deleteById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<Software> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
+    }
+
+    @Operation(summary = "add license to software", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Software.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = CREATED)
+    @PostMapping(EndpointUrlConstant.updateSoftwareLicense)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    @Override
+    public ResponseEntity<Software> addLicense(@PathVariable("id") Long id, @RequestBody @Valid SoftwareLicense license, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addLicense(id, license, result), CREATED);
     }
 }

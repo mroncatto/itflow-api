@@ -1,10 +1,10 @@
-package io.github.mroncatto.itflow.domain.company.resource;
+package io.github.mroncatto.itflow.domain.software.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.company.model.Branch;
-import io.github.mroncatto.itflow.domain.company.model.Department;
+import io.github.mroncatto.itflow.domain.software.model.Software;
+import io.github.mroncatto.itflow.domain.software.model.SoftwareLicense;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles(profiles = "test")
-class DepartmentControllerTest {
+class SoftwareControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -37,61 +37,50 @@ class DepartmentControllerTest {
 
     @Test
     @Order(1)
-    @DisplayName("Should create a Department and return code 201")
+    @DisplayName("Should create a software and return code 201")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
-        final String departmentName = "Department test";
-        RequestBuilder request = post(EndpointUrlConstant.department)
+        final String softwareName = "Software test";
+        RequestBuilder request = post(EndpointUrlConstant.computerSoftware)
                 .content(objectMapper.writeValueAsString(
-                        Department.builder()
-                                .branch(
-                                        Branch.builder()
-                                                .id(1L)
-                                                .build()
-                                )
-                                .name(departmentName)
-                                .active(true)
+                        Software.builder()
+                                .id(2L)
+                                .name(softwareName)
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpectAll(
                 status().isCreated(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
-                jsonPath("name", Is.is(departmentName))
+                jsonPath("name", Is.is(softwareName))
         );
     }
 
     @Test
     @Order(2)
-    @DisplayName("Should update a Department and return code 200")
+    @DisplayName("Should update a software and return code 200")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
-        final String departmentName = "Department test edited";
-        RequestBuilder request = put(EndpointUrlConstant.department)
+        final String softwareName = "Software test edit";
+        RequestBuilder request = put(EndpointUrlConstant.computerSoftware)
                 .content(objectMapper.writeValueAsString(
-                        Department.builder()
+                        Software.builder()
                                 .id(2L)
-                                .branch(
-                                        Branch.builder()
-                                                .id(1L)
-                                                .build()
-                                )
-                                .name(departmentName)
-                                .active(true)
+                                .name(softwareName)
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
-                jsonPath("name", Is.is(departmentName))
+                jsonPath("name", Is.is(softwareName))
         );
     }
 
     @Test
     @Order(3)
-    @DisplayName("Should find all departments and return not empty list and code 200")
+    @DisplayName("Should find all software and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = get(EndpointUrlConstant.department);
+        RequestBuilder request = get(EndpointUrlConstant.computerSoftware);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -101,11 +90,11 @@ class DepartmentControllerTest {
 
     @Test
     @Order(4)
-    @DisplayName("Should find all departments and return page format and code 200")
+    @DisplayName("Should find all software and return page format and code 200")
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = get(EndpointUrlConstant.department + page);
+        RequestBuilder request = get(EndpointUrlConstant.computerSoftware + page);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -114,38 +103,51 @@ class DepartmentControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("Should find all departments filtered by staff and return code 200")
+    @DisplayName("Should find a software by ID and return code 200")
     @WithMockUser(username = "admin")
-    void findAllUsingByStaff() throws Exception {
-        RequestBuilder request = get(EndpointUrlConstant.department + EndpointUrlConstant.filterStaff);
+    void findById() throws Exception {
+        final String softwareName = "Software test edit";
+        final String id = "/2";
+        RequestBuilder request = get(EndpointUrlConstant.computerSoftware + id);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
-                content().contentTypeCompatibleWith(APPLICATION_JSON)
+                content().contentTypeCompatibleWith(APPLICATION_JSON),
+                jsonPath("name", Is.is(softwareName))
         );
     }
 
     @Test
     @Order(6)
-    @DisplayName("Should find a department by ID and return code 200")
-    @WithMockUser(username = "admin")
-    void findById() throws Exception {
-        final String departmentName = "Department test edited";
-        final String id = "/2";
-        RequestBuilder request = get(EndpointUrlConstant.department + id);
+    @DisplayName("Should add license to software and return code 201")
+    @WithMockUser(username = "admin", authorities = "HELPDESK")
+    void addLicense() throws Exception {
+        final String licenseDesc = "License test";
+        final String endpoint = "/2/license";
+        RequestBuilder request = post(EndpointUrlConstant.computerSoftware + endpoint)
+                .content(objectMapper.writeValueAsString(
+                        SoftwareLicense.builder()
+                                .software(
+                                        Software.builder()
+                                                .id(2L)
+                                                .build())
+                                .active(true)
+                                .description(licenseDesc)
+                                .build()))
+                .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpectAll(
-                status().isOk(),
+                status().isCreated(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),
-                jsonPath("name", Is.is(departmentName))
+                jsonPath("$.licenses[0].description", Is.is(licenseDesc))
         );
     }
 
     @Test
     @Order(7)
-    @DisplayName("Should find and disable a department by ID and return code 200")
-    @WithMockUser(username = "admin", authorities = "MANAGER")
+    @DisplayName("Should find and disable a software by ID and return code 200")
+    @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/2";
-        RequestBuilder request = delete(EndpointUrlConstant.department + id);
+        RequestBuilder request = delete(EndpointUrlConstant.computerSoftware + id);
         mvc.perform(request).andExpectAll(
                 status().isOk(),
                 content().contentTypeCompatibleWith(APPLICATION_JSON),

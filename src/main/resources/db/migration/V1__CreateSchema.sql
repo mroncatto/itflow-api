@@ -18,6 +18,9 @@ CREATE SEQUENCE COMPUTER_CPU_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE DEVICE_COMPUTER_CPU_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE COMPUTER_STORAGE_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE DEVICE_COMPUTER_STORAGE_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE SOFTWARE_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE SOFTWARE_LICENSE_SEQ START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE LICENSE_KEY_SEQ START WITH 1 INCREMENT BY 1;
 
 -- DDL
 CREATE TABLE IF NOT EXISTS "account"
@@ -176,7 +179,7 @@ CREATE TABLE IF NOT EXISTS "device_staff" (
 CREATE TABLE IF NOT EXISTS "computer_category" (
     "id" BIGINT DEFAULT NEXTVAL('DEVICE_COMPUTER_CATEGORY_SEQ') NOT NULL,
     "name" VARCHAR(45) NOT NULL,
-    "active" BOOLEAN NOT NULL DEFAULT TRUE,
+    "active" boolean NOT NULL DEFAULT TRUE,
     CONSTRAINT "COMPUTER_CATEGORY_PK" PRIMARY KEY (id)
 );
 
@@ -184,7 +187,7 @@ CREATE TABLE IF NOT EXISTS "device_computer" (
     "device_id" BIGINT NOT NULL,
     "computer_category_id" BIGINT NOT NULL,
     "description" VARCHAR(75),
-    "virtual" BOOLEAN NOT NULL DEFAULT TRUE,
+    "virtual" boolean NOT NULL DEFAULT TRUE,
     "created_date" TIMESTAMP,
     "last_modified_date" TIMESTAMP,
     "created_by" VARCHAR(75),
@@ -200,7 +203,7 @@ CREATE TABLE IF NOT EXISTS "computer_memory" (
     "type" VARCHAR(25) NOT NULL,
     "size" VARCHAR(25),
     "frequency" VARCHAR(25),
-    "active" BOOLEAN NOT NULL DEFAULT TRUE,
+    "active" boolean NOT NULL DEFAULT TRUE,
     CONSTRAINT "COMPUTER_MEMORY_PK" PRIMARY KEY (id)
 );
 
@@ -223,7 +226,7 @@ CREATE TABLE IF NOT EXISTS "computer_cpu" (
     "core" VARCHAR(25),
     "frequency" VARCHAR(25),
     "fsb" VARCHAR(25),
-    "active" BOOLEAN NOT NULL DEFAULT TRUE,
+    "active" boolean NOT NULL DEFAULT TRUE,
     CONSTRAINT "COMPUTER_CPU_PK" PRIMARY KEY (id)
 );
 
@@ -242,7 +245,7 @@ CREATE TABLE IF NOT EXISTS "computer_storage" (
     "brand_name" VARCHAR(45) NOT NULL,
     "transfer_rate" VARCHAR(25) NOT NULL,
     "type" VARCHAR(25),
-    "active" BOOLEAN NOT NULL DEFAULT TRUE,
+    "active" boolean NOT NULL DEFAULT TRUE,
     CONSTRAINT "COMPUTER_STORAGE_PK" PRIMARY KEY (id)
 );
 
@@ -256,20 +259,53 @@ CREATE TABLE IF NOT EXISTS "device_computer_storage" (
     CONSTRAINT "DEVICE_COMPUTER_STORAGE_PK" PRIMARY KEY (id)
 );
 
--- DML
--- TODO: GERAR USUARIO DE FORMA AUTOMATIZADA!!
-INSERT INTO "account" ("full_name", "avatar", "email", "username", "password", "last_login_date", "join_date", "active",
-                       "non_locked") VALUES ('Administrator', '', 'admin@itflow.com', 'admin', '$2a$10$MNsNLmxb1HnkGgO56021eu.Er4omFxesT0CEm.FH2kKWGkLQNPpPC', NULL, now(), '1', '1');
-INSERT INTO "role" ("id", "role") VALUES ('1', 'ADMIN');
-INSERT INTO "role" ("id", "role") VALUES ('2', 'MANAGER');
-INSERT INTO "role" ("id", "role") VALUES ('3', 'COORDINATOR');
-INSERT INTO "role" ("id", "role") VALUES ('4', 'INFRA');
-INSERT INTO "role" ("id", "role") VALUES ('5', 'DEVOPS');
-INSERT INTO "role" ("id", "role") VALUES ('6', 'HELPDESK');
-INSERT INTO "role" ("id", "role") VALUES ('7', 'SUPPORT');
-INSERT INTO "account_role" ("user_id", "role_id") VALUES ((SELECT id FROM account LIMIT 1), '1');
-INSERT INTO "company" ("name", "document") VALUES ('IT FLOW', '000000000');
-INSERT INTO "branch" ("name", "company_id") VALUES ('TECHNOLOGY', '1');
-INSERT INTO "department" ("name", "branch_id") VALUES ('IT', '1');
-INSERT INTO "occupation" ("name") VALUES ('Manager');
-INSERT INTO "device_category" ("name", "active") VALUES ('Computer', '1');
+CREATE TABLE IF NOT EXISTS "software" (
+    "id" BIGINT DEFAULT NEXTVAL('SOFTWARE_SEQ') NOT NULL,
+    "name" VARCHAR(45) NOT NULL,
+    "developer" VARCHAR(45),
+    "active" boolean NOT NULL DEFAULT true,
+    "created_date" TIMESTAMP,
+    "last_modified_date" TIMESTAMP,
+    "created_by" VARCHAR(75),
+    "last_modified_by" VARCHAR(75),
+    CONSTRAINT "SOFTWARE_FK" PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS "software_license" (
+    "id" BIGINT DEFAULT NEXTVAL('SOFTWARE_LICENSE_SEQ') NOT NULL,
+    "description" VARCHAR(75) NOT NULL,
+    "code" VARCHAR(45),
+    "expire_at" DATE,
+    "software_id" BIGINT NOT NULL,
+    "active" boolean NOT NULL DEFAULT TRUE,
+    "created_date" TIMESTAMP,
+    "last_modified_date" TIMESTAMP,
+    "created_by" VARCHAR(75),
+    "last_modified_by" VARCHAR(75),
+    CONSTRAINT "SOFTWARE_LICENSE_FK" PRIMARY KEY (id),
+    CONSTRAINT "SOFTWARE_SOFTWARE_LICENSE_FK" FOREIGN KEY (software_id) REFERENCES software(id)
+);
+
+CREATE TABLE IF NOT EXISTS "software_license_key" (
+    "id" BIGINT DEFAULT NEXTVAL('LICENSE_KEY_SEQ') NOT NULL,
+    "key" VARCHAR(45),
+    "software_license_id" BIGINT NOT NULL,
+    "volume" INT NOT NULL DEFAULT 0,
+    CONSTRAINT "LICENSE_KEY_FK" PRIMARY KEY (id),
+    CONSTRAINT "SOFTWARE_LICENSE_LICENSE_KEY_FK" FOREIGN KEY (software_license_id) REFERENCES software_license(id)
+);
+
+CREATE TABLE IF NOT EXISTS "device_computer_software" (
+    "device_computer_id" BIGINT NOT NULL,
+    "software_id" BIGINT NOT NULL,
+    "software_license_key_id" BIGINT,
+    "created_date" TIMESTAMP,
+    "last_modified_date" TIMESTAMP,
+    "created_by" VARCHAR(75),
+    "last_modified_by" VARCHAR(75),
+    CONSTRAINT "DEVICE_COMPUTER_SOFTWARE_FK" PRIMARY KEY (device_computer_id, software_id),
+    CONSTRAINT "DEVICE_COMPUTER_DEVICE_COMPUTER_SOFTWARE_FK" FOREIGN KEY (device_computer_id) REFERENCES device_computer(device_id),
+    CONSTRAINT "SOFTWARE_DEVICE_COMPUTER_SOFTWARE_FK" FOREIGN KEY (software_id) REFERENCES software(id),
+    CONSTRAINT "LICENSE_KEY_DEVICE_COMPUTER_SOFTWARE_FK" FOREIGN KEY (software_license_key_id) REFERENCES software_license_key(id)
+);
+
