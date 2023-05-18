@@ -39,6 +39,7 @@ public class ComputerMemoryService extends AbstractService implements IComputerM
         memory.setBrandName(entity.getBrandName());
         memory.setFrequency(entity.getFrequency());
         memory.setType(entity.getType());
+        memory.setSize(entity.getSize());
         return this.repository.save(memory);
     }
 
