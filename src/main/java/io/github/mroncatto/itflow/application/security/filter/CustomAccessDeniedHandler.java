@@ -1,7 +1,7 @@
 package io.github.mroncatto.itflow.application.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.mroncatto.itflow.infrastructure.web.controller.advice.CustomHttpResponse;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

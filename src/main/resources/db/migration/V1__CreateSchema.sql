@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS "device_computer" (
     "last_modified_by" VARCHAR(75),
     CONSTRAINT "DEVICE_COMPUTER_PK" PRIMARY KEY (device_id),
     CONSTRAINT "DEVICE_COMPUTER_DEVICE_FK" FOREIGN KEY (device_id) REFERENCES device(id),
-    CONSTRAINT "COMPUTER_CATEGORY_FK" FOREIGN KEY (computer_category_id) REFERENCES device(id)
+    CONSTRAINT "COMPUTER_CATEGORY_FK" FOREIGN KEY (computer_category_id) REFERENCES computer_category(id)
 );
 
 CREATE TABLE IF NOT EXISTS "computer_memory" (

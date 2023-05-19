@@ -8,6 +8,7 @@ public class EndpointUrlConstant {
     public static final String page = "/page/{page}";
     public static final String filterStaff = "/filter/staff";
     public static final String staffId = "/staff/{id}";
+    public static final String computerId = "/computer/{id}";
     public static final String filterDevice = "/filter/device";
     public static final String username = "/{username}";
     public static final String role = "/role";

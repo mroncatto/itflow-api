@@ -1,7 +1,7 @@
 package io.github.mroncatto.itflow.application.exception;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.infrastructure.web.controller.advice.CustomHttpResponse;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;

@@ -1,7 +1,7 @@
 package io.github.mroncatto.itflow.application.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.mroncatto.itflow.infrastructure.web.controller.advice.CustomHttpResponse;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;

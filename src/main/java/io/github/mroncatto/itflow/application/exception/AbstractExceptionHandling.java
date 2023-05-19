@@ -1,6 +1,6 @@
 package io.github.mroncatto.itflow.application.exception;
 
-import io.github.mroncatto.itflow.infrastructure.web.controller.advice.CustomHttpResponse;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

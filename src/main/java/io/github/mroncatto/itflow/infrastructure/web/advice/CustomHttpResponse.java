@@ -1,0 +1,21 @@
+package io.github.mroncatto.itflow.infrastructure.web.advice;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+
+import java.util.Date;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode
+@ToString
+public class CustomHttpResponse {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private Date timestamp;
+    private int status;
+    private String error;
+    private String message;
+}

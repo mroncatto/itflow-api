@@ -1,7 +1,7 @@
 package io.github.mroncatto.itflow.application.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.mroncatto.itflow.infrastructure.web.controller.advice.CustomHttpResponse;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.application.security.jwt.JwtTokenProvider;
 import io.github.mroncatto.itflow.application.security.jwt.JwtUserDetails;
 import io.github.mroncatto.itflow.domain.commons.helper.DateHelper;
-import io.github.mroncatto.itflow.infrastructure.web.controller.advice.CustomHttpResponse;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
