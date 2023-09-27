@@ -14,6 +14,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
+
 @Entity
 @Table
 @Getter
@@ -38,12 +40,12 @@ public class DeviceComputerCpu implements Serializable {
     @Column(length = 11, nullable = false)
     @NotNull(message = "The vcpu field is required")
     @Size(min = 1, max = 11, message = "The vcpu field must contain between 1 and 11 digits")
-    private int vcpu;
+    private String vcpu;
 
     @Column(length = 11, nullable = false)
     @NotNull(message = "The unit field is required")
     @Size(min = 1, max = 11, message = "The unit field must contain between 1 and 11 digits")
-    private int unit;
+    private String unit;
 
     @Override
     public boolean equals(Object o) {
@@ -56,5 +58,12 @@ public class DeviceComputerCpu implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void addEmbeddedKey() {
+        if (nonNull(computerCpu) && nonNull(deviceComputer)) {
+            id.setComputerCpu(computerCpu.getId());
+            id.setDeviceComputer(deviceComputer.getId());
+        }
     }
 }

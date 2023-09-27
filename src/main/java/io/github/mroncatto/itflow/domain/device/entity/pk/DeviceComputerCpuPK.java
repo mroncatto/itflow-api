@@ -1,8 +1,6 @@
 package io.github.mroncatto.itflow.domain.device.entity.pk;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,6 +11,9 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DeviceComputerCpuPK implements Serializable {
 
     @Serial

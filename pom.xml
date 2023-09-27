@@ -27,7 +27,7 @@
 	<name>itflow-api</name>
 	<description>Gestión de servicios de tecnologías de la información</description>
 	<properties>
-		<java.version>18</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

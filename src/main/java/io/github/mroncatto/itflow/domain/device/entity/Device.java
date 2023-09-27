@@ -69,7 +69,7 @@ public class Device extends Auditable<String> implements Serializable {
     private DeviceStaff deviceStaff;
 
     @OneToOne(mappedBy = "device", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JsonIgnoreProperties("device")
+    @JsonIgnoreProperties({"device"})
     private DeviceComputer deviceComputer;
 
     @Override

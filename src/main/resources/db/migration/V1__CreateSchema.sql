@@ -233,8 +233,8 @@ CREATE TABLE IF NOT EXISTS "computer_cpu" (
 CREATE TABLE IF NOT EXISTS "device_computer_cpu" (
     "device_computer_id" BIGINT NOT NULL,
     "computer_cpu_id" BIGINT NOT NULL,
-    "vcpu" INT NOT NULL DEFAULT 1,
-    "unit" INT NOT NULL DEFAULT 1,
+    "vcpu" VARCHAR(11) NOT NULL DEFAULT 1,
+    "unit" VARCHAR(11) NOT NULL DEFAULT 1,
     CONSTRAINT "DEVICE_COMPUTER_CPU_PK" PRIMARY KEY (device_computer_id, computer_cpu_id),
     CONSTRAINT "DEVICE_COMPUTER_DEVICE_COMPUTER_CPU_FK" FOREIGN KEY (device_computer_id) REFERENCES device_computer(device_id),
     CONSTRAINT "COMPUTER_CPU_DEVICE_COMPUTER_CPU_FK" FOREIGN KEY (computer_cpu_id) REFERENCES computer_cpu(id)

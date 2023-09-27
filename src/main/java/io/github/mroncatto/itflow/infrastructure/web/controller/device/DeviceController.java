@@ -2,14 +2,12 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.device;
 
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.device.entity.DeviceComputer;
-import io.github.mroncatto.itflow.domain.device.model.IDeviceComputerController;
-import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.device.model.IDeviceController;
-import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffController;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceStaff;
+import io.github.mroncatto.itflow.domain.device.model.IDeviceController;
+import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffController;
 import io.github.mroncatto.itflow.domain.device.service.DeviceService;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +37,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.device)
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
-public class DeviceController implements IDeviceController, IDeviceStaffController, IDeviceComputerController {
+public class DeviceController implements IDeviceController, IDeviceStaffController {
     private final DeviceService service;
 
     @Operation(summary = "Get all devices", security = {
@@ -91,19 +89,6 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
     @Override
     public ResponseEntity<Device> updateStaff(@PathVariable("id") Long id, @Valid @RequestBody DeviceStaff entity, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.service.updateStaff(entity, id, result), CREATED);
-    }
-
-    @Operation(summary = "Add or update an computer to a device", security = {
-            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
-            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
-    @ResponseStatus(value = CREATED)
-    @PutMapping(EndpointUrlConstant.computerId)
-    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Device> updateComputer(@PathVariable("id") Long id, @Valid @RequestBody DeviceComputer entity, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.updateComputer(entity, id, result), CREATED);
     }
 
     @Operation(summary = "Update a specific device", security = {
@@ -158,16 +143,4 @@ public class DeviceController implements IDeviceController, IDeviceStaffControll
         return new ResponseEntity<>(this.service.deleteStaffFromDevice(id), OK);
     }
 
-    @Operation(summary = "Remove computer from device by ID", security = {
-            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Device.class))),
-            @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
-            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
-    @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.computerId)
-    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Device> deleteComputerFromDevice(@PathVariable("id") Long id) throws NoResultException {
-        return new ResponseEntity<>(this.service.deleteComputerFromDevice(id), OK);
-    }
 }

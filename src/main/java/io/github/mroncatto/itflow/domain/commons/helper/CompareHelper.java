@@ -45,4 +45,8 @@ public class CompareHelper {
     public static boolean distinct(String a, String b){
         return !a.equals(b);
     }
+
+    public static boolean isNumber(String a) {
+        return a.matches("\\d+");
+    }
 }

@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.device.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import lombok.Getter;
@@ -42,6 +43,14 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
 
     @Column(nullable = false)
     private boolean virtual;
+
+    @OneToOne()
+    @JoinColumn(name = "device_id", referencedColumnName = "device_computer_id")
+    @ToString.Exclude
+    @JsonIgnoreProperties({"deviceComputer"})
+    private DeviceComputerCpu cpu;
+
+    // FIXME: REMOVER CHAVE COMPOSTA, ESTA CAUSANDO PROBLEMAS !!!!!!!!!!!!!!!1
 
     @Override
     public boolean equals(Object o) {

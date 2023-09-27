@@ -111,4 +111,15 @@ public class ComputerCpuController implements IComputerCpuController {
     public ResponseEntity<ComputerCpu> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
+
+    //TODO: falta criar as interfaces
+    @Operation(summary = "Get all computer CPUs by Filters", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerCpu.class)))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @GetMapping(EndpointUrlConstant.autoComplete)
+    public ResponseEntity<List<ComputerCpu>> findAll(@PathVariable("filter") String filter) {
+        return new ResponseEntity<>(this.service.findAll(filter), OK);
+    }
 }
