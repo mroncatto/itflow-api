@@ -84,5 +84,5 @@ logging:
       max-file-size: 20MB
       max-history: 10
 jwt:
-  secret: "123456"
+  secret: "A2DAF8D98E959FB4F47FA167146A37736EB4227FD6996FB72A19E2B65E"
   expire: 720

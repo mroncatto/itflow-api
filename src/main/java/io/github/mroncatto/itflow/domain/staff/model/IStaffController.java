@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.staff.entity.Staff;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 import java.util.List;
 
 public interface IStaffController extends IAbstractController<Staff> {

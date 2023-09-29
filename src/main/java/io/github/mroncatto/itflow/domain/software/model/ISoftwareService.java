@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface ISoftwareService extends IAbstractService<Software> {
     Software findById(Long id) throws NoResultException;

@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.device.entity.DeviceCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IDeviceCategoryController extends IAbstractController<DeviceCategory> {
     ResponseEntity<DeviceCategory> findById(Long id) throws NoResultException;

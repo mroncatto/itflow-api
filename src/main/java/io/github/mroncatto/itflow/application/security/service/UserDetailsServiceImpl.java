@@ -1,30 +1,27 @@
-package io.github.mroncatto.itflow.domain.user.service;
+package io.github.mroncatto.itflow.application.security.service;
 
-import io.github.mroncatto.itflow.application.security.filter.LoginAttemptService;
-import io.github.mroncatto.itflow.application.security.jwt.JwtUserDetails;
 import io.github.mroncatto.itflow.domain.user.entity.User;
+import io.github.mroncatto.itflow.infrastructure.persistence.IUserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.util.Objects;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
-@Transactional
-public class CustomUserDetailsService implements UserDetailsService {
-    private final UserService userService;
+@RequiredArgsConstructor
+public class UserDetailsServiceImpl implements UserDetailsService {
+    private final IUserRepository repository;
     private final LoginAttemptService loginAttemptService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userService.findUserByUsername(username);
+        var user = repository.findUserByUsername(username);
+        if(Objects.isNull(user)) throw new UsernameNotFoundException("USER NOT FOUND");
         validateLoginAttempt(user);
-        return new JwtUserDetails(user);
+        return UserDetailsImpl.build(user);
     }
 
     private void validateLoginAttempt(User user) {

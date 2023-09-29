@@ -20,8 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.NoResultException;
-import javax.validation.Valid;
+import jakarta.persistence.NoResultException;
+import jakarta.validation.Valid;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.*;
 import static io.github.mroncatto.itflow.domain.commons.helper.SwaggerPropertiesHelper.APPLICATION_JSON;

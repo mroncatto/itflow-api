@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.company.entity.Company;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface ICompanyService extends IAbstractService<Company> {
     Company findById(Long id) throws NoResultException;

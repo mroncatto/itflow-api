@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface ISoftwareLicenseController extends IAbstractController<SoftwareLicense> {
     ResponseEntity<SoftwareLicense> findById(Long id) throws NoResultException;

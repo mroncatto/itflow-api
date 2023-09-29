@@ -1,10 +1,10 @@
 package io.github.mroncatto.itflow.application.model;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import jakarta.persistence.NoResultException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 public interface IAbstractController<U> {

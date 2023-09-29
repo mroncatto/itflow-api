@@ -1,4 +1,4 @@
-package io.github.mroncatto.itflow.application.security.jwt;
+package io.github.mroncatto.itflow.application.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -7,22 +7,22 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Component
-public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
+public class AuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg2) throws IOException {
         CustomHttpResponse httpResponse = CustomHttpResponse.builder()
                 .status(FORBIDDEN.value())
                 .error(FORBIDDEN.getReasonPhrase())
-                .message("FORBIDDEN FALTA ALTERAR")//TODO:
+                .message("FORBIDDEN")
                 .build();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(FORBIDDEN.value());

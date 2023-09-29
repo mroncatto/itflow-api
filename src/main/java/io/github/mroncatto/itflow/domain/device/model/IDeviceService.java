@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.device.entity.Device;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 import java.util.List;
 
 public interface IDeviceService extends IAbstractService<Device> {

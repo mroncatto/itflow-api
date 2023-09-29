@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.device.entity.DeviceCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IDeviceCategoryService extends IAbstractService<DeviceCategory> {
     DeviceCategory findById(Long id) throws NoResultException;

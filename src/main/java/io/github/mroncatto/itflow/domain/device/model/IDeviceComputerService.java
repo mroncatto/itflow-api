@@ -6,7 +6,7 @@ import io.github.mroncatto.itflow.domain.device.entity.DeviceComputer;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IDeviceComputerService {
     Device updateComputer(DeviceComputer entity, Long id, BindingResult result) throws BadRequestException;

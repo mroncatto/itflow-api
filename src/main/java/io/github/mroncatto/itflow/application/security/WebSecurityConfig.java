@@ -1,21 +1,23 @@
 package io.github.mroncatto.itflow.application.security;
 
-import io.github.mroncatto.itflow.application.security.filter.AuthenticationFilter;
-import io.github.mroncatto.itflow.application.security.filter.LoginAttemptService;
-import io.github.mroncatto.itflow.application.security.jwt.JwtAuthenticationFilter;
+import io.github.mroncatto.itflow.application.security.filter.AuthenticationEntryPointImpl;
+import io.github.mroncatto.itflow.application.security.filter.AuthorizationFilter;
+import io.github.mroncatto.itflow.application.security.filter.CustomAccessDeniedHandler;
 import io.github.mroncatto.itflow.application.security.jwt.JwtTokenProvider;
-import io.github.mroncatto.itflow.domain.user.service.UserService;
+import io.github.mroncatto.itflow.application.security.service.UserDetailsServiceImpl;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,44 +28,42 @@ import java.util.Arrays;
 import static io.github.mroncatto.itflow.application.config.constant.SecurityConstant.*;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @RequiredArgsConstructor
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsService userDetailsService;
-    private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final LoginAttemptService loginAttemptService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+public class WebSecurityConfig {
+    private final JwtTokenProvider tokenProvider;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationEntryPointImpl entryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.cors();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers(GET, AUTHENTICATION_URL).permitAll();
-        http.authorizeRequests().antMatchers(POST, ALLOW_POST).permitAll();
-        http.authorizeRequests().antMatchers(GET, ALLOW_GET).permitAll();
-        http.authorizeRequests().antMatchers(PUBLIC_URL).permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(buildAuthenticationFilter(authenticationManagerBean()));
-        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+    @Bean
+    public AuthorizationFilter authorizationFilter() {
+        return new AuthorizationFilter(tokenProvider, userDetailsService);
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.exceptionHandling(exception -> exception
+                .authenticationEntryPoint(entryPoint)
+                .accessDeniedHandler(accessDeniedHandler));
+        http.sessionManagement(session -> session.sessionCreationPolicy(STATELESS));
+        http.cors(withDefaults());
+        http.authorizeHttpRequests(authorize -> authorize
+                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                .requestMatchers(POST, AUTHENTICATION_URL).permitAll()
+                .requestMatchers(POST, ALLOW_POST).permitAll()
+                .requestMatchers(GET, ALLOW_POST).permitAll()
+                .requestMatchers(PUBLIC_URL).permitAll()
+                .anyRequest().authenticated());
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.addFilterBefore(authorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
-
 
     @Bean
     public CorsFilter corsFilter() {
@@ -82,11 +82,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 
-    private AuthenticationFilter buildAuthenticationFilter(AuthenticationManager authenticationManager){
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager, userService, jwtTokenProvider, loginAttemptService);
-        authenticationFilter.setFilterProcessesUrl(AUTHENTICATION_URL);
-        authenticationFilter.setPostOnly(true);
-        return authenticationFilter;
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 

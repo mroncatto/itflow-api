@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,7 +154,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
         Device device = this.findById(id);
         if(nonNull(device.getDeviceComputer())) throw new BadRequestException("CURRENT DEVICE DOES NOT HAVE A COMPUTER RESOURCE");
         entity.addEmbeddedKey();
-        device.getDeviceComputer().setCpu(entity);
+        //device.getDeviceComputer().setCpu(entity);
         return this.repository.save(device);
     }
 

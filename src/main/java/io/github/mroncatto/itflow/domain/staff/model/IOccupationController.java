@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IOccupationController extends IAbstractController<Occupation> {
     ResponseEntity<Occupation> findById(Long id) throws NoResultException;

@@ -7,7 +7,7 @@ import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IDeviceComputerController {
 

@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.company.entity.Branch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IBranchService extends IAbstractService<Branch> {
     Branch findById(Long id) throws NoResultException;

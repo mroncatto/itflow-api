@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.domain.email.entity;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;

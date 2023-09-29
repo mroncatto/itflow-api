@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS "account"
     "join_date"  timestamp NOT NULL,
     "active" boolean NOT NULL DEFAULT true,
     "non_locked" boolean NOT NULL DEFAULT true,
-    "password_expired" boolean NOT NULL DEFAULT false,
+    "password_non_expired" boolean NOT NULL DEFAULT true,
     "created_date" timestamp,
     "last_modified_date" timestamp,
     "created_by" varchar(75),

@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.company.entity.Department;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IDepartmentService extends IAbstractService<Department> {
     Department findById(Long id) throws NoResultException;

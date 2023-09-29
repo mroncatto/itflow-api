@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.company.entity.Branch;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IBranchController extends IAbstractController<Branch> {
     ResponseEntity<Branch> findById(Long id) throws NoResultException;

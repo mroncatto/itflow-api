@@ -8,9 +8,9 @@ import io.github.mroncatto.itflow.domain.staff.entity.Staff;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
@@ -73,7 +73,7 @@ public class User extends Auditable<String> implements Serializable {
     private boolean nonLocked;
 
     @Column(nullable = false)
-    private boolean password_expired;
+    private boolean passwordNonExpired;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     private List<Role> role;
@@ -81,17 +81,6 @@ public class User extends Auditable<String> implements Serializable {
     @OneToOne()
     @JsonIgnoreProperties("user")
     private Staff staff;
-
-    public User buildForToken() {
-        return User.builder()
-                .username(this.username)
-                .fullName(this.fullName)
-                .avatar(this.avatar)
-                .joinDate(this.joinDate)
-                .lastLoginDate(this.lastLoginDate)
-                .password_expired(this.password_expired)
-                .build();
-    }
 
     @Override
     public boolean equals(Object o) {

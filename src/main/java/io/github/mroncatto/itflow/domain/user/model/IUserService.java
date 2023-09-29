@@ -9,7 +9,7 @@ import io.github.mroncatto.itflow.domain.user.entity.Role;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 import java.util.List;
 import java.util.UUID;
 

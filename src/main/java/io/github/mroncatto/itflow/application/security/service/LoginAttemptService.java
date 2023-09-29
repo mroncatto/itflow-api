@@ -1,4 +1,4 @@
-package io.github.mroncatto.itflow.application.security.filter;
+package io.github.mroncatto.itflow.application.security.service;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -18,7 +18,7 @@ public class LoginAttemptService {
 
     public LoginAttemptService(@Value("${app.login.attempts}") int attemps) {
         this.attempt = attemps;
-        this.loginAttemptCache = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).maximumSize(100)
+        this.loginAttemptCache = CacheBuilder.newBuilder().expireAfterWrite(2, TimeUnit.MINUTES).maximumSize(100)
                 .build(new CacheLoader<String, Integer>() {
                     public Integer load(String key) {
                         return 0;

@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IComputerCpuService extends IAbstractService<ComputerCpu> {
     ComputerCpu findById(Long id) throws NoResultException;

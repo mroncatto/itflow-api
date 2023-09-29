@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IComputerCategoryService extends IAbstractService<ComputerCategory> {
     ComputerCategory findById(Long id) throws NoResultException;

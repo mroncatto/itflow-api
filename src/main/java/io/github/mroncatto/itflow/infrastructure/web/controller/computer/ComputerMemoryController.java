@@ -21,8 +21,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.NoResultException;
-import javax.validation.Valid;
+import jakarta.persistence.NoResultException;
+import jakarta.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.application.config.constant.ControllerConstant.PAGE_SIZE;

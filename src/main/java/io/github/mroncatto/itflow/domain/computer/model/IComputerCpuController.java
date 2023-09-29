@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IComputerCpuController extends IAbstractController<ComputerCpu> {
 

@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 
 public interface IOccupationService extends IAbstractService<Occupation> {
     Occupation findById(Long id) throws NoResultException;

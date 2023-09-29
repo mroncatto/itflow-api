@@ -1,19 +1,20 @@
 package io.github.mroncatto.itflow.application.security.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static io.github.mroncatto.itflow.application.config.constant.ApplicationConstant.APP_NAME;
@@ -23,52 +24,59 @@ import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.increa
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    private final String secret;
-    private final int expire;
+    private final String JWT_SECRET;
+    private final int JWT_EXPIRE;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.expire}") int expire) {
-        this.secret = secret;
-        this.expire = expire;
+        this.JWT_SECRET = secret;
+        this.JWT_EXPIRE = expire;
+    }
+    public String generate(UserDetails userDetails) {
+        return Jwts.builder()
+                .claim("roles", userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()))
+                .setAudience(APP_NAME)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(currentDate())
+                .setExpiration(increaseDate(JWT_EXPIRE))
+                .setIssuer(ServletUriComponentsBuilder.fromCurrentContextPath().path("").toUriString())
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    public String generateToken(JwtUserDetails user) {
-        String token = "";
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
-            token = JWT.create()
-                    .withAudience(APP_NAME)
-                    .withSubject(user.getUsername())
-                    .withIssuedAt(currentDate())
-                    .withExpiresAt(increaseDate(expire))
-                    .withIssuer(ServletUriComponentsBuilder.fromCurrentContextPath().path("").toUriString())
-                    .withClaim("credentials", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                    .sign(algorithm);
-        } catch (Exception e) {
-            log.error("Failed to generate token: {}", e.getMessage());
-        }
-        return token;
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    public String getSubject(String token) {
-        return decodedJWT(token).getSubject();
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 
-    public DecodedJWT decodedJWT(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(secret.getBytes());
-        JWTVerifier verifier = JWT.require(algorithm).build();
-        return verifier.verify(token);
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    public Collection<SimpleGrantedAuthority> getAuthorities(String token) {
-        String[] claims = getClaims(token);
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        Arrays.stream(claims).forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role));
-        });
-        return authorities;
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
-    public String[] getClaims(String token) {
-        return decodedJWT(token).getClaim("credentials").asArray(String.class);
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private SecretKey getSignInKey() {
+        return Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
     }
 }

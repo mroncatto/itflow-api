@@ -5,7 +5,7 @@ import io.github.mroncatto.itflow.domain.device.entity.Device;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.NoResultException;
+import jakarta.persistence.NoResultException;
 import java.util.List;
 
 public interface IDeviceController extends IAbstractController<Device> {

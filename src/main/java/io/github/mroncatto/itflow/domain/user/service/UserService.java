@@ -1,28 +1,28 @@
 package io.github.mroncatto.itflow.domain.user.service;
 
-import io.github.mroncatto.itflow.domain.email.service.EmailService;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
+import io.github.mroncatto.itflow.domain.email.service.EmailService;
+import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
 import io.github.mroncatto.itflow.domain.user.exception.UserNotFoundException;
 import io.github.mroncatto.itflow.domain.user.model.IUserService;
-import io.github.mroncatto.itflow.domain.user.entity.Role;
-import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.infrastructure.persistence.IUserRepository;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +39,7 @@ import static org.springframework.security.core.context.SecurityContextHolder.ge
 @RequiredArgsConstructor
 public class UserService extends AbstractService implements IUserService {
     private final IUserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final FilterService filterService;
 
@@ -113,7 +113,7 @@ public class UserService extends AbstractService implements IUserService {
         validateEmailField(entity.getEmail());
         String randomPassword = generateRandomAlphanumeric(6, false);
         entity.setPassword(passwordEncoder.encode(randomPassword));
-        entity.setPassword_expired(true);
+        entity.setPasswordNonExpired(true);
         entity.setJoinDate(new Date());
         this.emailService.welcome(entity, randomPassword);
         return this.userRepository.save(entity);
@@ -165,7 +165,7 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.findUserByUsername(username);
         if (validateUserPassword(oldPassword, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setPassword_expired(false);
+            user.setPasswordNonExpired(true);
             this.userRepository.save(user);
         } else {
             throw new BadPasswordException("");
@@ -178,7 +178,7 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.findUserByUsername(username);
         String randomPassword = generateRandomAlphanumeric(6, false);
         user.setPassword(passwordEncoder.encode(randomPassword));
-        user.setPassword_expired(true);
+        user.setPasswordNonExpired(false);
         this.emailService.resetPassword(user, randomPassword);
         //TODO: Improve this method to use tokens
         this.userRepository.save(user);
