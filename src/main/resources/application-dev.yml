@@ -14,8 +14,6 @@ server:
     key-store-password: itflow
     key-alias: itflow
     enabled: false
-  security:
-    require-ssl: false
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/itflow?useSSL=false&serverTimezone=app.timezone
@@ -55,9 +53,16 @@ spring:
   flyway:
     enabled: true
     validate-on-migrate: true
-  redis:
-    host: localhost
-    port: 6379
+  messages:
+    basename: messages
+    encoding: ISO-8859-1
+    fallback-to-system-locale: true
+  web:
+    locale: en
+  data:
+    redis:
+      host: localhost
+      port: 6379
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
