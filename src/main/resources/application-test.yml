@@ -20,6 +20,9 @@ spring:
     host: smtp.mailtrap.io
     port: 25
     protocol: smtp
+  jackson:
+    mapper:
+      default-view-inclusion: true
 jwt:
-  secret: "123456"
+  secret: "A2DAF8D98E959FB4F47FA167146A37736EB4227FD6996FB72A19E2B65E"
   expire: 60

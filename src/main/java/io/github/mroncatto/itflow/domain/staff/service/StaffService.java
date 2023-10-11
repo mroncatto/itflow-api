@@ -3,10 +3,12 @@ package io.github.mroncatto.itflow.domain.staff.service;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
+import io.github.mroncatto.itflow.domain.staff.dto.StaffDto;
 import io.github.mroncatto.itflow.domain.staff.model.IStaffService;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
 import io.github.mroncatto.itflow.infrastructure.persistence.IStaffRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -55,21 +57,23 @@ public class StaffService extends AbstractService implements IStaffService {
     }
 
     @Override
-    public Staff save(Staff entity, BindingResult result) throws BadRequestException {
+    public Staff save(StaffDto staffDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        validateUniqueEmail(entity);
-        return this.repository.save(entity);
+        validateUniqueEmail(staffDto);
+        var staff = new Staff();
+        BeanUtils.copyProperties(staffDto, staff);
+        return this.repository.save(staff);
     }
 
     @Override
-    public Staff update(Staff entity, BindingResult result) throws BadRequestException, NoResultException {
+    public Staff update(StaffDto staffDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        validateUniqueEmail(entity);
-        Staff updatedStaff = this.findById(entity.getId().toString());
-        updatedStaff.setEmail(entity.getEmail());
-        updatedStaff.setFullName(entity.getFullName());
-        updatedStaff.setDepartment(entity.getDepartment());
-        updatedStaff.setOccupation(entity.getOccupation());
+        validateUniqueEmail(staffDto);
+        Staff updatedStaff = this.findById(staffDto.getId().toString());
+        updatedStaff.setEmail(staffDto.getEmail());
+        updatedStaff.setFullName(staffDto.getFullName());
+        updatedStaff.setDepartment(staffDto.getDepartment());
+        updatedStaff.setOccupation(staffDto.getOccupation());
         return this.repository.save(updatedStaff);
     }
 
@@ -86,13 +90,13 @@ public class StaffService extends AbstractService implements IStaffService {
         return this.repository.save(staff);
     }
 
-    private void validateUniqueEmail(Staff staff) throws BadRequestException {
-        Staff anystaff = this.repository.findAllByEmail(staff.getEmail())
+    private void validateUniqueEmail(StaffDto staffDto) throws BadRequestException {
+        Staff anystaff = this.repository.findAllByEmail(staffDto.getEmail())
                 .stream()
                 .filter(Staff::isActive)
                 .findFirst().orElse(null);
 
-        if (nonNull(anystaff) && distinct(anystaff.getId(), staff.getId()))
+        if (nonNull(anystaff) && distinct(anystaff.getId(), staffDto.getId()))
             throw new BadRequestException("An employee with the provided email already exists!");
     }
 }

@@ -2,10 +2,12 @@ package io.github.mroncatto.itflow.domain.company.service;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.company.dto.DepartmentDto;
 import io.github.mroncatto.itflow.domain.company.model.IDepartmentService;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
 import io.github.mroncatto.itflow.infrastructure.persistence.IDepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -45,18 +47,20 @@ public class DepartmentService extends AbstractService implements IDepartmentSer
 
     @Override
     @CacheEvict(value = "Department", allEntries = true)
-    public Department save(Department entity, BindingResult result) throws BadRequestException {
+    public Department save(DepartmentDto dto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.departmentRepository.save(entity);
+        var department = new Department();
+        BeanUtils.copyProperties(dto, department);
+        return this.departmentRepository.save(department);
     }
 
     @Override
     @CacheEvict(value = "Department", allEntries = true)
-    public Department update(Department entity, BindingResult result) throws BadRequestException, NoResultException {
+    public Department update(DepartmentDto dto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Department dpto = this.findById(entity.getId());
-        dpto.setName(entity.getName());
-        dpto.setBranch(entity.getBranch());
+        Department dpto = this.findById(dto.getId());
+        dpto.setName(dto.getName());
+        dpto.setBranch(dto.getBranch());
         return this.departmentRepository.save(dpto);
     }
 

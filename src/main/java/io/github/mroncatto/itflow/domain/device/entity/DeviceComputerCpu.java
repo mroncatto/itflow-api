@@ -2,14 +2,12 @@ package io.github.mroncatto.itflow.domain.device.entity;
 
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import io.github.mroncatto.itflow.domain.device.entity.pk.DeviceComputerCpuPK;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -38,13 +36,9 @@ public class DeviceComputerCpu implements Serializable {
     private ComputerCpu computerCpu;
 
     @Column(length = 11, nullable = false)
-    @NotNull(message = "The vcpu field is required")
-    @Size(min = 1, max = 11, message = "The vcpu field must contain between 1 and 11 digits")
     private String vcpu;
 
     @Column(length = 11, nullable = false)
-    @NotNull(message = "The unit field is required")
-    @Size(min = 1, max = 11, message = "The unit field must contain between 1 and 11 digits")
     private String unit;
 
     @Override

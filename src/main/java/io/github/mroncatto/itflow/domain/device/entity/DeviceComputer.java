@@ -3,8 +3,6 @@ package io.github.mroncatto.itflow.domain.device.entity;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -32,12 +30,10 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
     @JoinColumn(insertable = false, updatable = false)
     private Device device;
 
-    @NotNull(message = "The computer category field is required")
     @ManyToOne(optional = false)
     private ComputerCategory computerCategory;
 
     @Column(length = 75)
-    @Size(max = 75, message = "The description field must contain max 75 characters")
     private String description;
 
     @Column(nullable = false)

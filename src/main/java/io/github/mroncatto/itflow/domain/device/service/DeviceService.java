@@ -3,6 +3,10 @@ package io.github.mroncatto.itflow.domain.device.service;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceStaffDto;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputer;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
@@ -12,6 +16,7 @@ import io.github.mroncatto.itflow.domain.device.model.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IDeviceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -72,48 +77,55 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     }
 
     @Override
-    public Device save(Device entity, BindingResult result) throws BadRequestException {
+    public Device save(DeviceDto deviceDto, BindingResult result) throws BadRequestException {
         validateResult(result);
 
-        if (nonNull(entity.getCode()) && !entity.getCode().isBlank())
-            validateUniqueCode(entity);
+        if (nonNull(deviceDto.getCode()) && !deviceDto.getCode().isBlank())
+            validateUniqueCode(deviceDto);
 
-        return this.repository.save(entity);
-    }
-
-    @Override
-    public Device updateStaff(DeviceStaff entity, Long id, BindingResult result) throws BadRequestException {
-        validateResult(result);
-        Device device = this.findById(id);
-        entity.setId(id);
-        entity.setDevice(device);
-        device.setDeviceStaff(entity);
+        var device = new Device();
+        BeanUtils.copyProperties(deviceDto, device);
         return this.repository.save(device);
     }
 
     @Override
-    public Device updateComputer(DeviceComputer entity, Long id, BindingResult result) throws BadRequestException {
+    public Device updateStaff(DeviceStaffDto deviceStaffDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        entity.setId(id);
-        entity.setDevice(device);
-        device.setDeviceComputer(entity);
+        deviceStaffDto.setId(id);
+        deviceStaffDto.setDevice(device);
+        var deviceStaff = new DeviceStaff();
+        BeanUtils.copyProperties(deviceStaffDto, deviceStaff);
+        device.setDeviceStaff(deviceStaff);
         return this.repository.save(device);
     }
 
     @Override
-    public Device update(Device entity, BindingResult result) throws BadRequestException, NoResultException {
+    public Device updateComputer(DeviceComputerDto deviceComputerDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
-        if (nonNull(entity.getCode()) && !entity.getCode().isBlank())
-            validateUniqueCode(entity);
-        Device device = this.findById(entity.getId());
-        device.setCode(entity.getCode());
-        device.setTag(entity.getTag());
-        device.setDeviceCategory(entity.getDeviceCategory());
-        device.setDepartment(entity.getDepartment());
-        device.setSerialNumber(entity.getSerialNumber());
-        device.setHostname(entity.getHostname());
-        device.setDescription(entity.getDescription());
+        Device device = this.findById(id);
+        deviceComputerDto.setId(id);
+        deviceComputerDto.setDevice(device);
+
+        var deviceComputer = new DeviceComputer();
+        BeanUtils.copyProperties(deviceComputerDto, deviceComputer);
+        device.setDeviceComputer(deviceComputer);
+        return this.repository.save(device);
+    }
+
+    @Override
+    public Device update(DeviceDto deviceDto, BindingResult result) throws BadRequestException, NoResultException {
+        validateResult(result);
+        if (nonNull(deviceDto.getCode()) && !deviceDto.getCode().isBlank())
+            validateUniqueCode(deviceDto);
+        Device device = this.findById(deviceDto.getId());
+        device.setCode(deviceDto.getCode());
+        device.setTag(deviceDto.getTag());
+        device.setDeviceCategory(deviceDto.getDeviceCategory());
+        device.setDepartment(deviceDto.getDepartment());
+        device.setSerialNumber(deviceDto.getSerialNumber());
+        device.setHostname(deviceDto.getHostname());
+        device.setDescription(deviceDto.getDescription());
         return this.repository.save(device);
     }
 
@@ -149,22 +161,25 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
 
     @Override
     @Transactional
-    public Device addDeviceComputerCpu(DeviceComputerCpu entity, Long id, BindingResult result) throws BadRequestException {
+    public Device addDeviceComputerCpu(DeviceComputerCpuDto deviceComputerCpuDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
         if(nonNull(device.getDeviceComputer())) throw new BadRequestException("CURRENT DEVICE DOES NOT HAVE A COMPUTER RESOURCE");
-        entity.addEmbeddedKey();
-        //device.getDeviceComputer().setCpu(entity);
+
+        var deviceComputerCpu = new DeviceComputerCpu();
+        BeanUtils.copyProperties(deviceComputerCpuDto, deviceComputerCpu);
+        deviceComputerCpu.addEmbeddedKey();
+        //device.getDeviceComputer().setCpu(deviceComputerCpu);
         return this.repository.save(device);
     }
 
-    private void validateUniqueCode(Device device) throws BadRequestException {
-        Device anydevice = this.repository.findAllByCode(device.getCode())
+    private void validateUniqueCode(DeviceDto deviceDto) throws BadRequestException {
+        Device anydevice = this.repository.findAllByCode(deviceDto.getCode())
                 .stream()
                 .filter(Device::isActive)
                 .findFirst().orElse(null);
 
-        if (nonNull(anydevice) && distinct(anydevice.getId(), device.getId()))
+        if (nonNull(anydevice) && distinct(anydevice.getId(), deviceDto.getId()))
             throw new BadRequestException("A device with the given code already exists!");
     }
 }

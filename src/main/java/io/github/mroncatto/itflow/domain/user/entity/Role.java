@@ -1,13 +1,11 @@
 package io.github.mroncatto.itflow.domain.user.entity;
 
-import lombok.*;
-import org.hibernate.Hibernate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -24,8 +22,6 @@ public class Role implements Serializable {
     private Long id;
 
     @Column(length = 30, nullable = false)
-    @NotNull(message = "The role field is required")
-    @Size(min = 5, max = 30, message = "(!) The role field must contain between 5 and 30 characters")
     private String role;
 
     @Override

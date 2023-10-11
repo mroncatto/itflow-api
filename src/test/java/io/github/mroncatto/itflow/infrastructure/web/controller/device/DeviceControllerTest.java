@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
-import io.github.mroncatto.itflow.domain.device.entity.Device;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceDto;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceCategory;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
@@ -44,13 +44,15 @@ class DeviceControllerTest {
         final String deviceHost = "Host Device";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.device)
                 .content(objectMapper.writeValueAsString(
-                        Device.builder()
+                        DeviceDto.builder()
                                 .hostname(deviceHost)
                                 .active(true)
-                                .deviceCategory(DeviceCategory.builder()
+                                .deviceCategory(DeviceCategory
+                                        .builder()
                                         .id(1L)
                                         .build())
-                                .department(Department.builder()
+                                .department(Department
+                                        .builder()
                                         .id(1L)
                                         .build())
                                 .build()))
@@ -70,14 +72,16 @@ class DeviceControllerTest {
         final String deviceHost = "Host Device edit";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.device)
                 .content(objectMapper.writeValueAsString(
-                        Device.builder()
+                        DeviceDto.builder()
                                 .id(1L)
                                 .hostname(deviceHost)
                                 .active(true)
-                                .deviceCategory(DeviceCategory.builder()
+                                .deviceCategory(DeviceCategory
+                                        .builder()
                                         .id(1L)
                                         .build())
-                                .department(Department.builder()
+                                .department(Department
+                                        .builder()
                                         .id(1L)
                                         .build())
                                 .build()))

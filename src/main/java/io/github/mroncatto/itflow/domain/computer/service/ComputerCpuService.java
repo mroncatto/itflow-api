@@ -4,10 +4,12 @@ import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.helper.CompareHelper;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerCpuService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerCpuRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,22 +33,24 @@ public class ComputerCpuService extends AbstractService implements IComputerCpuS
     }
 
     @Override
-    public ComputerCpu save(ComputerCpu entity, BindingResult result) throws BadRequestException {
+    public ComputerCpu save(ComputerCpuDto computerCpuDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.repository.save(entity);
+        var computerCpu = new ComputerCpu();
+        BeanUtils.copyProperties(computerCpuDto, computerCpu);
+        return this.repository.save(computerCpu);
     }
 
     @Override
-    public ComputerCpu update(ComputerCpu entity, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerCpu update(ComputerCpuDto computerCpuDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerCpu cpu = this.findById(entity.getId());
-        cpu.setBrandName(entity.getBrandName());
-        cpu.setModel(entity.getModel());
-        cpu.setGeneration(entity.getGeneration());
-        cpu.setSocket(entity.getSocket());
-        cpu.setFrequency(entity.getFrequency());
-        cpu.setFsb(entity.getFsb());
-        cpu.setCore(entity.getCore());
+        ComputerCpu cpu = this.findById(computerCpuDto.getId());
+        cpu.setBrandName(computerCpuDto.getBrandName());
+        cpu.setModel(computerCpuDto.getModel());
+        cpu.setGeneration(computerCpuDto.getGeneration());
+        cpu.setSocket(computerCpuDto.getSocket());
+        cpu.setFrequency(computerCpuDto.getFrequency());
+        cpu.setFsb(computerCpuDto.getFsb());
+        cpu.setCore(computerCpuDto.getCore());
         return this.repository.save(cpu);
     }
 

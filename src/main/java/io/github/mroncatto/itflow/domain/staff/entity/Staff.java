@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
 import io.github.mroncatto.itflow.domain.user.entity.User;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -33,20 +31,15 @@ public class Staff implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotNull(message = "The name field is required")
     @Column(length = 75, nullable = false)
-    @Size(min = 5, max = 75, message = "The name field must contain between 5 and 75 characters")
     private String fullName;
 
     @Column(length = 45)
-    @Size(min = 5, max = 45, message = "The name field must contain between 5 and 45 characters")
     private String email;
 
-    @NotNull(message = "The name field is required")
     @ManyToOne(optional = false)
     private Department department;
 
-    @NotNull(message = "The occupation field is required")
     @ManyToOne(optional = false)
     private Occupation occupation;
 

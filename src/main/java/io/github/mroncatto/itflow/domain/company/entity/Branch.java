@@ -1,12 +1,10 @@
 package io.github.mroncatto.itflow.domain.company.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -29,12 +27,9 @@ public class Branch implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "The name field is required")
     @Column(length = 45, nullable = false)
-    @Size(max = 45, message = "The name field must contain max 45 characters")
     private String name;
 
-    @NotNull(message = "The company field is required")
     @ManyToOne(optional = false)
     private Company company;
 

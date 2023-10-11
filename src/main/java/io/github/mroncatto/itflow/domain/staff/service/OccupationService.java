@@ -2,10 +2,12 @@ package io.github.mroncatto.itflow.domain.staff.service;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.staff.dto.OccupationDto;
 import io.github.mroncatto.itflow.domain.staff.model.IOccupationService;
 import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
 import io.github.mroncatto.itflow.infrastructure.persistence.IOccupationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -27,6 +29,7 @@ public class OccupationService extends AbstractService implements IOccupationSer
         return this.occupationRepository.findAllByActiveTrue();
     }
 
+    @Override
     public List<Occupation> findByStaffIsNotNull() {
         return this.occupationRepository.findByStaffIsNotNull();
     }
@@ -38,17 +41,19 @@ public class OccupationService extends AbstractService implements IOccupationSer
 
     @Override
     @CacheEvict(value = "Occupation", allEntries = true)
-    public Occupation save(Occupation entity, BindingResult result) throws BadRequestException {
+    public Occupation save(OccupationDto occupationDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.occupationRepository.save(entity);
+        var occupation = new Occupation();
+        BeanUtils.copyProperties(occupationDto, occupation);
+        return this.occupationRepository.save(occupation);
     }
 
     @Override
     @CacheEvict(value = "Occupation", allEntries = true)
-    public Occupation update(Occupation entity, BindingResult result) throws BadRequestException, NoResultException {
+    public Occupation update(OccupationDto occupationDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Occupation occupation = this.findById(entity.getId());
-        occupation.setName(entity.getName());
+        var occupation = this.findById(occupationDto.getId());
+        occupation.setName(occupationDto.getName());
         return this.occupationRepository.save(occupation);
     }
 

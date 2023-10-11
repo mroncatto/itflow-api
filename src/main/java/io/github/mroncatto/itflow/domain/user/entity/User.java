@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
@@ -37,21 +35,15 @@ public class User extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotNull(message = "The name field is required")
     @Column(length = 100, nullable = false)
-    @Size(min = 5, max = 100, message = "The name field must contain between 5 and 100 characters")
     private String fullName;
 
     @Column()
     private String avatar;
 
-    @NotNull(message = "The email field is required")
-    @Size(min = 5, max = 100, message = "The email field must contain between 10 and 100 characters")
     @Column(length = 100, nullable = false, unique = true)
     private String email;
 
-    @NotNull(message = "The username field is required")
-    @Size(min = 5, max = 45, message = "The username field must contain between 5 and 45 characters")
     @Column(length = 45, nullable = false, unique = true)
     private String username;
 

@@ -1,11 +1,12 @@
 package io.github.mroncatto.itflow.infrastructure.web.controller.company;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.company.model.IBranchController;
+import io.github.mroncatto.itflow.domain.company.dto.BranchDto;
 import io.github.mroncatto.itflow.domain.company.entity.Branch;
 import io.github.mroncatto.itflow.domain.company.service.BranchService;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,16 +14,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.NoResultException;
-import jakarta.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.application.config.constant.ControllerConstant.PAGE_SIZE;
@@ -36,7 +37,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.branch)
 @Tag(name = "Company", description = "Companies, branches, and departments")
 @RequiredArgsConstructor
-public class BranchController implements IBranchController {
+public class BranchController {
     private final BranchService branchService;
 
     @Operation(summary = "Get all company branches", security = {
@@ -45,7 +46,6 @@ public class BranchController implements IBranchController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    @Override
     public ResponseEntity<List<Branch>> findAll() {
         return new ResponseEntity<>(this.branchService.findAll(), OK);
     }
@@ -56,7 +56,6 @@ public class BranchController implements IBranchController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
-    @Override
     public ResponseEntity<Page<Branch>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.branchService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -69,9 +68,9 @@ public class BranchController implements IBranchController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Branch> save(@Valid @RequestBody Branch entity, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.branchService.save(entity, result), CREATED);
+    public ResponseEntity<Branch> save(@RequestBody @Validated(BranchDto.BranchView.BranchPost.class)
+                                       @JsonView(BranchDto.BranchView.BranchPost.class) BranchDto branchDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.branchService.save(branchDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific company branch", security = {
@@ -83,9 +82,9 @@ public class BranchController implements IBranchController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Branch> update(@Valid @RequestBody Branch entity, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.branchService.update(entity, result), OK);
+    public ResponseEntity<Branch> update(@RequestBody @Validated(BranchDto.BranchView.BranchPut.class)
+                                         @JsonView(BranchDto.BranchView.BranchPut.class) BranchDto dto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.branchService.update(dto, result), OK);
     }
 
     @Operation(summary = "Get company branch by ID", security = {
@@ -95,7 +94,6 @@ public class BranchController implements IBranchController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.id)
-    @Override
     public ResponseEntity<Branch> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.branchService.findById(id), OK);
     }
@@ -108,7 +106,6 @@ public class BranchController implements IBranchController {
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(MANAGER_OR_ADMIN)
-    @Override
     public ResponseEntity<Branch> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.branchService.deleteById(id), OK);
     }

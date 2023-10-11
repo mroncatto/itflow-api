@@ -2,10 +2,12 @@ package io.github.mroncatto.itflow.domain.computer.service;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageDto;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerStorageService;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerStorageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,17 +27,19 @@ public class ComputerStorageService extends AbstractService implements IComputer
     }
 
     @Override
-    public ComputerStorage save(ComputerStorage entity, BindingResult result) throws BadRequestException {
+    public ComputerStorage save(ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.repository.save(entity);
+        var computerStorage = new ComputerStorage();
+        BeanUtils.copyProperties(computerStorageDto, computerStorage);
+        return this.repository.save(computerStorage);
     }
 
     @Override
-    public ComputerStorage update(ComputerStorage entity, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerStorage update(ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerStorage computerStorage = this.findById(entity.getId());
-        computerStorage.setType(entity.getType());
-        computerStorage.setBrandName(entity.getBrandName());
+        ComputerStorage computerStorage = this.findById(computerStorageDto.getId());
+        computerStorage.setType(computerStorageDto.getType());
+        computerStorage.setBrandName(computerStorageDto.getBrandName());
         return this.repository.save(computerStorage);
     }
 

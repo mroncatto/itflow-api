@@ -1,16 +1,18 @@
 package io.github.mroncatto.itflow.infrastructure.web.controller.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.user.dto.UserDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserProfileDto;
+import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
-import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.user.model.IRoleService;
+import io.github.mroncatto.itflow.domain.user.model.IUserService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.user.model.IUserController;
-import io.github.mroncatto.itflow.domain.user.entity.Role;
-import io.github.mroncatto.itflow.domain.user.entity.User;
-import io.github.mroncatto.itflow.domain.user.service.RoleService;
-import io.github.mroncatto.itflow.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,9 +26,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.application.config.constant.ControllerConstant.PAGE_SIZE;
@@ -40,9 +42,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.user)
 @Tag(name = "User", description = "User accounts")
 @RequiredArgsConstructor
-public class UserController implements IUserController {
-    private final UserService userService;
-    private final RoleService roleService;
+public class UserController {
+    private final IUserService userService;
+    private final IRoleService roleService;
 
     @Operation(summary = "Get all users", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
@@ -50,7 +52,6 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    @Override
     public ResponseEntity<List<User>> findAll() {
         return new ResponseEntity<>(this.userService.findAll(), OK);
     }
@@ -61,7 +62,6 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
-    @Override
     public ResponseEntity<Page<User>> findAll(@PathVariable("page") int page,
                                               @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.userService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
@@ -74,7 +74,6 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.username)
-    @Override
     public ResponseEntity<User> findUserByUsername(@PathVariable("username")  String username) {
         return new ResponseEntity<>(this.userService.findUserByUsername(username), OK);
     }
@@ -87,9 +86,9 @@ public class UserController implements IUserController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(ADMIN_ONLY)
-    @Override
-    public ResponseEntity<User> save(@Valid @RequestBody User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
-        return new ResponseEntity<>(this.userService.save(entity, result), CREATED);
+    public ResponseEntity<User> save(@RequestBody @Validated(UserDto.UserView.UserPost.class)
+                                         @JsonView(UserDto.UserView.UserPost.class) UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
+        return new ResponseEntity<>(this.userService.save(dto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific user account", security = {
@@ -101,9 +100,10 @@ public class UserController implements IUserController {
     @ResponseStatus(value = OK)
     @PutMapping(EndpointUrlConstant.username)
     @PreAuthorize(HELPDESK_OR_ADMIN)
-    @Override
-    public ResponseEntity<User> update(@PathVariable("username") String username, @Valid @RequestBody User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
-        return new ResponseEntity<>(this.userService.update(username, entity, result), OK);
+    public ResponseEntity<User> update(@PathVariable("username") String username,
+                                       @RequestBody @Validated(UserDto.UserView.UserPut.class)
+                                       @JsonView(UserDto.UserView.UserPut.class) UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
+        return new ResponseEntity<>(this.userService.update(username, dto, result), OK);
     }
 
     @Operation(summary = "Inactive a specific user account", security = {
@@ -114,7 +114,6 @@ public class UserController implements IUserController {
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.username)
     @PreAuthorize(ADMIN_ONLY)
-    @Override
     public ResponseEntity<User> delete(@PathVariable("username") String username) throws BadRequestException {
         this.userService.delete(username);
         return new ResponseEntity<>(null, OK);
@@ -127,7 +126,6 @@ public class UserController implements IUserController {
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.role)
     @PreAuthorize(HELPDESK_OR_ADMIN)
-    @Override
     public ResponseEntity<List<Role>> findAllRoles() {
         return new ResponseEntity<>(this.roleService.findAll(), OK);
     }
@@ -139,7 +137,6 @@ public class UserController implements IUserController {
     @ResponseStatus(value = OK)
     @PutMapping(EndpointUrlConstant.usernameRole)
     @PreAuthorize(HELPDESK_OR_ADMIN)
-    @Override
     public ResponseEntity<User> updateUserRoles(@PathVariable("username") String username, @RequestBody List<Role> roles) {
         return new ResponseEntity<>(this.userService.updateUserRoles(username, roles), OK);
     }
@@ -150,9 +147,10 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping(EndpointUrlConstant.profile)
-    @Override
-    public ResponseEntity<User> updateProfile(@RequestBody User entity) throws AlreadExistingUserByEmail, BadRequestException {
-        return new ResponseEntity<>(this.userService.updateProfile(entity), OK);
+    public ResponseEntity<User> updateProfile(@RequestBody
+                                                  @Validated(UserProfileDto.UserProfileView.ProfileUpdate.class)
+                                                  @JsonView(UserProfileDto.UserProfileView.ProfileUpdate.class) UserProfileDto dto) throws AlreadExistingUserByEmail, BadRequestException {
+        return new ResponseEntity<>(this.userService.updateProfile(dto), OK);
     }
 
     @Operation(summary = "Update user password with old password", security = {
@@ -161,7 +159,6 @@ public class UserController implements IUserController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping(EndpointUrlConstant.updatePassword)
-    @Override
     public ResponseEntity<?> updateUserPassword(@RequestParam("oldPassword") String oldPassword,
                                                 @RequestParam("newPassword") String newPassword) throws BadPasswordException {
         this.userService.updateUserPassword(oldPassword, newPassword);
@@ -172,7 +169,6 @@ public class UserController implements IUserController {
     @ResponseStatus(value = OK)
     @PostMapping(EndpointUrlConstant.resetPassword)
     @PreAuthorize(HELPDESK_OR_ADMIN)
-    @Override
     public ResponseEntity<?> resetUserPassword(@RequestParam("username") String username) {
         this.userService.resetUserPassword(username);
         return new ResponseEntity<>(null, OK);
@@ -187,7 +183,6 @@ public class UserController implements IUserController {
     @ResponseStatus(value = CREATED)
     @PutMapping(EndpointUrlConstant.lockUnlockUsername)
     @PreAuthorize(HELPDESK_OR_ADMIN)
-    @Override
     public ResponseEntity<?> lockUnlockUser(@PathVariable("username") String username) {
         this.userService.lockUnlockUser(username);
         return new ResponseEntity<>(null, OK);

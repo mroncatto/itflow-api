@@ -2,10 +2,12 @@ package io.github.mroncatto.itflow.domain.company.service;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.company.dto.CompanyDto;
 import io.github.mroncatto.itflow.domain.company.model.ICompanyService;
 import io.github.mroncatto.itflow.domain.company.entity.Company;
 import io.github.mroncatto.itflow.infrastructure.persistence.ICompanyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -39,18 +41,20 @@ public class CompanyService extends AbstractService implements ICompanyService {
 
     @Override
     @CacheEvict(value = "Company", allEntries = true)
-    public Company save(Company entity, BindingResult result) throws BadRequestException {
+    public Company save(CompanyDto dto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.companyRepository.save(entity);
+        var company = new Company();
+        BeanUtils.copyProperties(dto, company);
+        return this.companyRepository.save(company);
     }
 
     @Override
     @CacheEvict(value = "Company", allEntries = true)
-    public Company update(Company entity, BindingResult result) throws BadRequestException, NoResultException {
+    public Company update(CompanyDto dto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Company company = this.findById(entity.getId());
-        company.setName(entity.getName());
-        company.setDocument(entity.getDocument());
+        Company company = this.findById(dto.getId());
+        company.setName(dto.getName());
+        company.setDocument(dto.getDocument());
         return this.companyRepository.save(company);
     }
 

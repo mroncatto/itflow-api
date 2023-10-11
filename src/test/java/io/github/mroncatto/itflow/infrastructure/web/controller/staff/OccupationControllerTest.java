@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.staff;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
+import io.github.mroncatto.itflow.domain.staff.dto.OccupationDto;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class OccupationControllerTest {
         final String occupationName = "Occupation test";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.occupation)
                 .content(objectMapper.writeValueAsString(
-                        Occupation.builder()
+                        OccupationDto.builder()
                                 .active(true)
                                 .name(occupationName)
                                 .build()))
@@ -62,7 +62,7 @@ class OccupationControllerTest {
         final String occupationName = "Occupation test edited";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.occupation)
                 .content(objectMapper.writeValueAsString(
-                        Occupation.builder()
+                        OccupationDto.builder()
                                 .id(2L)
                                 .active(true)
                                 .name(occupationName)

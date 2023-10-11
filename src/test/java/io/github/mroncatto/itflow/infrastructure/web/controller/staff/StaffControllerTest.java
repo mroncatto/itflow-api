@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
+import io.github.mroncatto.itflow.domain.staff.dto.StaffDto;
 import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
-import io.github.mroncatto.itflow.domain.staff.entity.Staff;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ class StaffControllerTest {
         final String staffName = "Staff test";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.staff)
                 .content(objectMapper.writeValueAsString(
-                        Staff.builder()
+                        StaffDto.builder()
                                 .fullName(staffName)
                                 .active(true)
                                 .email("test@test.com")

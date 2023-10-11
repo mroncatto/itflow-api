@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -33,31 +31,23 @@ public class Device extends Auditable<String> implements Serializable {
     private Long id;
 
     @Column(length = 45)
-    @Size(max = 45, message = "The code field must contain max 45 characters")
     private String code;
 
     @Column(length = 45)
-    @Size(max = 45, message = "The tag field must contain max 45 characters")
     private String tag;
 
     @Column(length = 45)
-    @Size(max = 45, message = "The serial number field must contain max 45 characters")
     private String serialNumber;
 
     @Column(length = 75, nullable = false)
-    @Size(max = 75, message = "The description field must contain max 75 characters")
     private String description;
 
-    @NotNull(message = "The hostname field is required")
     @Column(length = 25, nullable = false)
-    @Size(min = 2, max = 25, message = "The hostname field must contain between 5 and 25 characters")
     private String hostname;
 
-    @NotNull(message = "The device category field is required")
     @ManyToOne(optional = false)
     private DeviceCategory deviceCategory;
 
-    @NotNull(message = "The device department field is required")
     @ManyToOne(optional = false)
     private Department department;
 

@@ -2,12 +2,10 @@ package io.github.mroncatto.itflow.domain.software.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
@@ -30,13 +28,10 @@ public class Software extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "The name field is required")
     @Column(length = 45)
-    @Size(max = 45, message = "The name field must contain max 45 characters")
     private String name;
 
     @Column(length = 45)
-    @Size(max = 45, message = "The developer field must contain max 45 characters")
     private String developer;
 
     @Column(nullable = false)

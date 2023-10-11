@@ -4,6 +4,8 @@ import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
+import io.github.mroncatto.itflow.domain.user.dto.UserDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserProfileDto;
 import io.github.mroncatto.itflow.domain.user.entity.Role;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
@@ -14,6 +16,7 @@ import io.github.mroncatto.itflow.domain.user.model.IUserService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IUserRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -106,28 +109,30 @@ public class UserService extends AbstractService implements IUserService {
 
     @Override
     @Transactional
-    public User save(User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
+    public User save(UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
         validateResult(result);
-        validateUniqueUsername(entity);
-        validateUniqueEmail(entity);
-        validateEmailField(entity.getEmail());
+        validateUniqueUsername(dto);
+        validateUniqueEmail(dto.getEmail(), dto.getUsername());
+        validateEmailField(dto.getEmail());
         String randomPassword = generateRandomAlphanumeric(6, false);
-        entity.setPassword(passwordEncoder.encode(randomPassword));
-        entity.setPasswordNonExpired(true);
-        entity.setJoinDate(new Date());
-        this.emailService.welcome(entity, randomPassword);
-        return this.userRepository.save(entity);
+        var user = new User();
+        BeanUtils.copyProperties(dto, user);
+        user.setPassword(passwordEncoder.encode(randomPassword));
+        user.setPasswordNonExpired(true);
+        user.setJoinDate(new Date());
+        this.emailService.welcome(user, randomPassword);
+        return this.userRepository.save(user);
     }
 
     @Override
-    public User update(String username, User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
+    public User update(String username, UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
         validateResult(result);
         User user = this.findUserByUsername(username);
-        validateUniqueEmail(entity);
-        validateEmailField(entity.getEmail());
-        user.setFullName(entity.getFullName());
-        user.setEmail(entity.getEmail());
-        user.setStaff(entity.getStaff());
+        validateUniqueEmail(dto.getEmail(), dto.getUsername());
+        validateEmailField(dto.getEmail());
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user.setStaff(dto.getStaff());
         return this.userRepository.save(user);
     }
 
@@ -147,15 +152,15 @@ public class UserService extends AbstractService implements IUserService {
     }
 
     @Override
-    public User updateProfile(User entity) throws AlreadExistingUserByEmail, BadRequestException {
+    public User updateProfile(UserProfileDto dto) throws AlreadExistingUserByEmail, BadRequestException {
         String username = getContext().getAuthentication().getName();
         User user = this.findUserByUsername(username);
-        validateUniqueEmail(entity);
-        validateNullFields(entity.getEmail(), entity.getFullName());
-        validateEmptyFields(entity.getEmail(), entity.getFullName());
-        validateEmailField(entity.getEmail());
-        user.setEmail(entity.getEmail());
-        user.setFullName(entity.getFullName());
+        validateUniqueEmail(dto.getEmail(), username);
+        validateNullFields(dto.getEmail(), dto.getFullName());
+        validateEmptyFields(dto.getEmail(), dto.getFullName());
+        validateEmailField(dto.getEmail());
+        user.setEmail(dto.getEmail());
+        user.setFullName(dto.getFullName());
         return this.userRepository.save(user);
     }
 
@@ -192,18 +197,18 @@ public class UserService extends AbstractService implements IUserService {
         this.userRepository.save(user);
     }
 
-    private void validateUniqueEmail(User user) throws AlreadExistingUserByEmail {
-        User anyuser = this.userRepository.findAllByEmail(user.getEmail())
+    private void validateUniqueEmail(String email, String username) throws AlreadExistingUserByEmail {
+        User anyuser = this.userRepository.findAllByEmail(email)
                 .stream()
                 .filter(User::isActive)
                 .findFirst()
                 .orElse(null);
 
-        if (nonNull(anyuser) && distinct(anyuser.getUsername(), user.getUsername()))
+        if (nonNull(anyuser) && distinct(anyuser.getUsername(), username))
             throw new AlreadExistingUserByEmail("");
 }
 
-    private void validateUniqueUsername(User user) throws AlreadExistingUserByUsername {
+    private void validateUniqueUsername(UserDto user) throws AlreadExistingUserByUsername {
         if (nonNull(this.userRepository.findUserByUsername(user.getUsername())))
             throw new AlreadExistingUserByUsername("");
     }

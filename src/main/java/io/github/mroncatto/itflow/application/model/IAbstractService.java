@@ -6,8 +6,8 @@ import org.springframework.validation.BindingResult;
 import jakarta.persistence.NoResultException;
 import java.util.List;
 
-public interface IAbstractService<U> {
-    List<U> findAll();
-    U save(U entity, BindingResult result) throws BadRequestException;
-    U update(U entity, BindingResult result) throws BadRequestException, NoResultException;
+public interface IAbstractService<T, U> {
+    List<T> findAll();
+    T save(U dto, BindingResult result) throws BadRequestException;
+    T update(U dto, BindingResult result) throws BadRequestException, NoResultException;
 }

@@ -2,10 +2,12 @@ package io.github.mroncatto.itflow.domain.computer.service;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryDto;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerMemoryService;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerMemory;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerMemoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,19 +29,21 @@ public class ComputerMemoryService extends AbstractService implements IComputerM
     }
 
     @Override
-    public ComputerMemory save(ComputerMemory entity, BindingResult result) throws BadRequestException {
+    public ComputerMemory save(ComputerMemoryDto computerMemoryDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.repository.save(entity);
+        var computerMemory = new ComputerMemory();
+        BeanUtils.copyProperties(computerMemoryDto, computerMemory);
+        return this.repository.save(computerMemory);
     }
 
     @Override
-    public ComputerMemory update(ComputerMemory entity, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerMemory update(ComputerMemoryDto computerMemoryDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerMemory memory = this.findById(entity.getId());
-        memory.setBrandName(entity.getBrandName());
-        memory.setFrequency(entity.getFrequency());
-        memory.setType(entity.getType());
-        memory.setSize(entity.getSize());
+        ComputerMemory memory = this.findById(computerMemoryDto.getId());
+        memory.setBrandName(computerMemoryDto.getBrandName());
+        memory.setFrequency(computerMemoryDto.getFrequency());
+        memory.setType(computerMemoryDto.getType());
+        memory.setSize(computerMemoryDto.getSize());
         return this.repository.save(memory);
     }
 

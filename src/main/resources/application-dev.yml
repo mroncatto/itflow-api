@@ -63,6 +63,9 @@ spring:
     redis:
       host: localhost
       port: 6379
+  jackson:
+    mapper:
+      default-view-inclusion: true
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

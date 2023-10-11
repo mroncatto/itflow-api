@@ -2,14 +2,12 @@ package io.github.mroncatto.itflow.domain.device.entity;
 
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -32,12 +30,10 @@ public class DeviceStaff extends Auditable<String> implements Serializable {
     @JoinColumn(insertable = false, updatable = false)
     private Device device;
 
-    @NotNull(message = "The staff field is required")
     @ManyToOne(optional = false)
     private Staff staff;
 
     @Column(length = 45)
-    @Size(max = 45, message = "The login field must contain max 45 characters")
     private String login;
 
     @Override

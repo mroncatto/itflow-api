@@ -1,13 +1,12 @@
 package io.github.mroncatto.itflow.domain.device.entity;
 
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerMemory;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,16 +25,13 @@ public class DeviceComputerMemory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "The device computer field is required")
     @ManyToOne(optional = false)
     @JoinColumn(name = "device_computer_id")
     private DeviceComputer deviceComputer;
 
-    @NotNull(message = "The computer memory field is required")
     @ManyToOne(optional = false)
     private ComputerMemory computerMemory;
 
-    @NotNull(message = "The unit field is required")
     private int unit;
 
     @Override

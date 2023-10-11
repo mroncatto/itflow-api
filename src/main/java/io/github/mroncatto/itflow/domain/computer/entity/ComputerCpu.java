@@ -1,11 +1,9 @@
 package io.github.mroncatto.itflow.domain.computer.entity;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -28,34 +26,24 @@ public class ComputerCpu implements Serializable {
     private Long id;
 
     @Column(length = 45)
-    @NotNull(message = "The brand name field is required")
-    @Size(max = 45, message = "The brand name field must contain max 45 characters")
     private String brandName;
 
     @Column(length = 45)
-    @NotNull(message = "The model field is required")
-    @Size(max = 45, message = "The model field must contain max 45 characters")
     private String model;
 
     @Column(length = 25)
-    @Size(max = 25, message = "The generation field must contain max 25 characters")
     private String generation;
 
     @Column(length = 25)
-    @NotNull(message = "The socket field is required")
-    @Size(max = 25, message = "The socket field must contain max 25 characters")
     private String socket;
 
     @Column(length = 25)
-    @Size(max = 25, message = "The core field must contain max 25 characters")
     private String core;
 
     @Column(length = 25)
-    @Size(max = 25, message = "The frequency field must contain max 25 characters")
     private String frequency;
 
     @Column(length = 25)
-    @Size(max = 25, message = "The fsb field must contain max 25 characters")
     private String fsb;
 
     @Column(nullable = false)

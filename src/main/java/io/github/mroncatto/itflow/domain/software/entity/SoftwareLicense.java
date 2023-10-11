@@ -2,12 +2,10 @@ package io.github.mroncatto.itflow.domain.software.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
@@ -32,18 +30,14 @@ public class SoftwareLicense extends Auditable<String> implements Serializable {
     private Long id;
 
     @Column(length = 75, nullable = false)
-    @NotNull(message = "The description field is required")
-    @Size(max = 75, message = "The description field must contain max 75 characters")
     private String description;
 
     @Column(length = 45)
-    @Size(max = 45, message = "The code field must contain max 45 characters")
     private String code;
 
     @Temporal(TemporalType.DATE)
     private Date expireAt;
 
-    @NotNull(message = "The software field is required")
     @ManyToOne(optional = false)
     @JsonIgnoreProperties("licenses")
     private Software software;

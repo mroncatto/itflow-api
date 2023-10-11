@@ -2,10 +2,12 @@ package io.github.mroncatto.itflow.domain.computer.service;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerCategoryDto;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerCategoryService;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerCategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,17 +28,19 @@ public class ComputerCategoryService extends AbstractService implements ICompute
     }
 
     @Override
-    public ComputerCategory save(ComputerCategory entity, BindingResult result) throws BadRequestException {
+    public ComputerCategory save(ComputerCategoryDto computerCategoryDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.repository.save(entity);
+        var computerCategory = new ComputerCategory();
+        BeanUtils.copyProperties(computerCategoryDto, computerCategory);
+        return this.repository.save(computerCategory);
     }
 
     @Override
-    public ComputerCategory update(ComputerCategory entity, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerCategory update(ComputerCategoryDto computerCategoryDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerCategory category = this.findById(entity.getId());
-        category.setName(entity.getName());
-        return this.repository.save(entity);
+        ComputerCategory category = this.findById(computerCategoryDto.getId());
+        category.setName(computerCategoryDto.getName());
+        return this.repository.save(category);
     }
 
     @Override

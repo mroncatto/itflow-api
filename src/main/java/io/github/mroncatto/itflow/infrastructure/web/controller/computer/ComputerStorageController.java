@@ -1,11 +1,12 @@
 package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.computer.model.IComputerStorageController;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
-import io.github.mroncatto.itflow.domain.computer.service.ComputerStorageService;
+import io.github.mroncatto.itflow.domain.computer.model.IComputerStorageService;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,16 +14,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.NoResultException;
-import jakarta.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.application.config.constant.ControllerConstant.PAGE_SIZE;
@@ -35,8 +36,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.computerStorage)
 @Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
-public class ComputerStorageController implements IComputerStorageController {
-    private final ComputerStorageService service;
+public class ComputerStorageController {
+    private final IComputerStorageService service;
 
     @Operation(summary = "Get all computer storages", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
@@ -44,7 +45,6 @@ public class ComputerStorageController implements IComputerStorageController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    @Override
     public ResponseEntity<List<ComputerStorage>> findAll() {
         return new ResponseEntity<>(this.service.findAll(), OK);
     }
@@ -57,9 +57,9 @@ public class ComputerStorageController implements IComputerStorageController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<ComputerStorage> save(@RequestBody @Valid ComputerStorage entity, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(entity, result), CREATED);
+    public ResponseEntity<ComputerStorage> save(@RequestBody @Validated(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class)
+                                                @JsonView(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class) ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(computerStorageDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific computer storage", security = {
@@ -71,9 +71,9 @@ public class ComputerStorageController implements IComputerStorageController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<ComputerStorage> update(@RequestBody @Valid ComputerStorage entity, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(entity, result), OK);
+    public ResponseEntity<ComputerStorage> update(@RequestBody @Validated(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class)
+                                                      @JsonView(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class) ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(computerStorageDto, result), OK);
     }
 
     @Operation(summary = "Get computer storage by ID", security = {
@@ -83,7 +83,6 @@ public class ComputerStorageController implements IComputerStorageController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.id)
-    @Override
     public ResponseEntity<ComputerStorage> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
@@ -94,7 +93,6 @@ public class ComputerStorageController implements IComputerStorageController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
-    @Override
     public ResponseEntity<Page<ComputerStorage>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -107,7 +105,6 @@ public class ComputerStorageController implements IComputerStorageController {
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
     public ResponseEntity<ComputerStorage> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }

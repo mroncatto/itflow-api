@@ -1,11 +1,9 @@
 package io.github.mroncatto.itflow.domain.device.entity;
 
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
+import jakarta.persistence.*;
 import lombok.*;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -26,7 +24,6 @@ public class DeviceComputerStorage implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "The device computer field is required")
     @ManyToOne(optional = false)
     @JoinColumn(name = "device_computer_id")
     private DeviceComputer deviceComputer;
@@ -35,7 +32,5 @@ public class DeviceComputerStorage implements Serializable {
     private ComputerStorage computerStorage;
 
     @Column(length = 25)
-    @NotNull(message = "The size field is required")
-    @Size(max = 25, message = "The size field must contain max 25 characters")
     private String size;
 }

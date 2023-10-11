@@ -1,13 +1,11 @@
 package io.github.mroncatto.itflow.domain.software.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
@@ -26,14 +24,11 @@ public class SoftwareLicenseKey implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Size(max = 45, message = "The code field must contain max 45 characters")
     private String key;
 
     @ManyToOne(optional = false)
     private SoftwareLicense softwareLicense;
 
-    @NotNull(message = "The volume field is required")
     private int volume;
 
     @Override

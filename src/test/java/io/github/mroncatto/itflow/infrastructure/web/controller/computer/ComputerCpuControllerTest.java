@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuDto;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class ComputerCpuControllerTest {
         final String brandName = "BrandName test";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerCpu)
                 .content(objectMapper.writeValueAsString(
-                        ComputerCpu.builder()
+                        ComputerCpuDto.builder()
                                 .active(true)
                                 .model("intel")
                                 .brandName(brandName)
@@ -65,7 +65,7 @@ class ComputerCpuControllerTest {
         final String brandName = "BrandName test edit";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerCpu)
                 .content(objectMapper.writeValueAsString(
-                        ComputerCpu.builder()
+                        ComputerCpuDto.builder()
                                 .id(1L)
                                 .active(true)
                                 .model("intel")

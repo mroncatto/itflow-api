@@ -1,10 +1,12 @@
 package io.github.mroncatto.itflow.domain.company.service;
 
-import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
-import io.github.mroncatto.itflow.domain.company.model.IBranchService;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.company.dto.BranchDto;
 import io.github.mroncatto.itflow.domain.company.entity.Branch;
+import io.github.mroncatto.itflow.domain.company.model.IBranchService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IBranchRepository;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -39,18 +40,18 @@ public class BranchService extends AbstractService implements IBranchService {
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public Branch save(Branch entity, BindingResult result) throws BadRequestException {
+    public Branch save(BranchDto branchDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        return this.branchRepository.save(entity);
+        return this.branchRepository.save(branchDto.convert());
     }
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public Branch update(Branch entity, BindingResult result) throws BadRequestException, NoResultException {
+    public Branch update(BranchDto dto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Branch branch = this.findById(entity.getId());
-        branch.setName(entity.getName());
-        branch.setCompany(entity.getCompany());
+        Branch branch = this.findById(dto.getId());
+        branch.setName(dto.getName());
+        branch.setCompany(dto.getCompany());
         return this.branchRepository.save(branch);
     }
 

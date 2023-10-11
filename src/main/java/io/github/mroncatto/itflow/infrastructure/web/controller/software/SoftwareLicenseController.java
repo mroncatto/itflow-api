@@ -1,12 +1,13 @@
 package io.github.mroncatto.itflow.infrastructure.web.controller.software;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.software.model.ISoftwareLicenseController;
+import io.github.mroncatto.itflow.domain.software.dto.LicenseKeyDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseDto;
 import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicense;
-import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicenseKey;
-import io.github.mroncatto.itflow.domain.software.service.SoftwareLicenseService;
+import io.github.mroncatto.itflow.domain.software.model.ISoftwareLicenseService;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,16 +15,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.NoResultException;
-import jakarta.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.application.config.constant.ControllerConstant.PAGE_SIZE;
@@ -36,8 +37,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.computerLicense)
 @Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
-public class SoftwareLicenseController implements ISoftwareLicenseController {
-    private final SoftwareLicenseService service;
+public class SoftwareLicenseController {
+    private final ISoftwareLicenseService service;
 
     @Operation(summary = "Get all software licenses", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
@@ -45,7 +46,6 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    @Override
     public ResponseEntity<List<SoftwareLicense>> findAll() {
         return new ResponseEntity<>(this.service.findAll(), OK);
     }
@@ -56,7 +56,6 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
-    @Override
     public ResponseEntity<Page<SoftwareLicense>> findAll(@PathVariable("page") int page, String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -69,9 +68,9 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<SoftwareLicense> save(@RequestBody @Valid SoftwareLicense entity, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(entity, result), CREATED);
+    public ResponseEntity<SoftwareLicense> save(@RequestBody @Validated(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class)
+                                                @JsonView(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class) SoftwareLicenseDto licenseDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(licenseDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific software license", security = {
@@ -83,9 +82,9 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<SoftwareLicense> update(@RequestBody @Valid SoftwareLicense entity, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(entity, result), OK);
+    public ResponseEntity<SoftwareLicense> update(@RequestBody @Validated(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class)
+                                                  @JsonView(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class) SoftwareLicenseDto licenseDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(licenseDto, result), OK);
     }
 
     @Operation(summary = "Get software license by ID", security = {
@@ -95,7 +94,6 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.id)
-    @Override
     public ResponseEntity<SoftwareLicense> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
@@ -108,7 +106,6 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
     public ResponseEntity<SoftwareLicense> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
@@ -121,9 +118,10 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
     @ResponseStatus(value = CREATED)
     @PostMapping(EndpointUrlConstant.updateLicenseKey)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<SoftwareLicense> addLicenseKey(@PathVariable("id") Long id, @RequestBody @Valid SoftwareLicenseKey key, BindingResult result) throws NoResultException, BadRequestException {
-        return new ResponseEntity<>(this.service.addLicenseKey(id, key, result), CREATED);
+    public ResponseEntity<SoftwareLicense> addLicenseKey(@PathVariable("id") Long id,
+                                                         @RequestBody @Validated(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class)
+                                                         @JsonView(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyDto licenseKeyDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addLicenseKey(id, licenseKeyDto, result), CREATED);
     }
 
     @Operation(summary = "Remove a key from software license", security = {
@@ -134,8 +132,9 @@ public class SoftwareLicenseController implements ISoftwareLicenseController {
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.updateLicenseKey)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<SoftwareLicense> RemoveLicenseKey(@PathVariable("id") Long id, @RequestBody @Valid SoftwareLicenseKey key, BindingResult result) throws NoResultException, BadRequestException {
-        return new ResponseEntity<>(this.service.RemoveLicenseKey(id, key, result), OK);
+    public ResponseEntity<SoftwareLicense> RemoveLicenseKey(@PathVariable("id") Long id,
+                                                            @RequestBody @Validated(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class)
+                                                            @JsonView(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyDto licenseKeyDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.RemoveLicenseKey(id, licenseKeyDto, result), OK);
     }
 }

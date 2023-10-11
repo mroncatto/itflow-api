@@ -1,12 +1,13 @@
 package io.github.mroncatto.itflow.infrastructure.web.controller.software;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
-import io.github.mroncatto.itflow.domain.software.model.ISoftwareController;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseDto;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
-import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicense;
-import io.github.mroncatto.itflow.domain.software.service.SoftwareService;
+import io.github.mroncatto.itflow.domain.software.model.ISoftwareService;
+import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,16 +15,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.persistence.NoResultException;
-import jakarta.validation.Valid;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.application.config.constant.ControllerConstant.PAGE_SIZE;
@@ -36,8 +37,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(value = EndpointUrlConstant.computerSoftware)
 @Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
-public class SoftwareController implements ISoftwareController {
-    private final SoftwareService service;
+public class SoftwareController {
+    private final ISoftwareService service;
 
     @Operation(summary = "Get all software", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
@@ -45,7 +46,6 @@ public class SoftwareController implements ISoftwareController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    @Override
     public ResponseEntity<List<Software>> findAll() {
         return new ResponseEntity<>(this.service.findAll(), OK);
     }
@@ -56,7 +56,6 @@ public class SoftwareController implements ISoftwareController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
-    @Override
     public ResponseEntity<Page<Software>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -69,9 +68,9 @@ public class SoftwareController implements ISoftwareController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Software> save(@RequestBody @Valid Software entity, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(entity, result), CREATED);
+    public ResponseEntity<Software> save(@RequestBody @Validated(SoftwareDto.SoftwareView.SoftwarePost.class)
+                                         @JsonView(SoftwareDto.SoftwareView.SoftwarePost.class) SoftwareDto softwareDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(softwareDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific software", security = {
@@ -83,9 +82,9 @@ public class SoftwareController implements ISoftwareController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Software> update(@RequestBody @Valid Software entity, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(entity, result), OK);
+    public ResponseEntity<Software> update(@RequestBody @Validated(SoftwareDto.SoftwareView.SoftwarePut.class)
+                                           @JsonView(SoftwareDto.SoftwareView.SoftwarePut.class) SoftwareDto softwareDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(softwareDto, result), OK);
     }
 
     @Operation(summary = "Get software by ID", security = {
@@ -95,7 +94,6 @@ public class SoftwareController implements ISoftwareController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.id)
-    @Override
     public ResponseEntity<Software> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
@@ -108,7 +106,6 @@ public class SoftwareController implements ISoftwareController {
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.id)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
     public ResponseEntity<Software> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
@@ -121,8 +118,9 @@ public class SoftwareController implements ISoftwareController {
     @ResponseStatus(value = CREATED)
     @PostMapping(EndpointUrlConstant.updateSoftwareLicense)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    @Override
-    public ResponseEntity<Software> addLicense(@PathVariable("id") Long id, @RequestBody @Valid SoftwareLicense license, BindingResult result) throws NoResultException, BadRequestException {
-        return new ResponseEntity<>(this.service.addLicense(id, license, result), CREATED);
+    public ResponseEntity<Software> addLicense(@PathVariable("id") Long id,
+                                               @RequestBody @Validated(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class)
+                                               @JsonView(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class) SoftwareLicenseDto licenseDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addLicense(id, licenseDto, result), CREATED);
     }
 }

@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageDto;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class ComputerStorageControllerTest {
         final String brandName = "Storage brand";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerStorage)
                 .content(objectMapper.writeValueAsString(
-                        ComputerStorage.builder()
+                        ComputerStorageDto.builder()
                                 .active(true)
                                 .brandName(brandName)
                                 .type("test")
@@ -64,7 +64,7 @@ class ComputerStorageControllerTest {
         final String brandName = "Storage brand edited";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerStorage)
                 .content(objectMapper.writeValueAsString(
-                        ComputerStorage.builder()
+                        ComputerStorageDto.builder()
                                 .id(1L)
                                 .active(true)
                                 .brandName(brandName)

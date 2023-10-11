@@ -1,6 +1,8 @@
 package io.github.mroncatto.itflow.domain.user.model;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.user.dto.UserDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserProfileDto;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
@@ -18,11 +20,11 @@ public interface IUserService extends IAbstractUserService {
     User findUserById(UUID id) throws UserNotFoundException;
     User findUserByUsername(String username);
     User findUserByEmail(String email) throws UserNotFoundException;
-    User save(User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail;
-    User update(String username, User entity, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail, NoResultException;
+    User save(UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail;
+    User update(String username, UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail, NoResultException;
     void delete(String username);
     User updateUserRoles(String username, List<Role> roles);
-    User updateProfile(User entity) throws AlreadExistingUserByEmail, BadRequestException;
+    User updateProfile(UserProfileDto dto) throws AlreadExistingUserByEmail, BadRequestException;
     void updateUserPassword(String oldPassword, String newPassword) throws BadPasswordException;
     void resetUserPassword(String username);
     void lockUnlockUser(String username);
