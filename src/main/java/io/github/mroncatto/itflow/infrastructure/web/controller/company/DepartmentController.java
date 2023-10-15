@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.company;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.company.dto.DepartmentDto;
+import io.github.mroncatto.itflow.domain.company.dto.DepartmentRequestDto;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
 import io.github.mroncatto.itflow.domain.company.service.DepartmentService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -78,8 +78,8 @@ public class DepartmentController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Department> save(@RequestBody @Validated(DepartmentDto.DepartmentView.DepartmentPost.class)
-                                               @JsonView(DepartmentDto.DepartmentView.DepartmentPost.class) DepartmentDto dto, BindingResult result) throws BadRequestException {
+    public ResponseEntity<Department> save(@RequestBody @Validated(DepartmentRequestDto.DepartmentView.DepartmentPost.class)
+                                               @JsonView(DepartmentRequestDto.DepartmentView.DepartmentPost.class) DepartmentRequestDto dto, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.departmentService.save(dto, result), CREATED);
     }
 
@@ -92,8 +92,8 @@ public class DepartmentController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Department> update(@RequestBody @Validated(DepartmentDto.DepartmentView.DepartmentPut.class)
-                                                 @JsonView(DepartmentDto.DepartmentView.DepartmentPut.class) DepartmentDto dto, BindingResult result) throws BadRequestException, NoResultException {
+    public ResponseEntity<Department> update(@RequestBody @Validated(DepartmentRequestDto.DepartmentView.DepartmentPut.class)
+                                                 @JsonView(DepartmentRequestDto.DepartmentView.DepartmentPut.class) DepartmentRequestDto dto, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.departmentService.update(dto, result), OK);
     }
 

@@ -1,13 +1,15 @@
 package io.github.mroncatto.itflow.domain.staff.service;
 
+import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
-import io.github.mroncatto.itflow.domain.staff.dto.StaffDto;
+import io.github.mroncatto.itflow.domain.staff.dto.StaffRequestDto;
 import io.github.mroncatto.itflow.domain.staff.model.IStaffService;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
 import io.github.mroncatto.itflow.infrastructure.persistence.IStaffRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,10 +27,12 @@ import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.dis
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class StaffService extends AbstractService implements IStaffService {
     private final IStaffRepository repository;
     private final FilterService filterService;
+    private final MessageService messageService;
 
     @Override
     public List<Staff> findAll() {
@@ -37,6 +41,9 @@ public class StaffService extends AbstractService implements IStaffService {
 
     @Override
     public Page<Staff> findAll(Pageable pageable, String filter, List<String> departments, List<String> occupations) {
+        log.debug(">>>FILTERING STAFF BY: {}", filter);
+        log.debug(">>>AND DEPARTMENTS: {}", departments);
+        log.debug(">>>AND OCCUPATIONS: {}", occupations);
         return this.repository.findAll((Specification<Staff>) (root, query, builder) -> {
 
             List<Predicate> predicates = new ArrayList<>();
@@ -57,46 +64,50 @@ public class StaffService extends AbstractService implements IStaffService {
     }
 
     @Override
-    public Staff save(StaffDto staffDto, BindingResult result) throws BadRequestException {
+    public Staff save(StaffRequestDto staffRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        validateUniqueEmail(staffDto);
+        validateUniqueEmail(staffRequestDto);
         var staff = new Staff();
-        BeanUtils.copyProperties(staffDto, staff);
+        BeanUtils.copyProperties(staffRequestDto, staff);
+        log.debug(">>>CREATING STAFF: {}", staffRequestDto);
         return this.repository.save(staff);
     }
 
     @Override
-    public Staff update(StaffDto staffDto, BindingResult result) throws BadRequestException, NoResultException {
+    public Staff update(StaffRequestDto staffRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        validateUniqueEmail(staffDto);
-        Staff updatedStaff = this.findById(staffDto.getId().toString());
-        updatedStaff.setEmail(staffDto.getEmail());
-        updatedStaff.setFullName(staffDto.getFullName());
-        updatedStaff.setDepartment(staffDto.getDepartment());
-        updatedStaff.setOccupation(staffDto.getOccupation());
+        validateUniqueEmail(staffRequestDto);
+        Staff updatedStaff = this.findById(staffRequestDto.getId().toString());
+        updatedStaff.setEmail(staffRequestDto.getEmail());
+        updatedStaff.setFullName(staffRequestDto.getFullName());
+        updatedStaff.setDepartment(staffRequestDto.getDepartment());
+        updatedStaff.setOccupation(staffRequestDto.getOccupation());
+        log.debug(">>>UPDATING STAFF: {}", staffRequestDto);
         return this.repository.save(updatedStaff);
     }
 
     @Override
     public Staff findById(String uuid) throws NoResultException {
         UUID id = UUID.fromString(uuid);
-        return this.repository.findById(id).orElseThrow(() -> new NoResultException("ENTITY NOT FOUND"));
+        return this.repository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("staff")));
     }
 
     @Override
     public Staff deleteById(String uuid) throws NoResultException {
         Staff staff = this.findById(uuid);
         staff.setActive(false);
+        log.debug(">>>DELETING STAFF BY: {}", uuid);
         return this.repository.save(staff);
     }
 
-    private void validateUniqueEmail(StaffDto staffDto) throws BadRequestException {
-        Staff anystaff = this.repository.findAllByEmail(staffDto.getEmail())
+    private void validateUniqueEmail(StaffRequestDto staffRequestDto) throws BadRequestException {
+        Staff anystaff = this.repository.findAllByEmail(staffRequestDto.getEmail())
                 .stream()
                 .filter(Staff::isActive)
                 .findFirst().orElse(null);
 
-        if (nonNull(anystaff) && distinct(anystaff.getId(), staffDto.getId()))
-            throw new BadRequestException("An employee with the provided email already exists!");
+        if (nonNull(anystaff) && distinct(anystaff.getId(), staffRequestDto.getId()))
+            throw new BadRequestException(messageService.getMessage("badRequest.employee_already_exists_by_email"));
     }
 }

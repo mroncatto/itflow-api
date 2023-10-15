@@ -3,10 +3,10 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.staff;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.staff.dto.OccupationDto;
+import io.github.mroncatto.itflow.domain.staff.dto.OccupationRequestDto;
 import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
 import io.github.mroncatto.itflow.domain.staff.model.IOccupationService;
-import io.github.mroncatto.itflow.domain.user.dto.UserDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -78,9 +78,9 @@ public class OccupationController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Occupation> save(@RequestBody @Validated(UserDto.UserView.UserPost.class)
-                                               @JsonView(UserDto.UserView.UserPost.class) OccupationDto occupationDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(occupationDto, result), CREATED);
+    public ResponseEntity<Occupation> save(@RequestBody @Validated(UserRequestDto.UserView.UserPost.class)
+                                               @JsonView(UserRequestDto.UserView.UserPost.class) OccupationRequestDto occupationRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(occupationRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific occupation", security = {
@@ -92,9 +92,9 @@ public class OccupationController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Occupation> update(@RequestBody @Validated(UserDto.UserView.UserPut.class)
-                                                 @JsonView(UserDto.UserView.UserPut.class) OccupationDto occupationDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(occupationDto, result), OK);
+    public ResponseEntity<Occupation> update(@RequestBody @Validated(UserRequestDto.UserView.UserPut.class)
+                                                 @JsonView(UserRequestDto.UserView.UserPut.class) OccupationRequestDto occupationRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(occupationRequestDto, result), OK);
     }
 
     @Operation(summary = "Get occupation by ID", security = {

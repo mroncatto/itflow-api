@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.company;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.company.dto.CompanyDto;
+import io.github.mroncatto.itflow.domain.company.dto.CompanyRequestDto;
 import io.github.mroncatto.itflow.domain.company.entity.Company;
 import io.github.mroncatto.itflow.domain.company.model.ICompanyService;
 import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
@@ -73,8 +73,8 @@ public class CompanyController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Company> save(@RequestBody @Validated(CompanyDto.CompanyView.CompanyPost.class)
-                                        @JsonView(CompanyDto.CompanyView.CompanyPost.class) CompanyDto dto, BindingResult result) throws BadRequestException {
+    public ResponseEntity<Company> save(@RequestBody @Validated(CompanyRequestDto.CompanyView.CompanyPost.class)
+                                        @JsonView(CompanyRequestDto.CompanyView.CompanyPost.class) CompanyRequestDto dto, BindingResult result) throws BadRequestException {
         log.debug("POST save CompanyDto: {}", dto.getName());
         return new ResponseEntity<>(this.companyService.save(dto, result), CREATED);
     }
@@ -88,8 +88,8 @@ public class CompanyController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Company> update(@Valid @RequestBody @Validated(CompanyDto.CompanyView.CompanyPut.class)
-                                              @JsonView(CompanyDto.CompanyView.CompanyPut.class) CompanyDto dto, BindingResult result) throws BadRequestException, NoResultException {
+    public ResponseEntity<Company> update(@Valid @RequestBody @Validated(CompanyRequestDto.CompanyView.CompanyPut.class)
+                                              @JsonView(CompanyRequestDto.CompanyView.CompanyPut.class) CompanyRequestDto dto, BindingResult result) throws BadRequestException, NoResultException {
         log.debug("PUT update CompanyDto: {}", dto.getName());
         return new ResponseEntity<>(this.companyService.update(dto, result), OK);
     }

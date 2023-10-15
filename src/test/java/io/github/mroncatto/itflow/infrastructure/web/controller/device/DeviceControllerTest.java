@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceRequestDto;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceCategory;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
@@ -44,7 +44,7 @@ class DeviceControllerTest {
         final String deviceHost = "Host Device";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.device)
                 .content(objectMapper.writeValueAsString(
-                        DeviceDto.builder()
+                        DeviceRequestDto.builder()
                                 .hostname(deviceHost)
                                 .active(true)
                                 .deviceCategory(DeviceCategory
@@ -72,7 +72,7 @@ class DeviceControllerTest {
         final String deviceHost = "Host Device edit";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.device)
                 .content(objectMapper.writeValueAsString(
-                        DeviceDto.builder()
+                        DeviceRequestDto.builder()
                                 .id(1L)
                                 .hostname(deviceHost)
                                 .active(true)

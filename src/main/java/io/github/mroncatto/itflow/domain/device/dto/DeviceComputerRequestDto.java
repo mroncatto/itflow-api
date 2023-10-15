@@ -8,11 +8,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DeviceComputerDto {
+public class DeviceComputerRequestDto {
 
     public interface DeviceComputerView {
         interface DeviceComputerPut {}
@@ -24,10 +26,12 @@ public class DeviceComputerDto {
     @JsonView(DeviceComputerView.DeviceComputerPut.class)
     private Device device;
 
-    @NotNull(groups = {DeviceComputerView.DeviceComputerPut.class}, message = "The computer category field is required")
+    @NotNull(groups = {DeviceComputerView.DeviceComputerPut.class},
+            message = "[{field.computer_category}] {validation.required}")
     private ComputerCategory computerCategory;
 
-    @Size(groups = {DeviceComputerView.DeviceComputerPut.class}, max = 75, message = "The description field must contain max 75 characters")
+    @Size(groups = {DeviceComputerView.DeviceComputerPut.class},
+            max = 75, message = "[{field.description}] {validation.max}")
     private String description;
 
     @JsonView(DeviceComputerView.DeviceComputerPut.class)

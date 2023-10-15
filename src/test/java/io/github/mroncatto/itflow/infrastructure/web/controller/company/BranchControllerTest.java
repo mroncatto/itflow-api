@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.company;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.company.dto.BranchDto;
+import io.github.mroncatto.itflow.domain.company.dto.BranchRequestDto;
 import io.github.mroncatto.itflow.domain.company.entity.Company;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
@@ -43,7 +43,7 @@ class BranchControllerTest {
         final String branchName = "Branch test";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.branch)
                 .content(objectMapper.writeValueAsString(
-                        BranchDto.builder()
+                        BranchRequestDto.builder()
                                 .company(Company
                                         .builder()
                                         .id(1L)
@@ -67,7 +67,7 @@ class BranchControllerTest {
         final String branchName = "Branch test edited";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.branch)
                 .content(objectMapper.writeValueAsString(
-                        BranchDto.builder()
+                        BranchRequestDto.builder()
                                 .id(2L)
                                 .company(Company.builder()
                                         .id(1L)

@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.software;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
@@ -43,7 +43,7 @@ class SoftwareLicenseControllerTest {
         final String licenseDesc = "License test";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerLicense)
                 .content(objectMapper.writeValueAsString(
-                        SoftwareLicenseDto.builder()
+                        SoftwareLicenseRequestDto.builder()
                                 .active(true)
                                 .software(
                                         Software.builder()

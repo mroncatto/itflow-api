@@ -1,25 +1,28 @@
 package io.github.mroncatto.itflow.domain.computer.service;
 
-import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageDto;
-import io.github.mroncatto.itflow.domain.computer.model.IComputerStorageService;
+import io.github.mroncatto.itflow.application.service.MessageService;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
+import io.github.mroncatto.itflow.domain.computer.model.IComputerStorageService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerStorageRepository;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
 import java.util.List;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ComputerStorageService extends AbstractService implements IComputerStorageService {
     private final IComputerStorageRepository repository;
+    private final MessageService messageService;
 
     @Override
     public List<ComputerStorage> findAll() {
@@ -27,29 +30,31 @@ public class ComputerStorageService extends AbstractService implements IComputer
     }
 
     @Override
-    public ComputerStorage save(ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException {
+    public ComputerStorage save(ComputerStorageRequestDto computerStorageRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        var computerStorage = new ComputerStorage();
-        BeanUtils.copyProperties(computerStorageDto, computerStorage);
-        return this.repository.save(computerStorage);
+        log.debug(">>>CREATING COMPUTER STORAGE: {}", computerStorageRequestDto.toString());
+        return this.repository.save(computerStorageRequestDto.convert());
     }
 
     @Override
-    public ComputerStorage update(ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerStorage update(ComputerStorageRequestDto computerStorageRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerStorage computerStorage = this.findById(computerStorageDto.getId());
-        computerStorage.setType(computerStorageDto.getType());
-        computerStorage.setBrandName(computerStorageDto.getBrandName());
+        ComputerStorage computerStorage = this.findById(computerStorageRequestDto.getId());
+        computerStorage.setType(computerStorageRequestDto.getType());
+        computerStorage.setBrandName(computerStorageRequestDto.getBrandName());
+        log.debug(">>>UPDATING COMPUTER STORAGE: {}", computerStorageRequestDto.toString());
         return this.repository.save(computerStorage);
     }
 
     @Override
     public ComputerStorage findById(Long id) throws NoResultException {
-        return this.repository.findById(id).orElseThrow(() -> new NoResultException("COMPUTER STORAGE NOT FOUND"));
+        return this.repository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("computer_storage")));
     }
 
     @Override
     public Page<ComputerStorage> findAll(Pageable pageable, String filter) {
+        log.debug(">>>FILTERING COMPUTER STORAGE BY: {}", filter);
         return this.repository.findAllByActiveTrue(pageable);
     }
 
@@ -57,6 +62,7 @@ public class ComputerStorageService extends AbstractService implements IComputer
     public ComputerStorage deleteById(Long id) throws NoResultException {
         ComputerStorage computerStorage = this.findById(id);
         computerStorage.setActive(false);
+        log.debug(">>>DELETING COMPUTER STORAGE BY: {}", id);
         return this.repository.save(computerStorage);
     }
 }

@@ -1,26 +1,28 @@
 package io.github.mroncatto.itflow.domain.computer.service;
 
-import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.application.model.AbstractService;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryDto;
-import io.github.mroncatto.itflow.domain.computer.model.IComputerMemoryService;
+import io.github.mroncatto.itflow.application.service.MessageService;
+import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerMemory;
+import io.github.mroncatto.itflow.domain.computer.model.IComputerMemoryService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerMemoryRepository;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
 import java.util.List;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ComputerMemoryService extends AbstractService implements IComputerMemoryService {
-
     private final IComputerMemoryRepository repository;
+    private final MessageService messageService;
 
 
     @Override
@@ -29,31 +31,33 @@ public class ComputerMemoryService extends AbstractService implements IComputerM
     }
 
     @Override
-    public ComputerMemory save(ComputerMemoryDto computerMemoryDto, BindingResult result) throws BadRequestException {
+    public ComputerMemory save(ComputerMemoryRequestDto computerMemoryRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        var computerMemory = new ComputerMemory();
-        BeanUtils.copyProperties(computerMemoryDto, computerMemory);
-        return this.repository.save(computerMemory);
+        log.debug(">>>CREATING COMPUTER MEMORY: {}", computerMemoryRequestDto.toString());
+        return this.repository.save(computerMemoryRequestDto.convert());
     }
 
     @Override
-    public ComputerMemory update(ComputerMemoryDto computerMemoryDto, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerMemory update(ComputerMemoryRequestDto computerMemoryRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerMemory memory = this.findById(computerMemoryDto.getId());
-        memory.setBrandName(computerMemoryDto.getBrandName());
-        memory.setFrequency(computerMemoryDto.getFrequency());
-        memory.setType(computerMemoryDto.getType());
-        memory.setSize(computerMemoryDto.getSize());
+        ComputerMemory memory = this.findById(computerMemoryRequestDto.getId());
+        memory.setBrandName(computerMemoryRequestDto.getBrandName());
+        memory.setFrequency(computerMemoryRequestDto.getFrequency());
+        memory.setType(computerMemoryRequestDto.getType());
+        memory.setSize(computerMemoryRequestDto.getSize());
+        log.debug(">>>UPDATING COMPUTER MEMORY: {}", computerMemoryRequestDto.toString());
         return this.repository.save(memory);
     }
 
     @Override
     public ComputerMemory findById(Long id) throws NoResultException {
-        return this.repository.findById(id).orElseThrow(() -> new NoResultException("COMPUTER MEMORY NOT FOUND"));
+        return this.repository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("computer_memory")));
     }
 
     @Override
     public Page<ComputerMemory> findAll(Pageable pageable, String filter) {
+        log.debug(">>>FILTERING COMPUTER MEMORY BY: {}", filter);
         return this.repository.findAllByActiveTrue(pageable);
     }
 
@@ -61,6 +65,7 @@ public class ComputerMemoryService extends AbstractService implements IComputerM
     public ComputerMemory deleteById(Long id) throws NoResultException {
         ComputerMemory memory = this.findById(id);
         memory.setActive(false);
+        log.debug(">>>DELETING COMPUTER MEMORY BY: {}", id);
         return this.repository.save(memory);
     }
 }

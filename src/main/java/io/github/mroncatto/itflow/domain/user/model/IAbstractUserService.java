@@ -1,6 +1,6 @@
 package io.github.mroncatto.itflow.domain.user.model;
 
-import io.github.mroncatto.itflow.domain.user.dto.UserDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
@@ -15,6 +15,6 @@ import java.util.List;
 public interface IAbstractUserService {
     List<User> findAll();
     Page<User> findAll(Pageable pageable, String param);
-    User save(UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail;
-    User update(String username, UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail, NoResultException;
+    User save(UserRequestDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail;
+    User update(String username, UserRequestDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail, NoResultException;
 }

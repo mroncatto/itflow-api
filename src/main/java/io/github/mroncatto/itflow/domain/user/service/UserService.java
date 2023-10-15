@@ -1,11 +1,12 @@
 package io.github.mroncatto.itflow.domain.user.service;
 
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
-import io.github.mroncatto.itflow.domain.user.dto.UserDto;
-import io.github.mroncatto.itflow.domain.user.dto.UserProfileDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserProfileRequestDto;
 import io.github.mroncatto.itflow.domain.user.entity.Role;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
@@ -16,6 +17,7 @@ import io.github.mroncatto.itflow.domain.user.model.IUserService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IUserRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,12 +41,14 @@ import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class UserService extends AbstractService implements IUserService {
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final FilterService filterService;
+    private final MessageService messageService;
 
     public User login(String username) {
         User user = this.userRepository.findUserByUsername(username);
@@ -61,7 +65,7 @@ public class UserService extends AbstractService implements IUserService {
     @Override
     public Page<User> findAll(Pageable pageable,
                               String filter) {
-
+        log.debug(">>>FILTERING USER BY: {}", filter);
         return this.userRepository.findAll(
                 (Specification<User>) (root, query, builder) -> {
 
@@ -90,12 +94,14 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.userRepository.findUserByUsername(username);
         if (isNull(user))
             throw new UsernameNotFoundException("");
+        log.debug(">>>FIND USER BY: {}", username);
         return user;
     }
 
     public User findUserByUsernameActiveOnly(String username) {
         User user = this.findUserByUsername(username);
-        if (!user.isActive()) throw new UsernameNotFoundException("USER NOT FOUND OR INACTIVE");
+        if (!user.isActive()) throw new UsernameNotFoundException(messageService.getMessage("badRequest.user_not_found_or_inactive"));
+        log.debug(">>>FIND USER BY USERNAME ACTIVE ONLY: {}", username);
         return user;
     }
 
@@ -104,35 +110,38 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.userRepository.findUserByEmail(email);
         if (isNull(user))
             throw new UserNotFoundException("");
+        log.debug(">>>FIND USER BY EMAIL: {}", email);
         return user;
     }
 
     @Override
     @Transactional
-    public User save(UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
+    public User save(UserRequestDto userRequestDto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
         validateResult(result);
-        validateUniqueUsername(dto);
-        validateUniqueEmail(dto.getEmail(), dto.getUsername());
-        validateEmailField(dto.getEmail());
+        validateUniqueUsername(userRequestDto);
+        validateUniqueEmail(userRequestDto.getEmail(), userRequestDto.getUsername());
+        validateEmailField(userRequestDto.getEmail());
         String randomPassword = generateRandomAlphanumeric(6, false);
         var user = new User();
-        BeanUtils.copyProperties(dto, user);
+        BeanUtils.copyProperties(userRequestDto, user);
         user.setPassword(passwordEncoder.encode(randomPassword));
         user.setPasswordNonExpired(true);
         user.setJoinDate(new Date());
         this.emailService.welcome(user, randomPassword);
+        log.debug(">>>CREATING USER: {}", userRequestDto);
         return this.userRepository.save(user);
     }
 
     @Override
-    public User update(String username, UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
+    public User update(String username, UserRequestDto userRequestDto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
         validateResult(result);
         User user = this.findUserByUsername(username);
-        validateUniqueEmail(dto.getEmail(), dto.getUsername());
-        validateEmailField(dto.getEmail());
-        user.setFullName(dto.getFullName());
-        user.setEmail(dto.getEmail());
-        user.setStaff(dto.getStaff());
+        validateUniqueEmail(userRequestDto.getEmail(), userRequestDto.getUsername());
+        validateEmailField(userRequestDto.getEmail());
+        user.setFullName(userRequestDto.getFullName());
+        user.setEmail(userRequestDto.getEmail());
+        user.setStaff(userRequestDto.getStaff());
+        log.debug(">>>UPDATING USER: {}", userRequestDto);
         return this.userRepository.save(user);
     }
 
@@ -140,6 +149,7 @@ public class UserService extends AbstractService implements IUserService {
     public void delete(String username) {
         User user = this.findUserByUsername(username);
         user.setActive(false);
+        log.debug(">>>DELETING USER BY: {}", username);
         this.userRepository.save(user);
     }
 
@@ -148,19 +158,21 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.findUserByUsernameActiveOnly(username);
         user.setRole(roles);
         this.userRepository.save(user);
+        log.debug(">>>UPDATING USER {} WITH ROLES: {}", username, roles);
         return user;
     }
 
     @Override
-    public User updateProfile(UserProfileDto dto) throws AlreadExistingUserByEmail, BadRequestException {
+    public User updateProfile(UserProfileRequestDto profileDto) throws AlreadExistingUserByEmail, BadRequestException {
         String username = getContext().getAuthentication().getName();
         User user = this.findUserByUsername(username);
-        validateUniqueEmail(dto.getEmail(), username);
-        validateNullFields(dto.getEmail(), dto.getFullName());
-        validateEmptyFields(dto.getEmail(), dto.getFullName());
-        validateEmailField(dto.getEmail());
-        user.setEmail(dto.getEmail());
-        user.setFullName(dto.getFullName());
+        validateUniqueEmail(profileDto.getEmail(), username);
+        validateNullFields(profileDto.getEmail(), profileDto.getFullName());
+        validateEmptyFields(profileDto.getEmail(), profileDto.getFullName());
+        validateEmailField(profileDto.getEmail());
+        user.setEmail(profileDto.getEmail());
+        user.setFullName(profileDto.getFullName());
+        log.debug(">>>UPDATING USER PROFILE: {}", profileDto);
         return this.userRepository.save(user);
     }
 
@@ -172,6 +184,7 @@ public class UserService extends AbstractService implements IUserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setPasswordNonExpired(true);
             this.userRepository.save(user);
+            log.debug(">>>UPDATING USER PASSWORD BY USER: {}", username);
         } else {
             throw new BadPasswordException("");
         }
@@ -186,6 +199,7 @@ public class UserService extends AbstractService implements IUserService {
         user.setPasswordNonExpired(false);
         this.emailService.resetPassword(user, randomPassword);
         //TODO: Improve this method to use tokens
+        log.debug(">>>RESET USER PASSWORD BY USER: {}", username);
         this.userRepository.save(user);
     }
 
@@ -194,6 +208,7 @@ public class UserService extends AbstractService implements IUserService {
         User user = this.findUserByUsername(username);
         if (!user.isActive()) throw new UsernameNotFoundException("");
         user.setNonLocked(!user.isNonLocked());
+        log.debug(">>>LOCK USER ACCOUNT BY USER: {}", username);
         this.userRepository.save(user);
     }
 
@@ -208,7 +223,7 @@ public class UserService extends AbstractService implements IUserService {
             throw new AlreadExistingUserByEmail("");
 }
 
-    private void validateUniqueUsername(UserDto user) throws AlreadExistingUserByUsername {
+    private void validateUniqueUsername(UserRequestDto user) throws AlreadExistingUserByUsername {
         if (nonNull(this.userRepository.findUserByUsername(user.getUsername())))
             throw new AlreadExistingUserByUsername("");
     }

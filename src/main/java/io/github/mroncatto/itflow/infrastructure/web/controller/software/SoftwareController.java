@@ -3,8 +3,8 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.software;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.software.dto.SoftwareDto;
-import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareRequestDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
 import io.github.mroncatto.itflow.domain.software.model.ISoftwareService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -68,9 +68,9 @@ public class SoftwareController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Software> save(@RequestBody @Validated(SoftwareDto.SoftwareView.SoftwarePost.class)
-                                         @JsonView(SoftwareDto.SoftwareView.SoftwarePost.class) SoftwareDto softwareDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(softwareDto, result), CREATED);
+    public ResponseEntity<Software> save(@RequestBody @Validated(SoftwareRequestDto.SoftwareView.SoftwarePost.class)
+                                         @JsonView(SoftwareRequestDto.SoftwareView.SoftwarePost.class) SoftwareRequestDto softwareRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(softwareRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific software", security = {
@@ -82,9 +82,9 @@ public class SoftwareController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Software> update(@RequestBody @Validated(SoftwareDto.SoftwareView.SoftwarePut.class)
-                                           @JsonView(SoftwareDto.SoftwareView.SoftwarePut.class) SoftwareDto softwareDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(softwareDto, result), OK);
+    public ResponseEntity<Software> update(@RequestBody @Validated(SoftwareRequestDto.SoftwareView.SoftwarePut.class)
+                                           @JsonView(SoftwareRequestDto.SoftwareView.SoftwarePut.class) SoftwareRequestDto softwareRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(softwareRequestDto, result), OK);
     }
 
     @Operation(summary = "Get software by ID", security = {
@@ -119,8 +119,8 @@ public class SoftwareController {
     @PostMapping(EndpointUrlConstant.updateSoftwareLicense)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Software> addLicense(@PathVariable("id") Long id,
-                                               @RequestBody @Validated(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class)
-                                               @JsonView(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class) SoftwareLicenseDto licenseDto, BindingResult result) throws NoResultException, BadRequestException {
+                                               @RequestBody @Validated(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class)
+                                               @JsonView(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class) SoftwareLicenseRequestDto licenseDto, BindingResult result) throws NoResultException, BadRequestException {
         return new ResponseEntity<>(this.service.addLicense(id, licenseDto, result), CREATED);
     }
 }

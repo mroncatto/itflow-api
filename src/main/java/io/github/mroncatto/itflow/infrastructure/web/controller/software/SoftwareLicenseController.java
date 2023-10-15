@@ -3,8 +3,8 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.software;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.software.dto.LicenseKeyDto;
-import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseDto;
+import io.github.mroncatto.itflow.domain.software.dto.LicenseKeyRequestDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
 import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicense;
 import io.github.mroncatto.itflow.domain.software.model.ISoftwareLicenseService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -68,8 +68,8 @@ public class SoftwareLicenseController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<SoftwareLicense> save(@RequestBody @Validated(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class)
-                                                @JsonView(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class) SoftwareLicenseDto licenseDto, BindingResult result) throws BadRequestException {
+    public ResponseEntity<SoftwareLicense> save(@RequestBody @Validated(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicensePost.class)
+                                                @JsonView(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicensePost.class) SoftwareLicenseRequestDto licenseDto, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.service.save(licenseDto, result), CREATED);
     }
 
@@ -82,8 +82,8 @@ public class SoftwareLicenseController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<SoftwareLicense> update(@RequestBody @Validated(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class)
-                                                  @JsonView(SoftwareLicenseDto.SoftwareLicenseView.SoftwareLicensePost.class) SoftwareLicenseDto licenseDto, BindingResult result) throws BadRequestException, NoResultException {
+    public ResponseEntity<SoftwareLicense> update(@RequestBody @Validated(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicensePost.class)
+                                                  @JsonView(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicensePost.class) SoftwareLicenseRequestDto licenseDto, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.service.update(licenseDto, result), OK);
     }
 
@@ -119,9 +119,9 @@ public class SoftwareLicenseController {
     @PostMapping(EndpointUrlConstant.updateLicenseKey)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<SoftwareLicense> addLicenseKey(@PathVariable("id") Long id,
-                                                         @RequestBody @Validated(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class)
-                                                         @JsonView(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyDto licenseKeyDto, BindingResult result) throws NoResultException, BadRequestException {
-        return new ResponseEntity<>(this.service.addLicenseKey(id, licenseKeyDto, result), CREATED);
+                                                         @RequestBody @Validated(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPost.class)
+                                                         @JsonView(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyRequestDto licenseKeyRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addLicenseKey(id, licenseKeyRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Remove a key from software license", security = {
@@ -133,8 +133,8 @@ public class SoftwareLicenseController {
     @DeleteMapping(EndpointUrlConstant.updateLicenseKey)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<SoftwareLicense> RemoveLicenseKey(@PathVariable("id") Long id,
-                                                            @RequestBody @Validated(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class)
-                                                            @JsonView(LicenseKeyDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyDto licenseKeyDto, BindingResult result) throws NoResultException, BadRequestException {
-        return new ResponseEntity<>(this.service.RemoveLicenseKey(id, licenseKeyDto, result), OK);
+                                                            @RequestBody @Validated(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPost.class)
+                                                            @JsonView(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyRequestDto licenseKeyRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.RemoveLicenseKey(id, licenseKeyRequestDto, result), OK);
     }
 }

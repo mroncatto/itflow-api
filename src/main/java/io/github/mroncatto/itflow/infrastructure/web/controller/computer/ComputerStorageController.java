@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageDto;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerStorageRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerStorageService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -57,9 +57,9 @@ public class ComputerStorageController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerStorage> save(@RequestBody @Validated(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class)
-                                                @JsonView(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class) ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(computerStorageDto, result), CREATED);
+    public ResponseEntity<ComputerStorage> save(@RequestBody @Validated(ComputerStorageRequestDto.ComputerStorageView.ComputerStoragePost.class)
+                                                @JsonView(ComputerStorageRequestDto.ComputerStorageView.ComputerStoragePost.class) ComputerStorageRequestDto computerStorageRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(computerStorageRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific computer storage", security = {
@@ -71,9 +71,9 @@ public class ComputerStorageController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerStorage> update(@RequestBody @Validated(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class)
-                                                      @JsonView(ComputerStorageDto.ComputerStorageView.ComputerStoragePost.class) ComputerStorageDto computerStorageDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(computerStorageDto, result), OK);
+    public ResponseEntity<ComputerStorage> update(@RequestBody @Validated(ComputerStorageRequestDto.ComputerStorageView.ComputerStoragePost.class)
+                                                      @JsonView(ComputerStorageRequestDto.ComputerStorageView.ComputerStoragePost.class) ComputerStorageRequestDto computerStorageRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(computerStorageRequestDto, result), OK);
     }
 
     @Operation(summary = "Get computer storage by ID", security = {

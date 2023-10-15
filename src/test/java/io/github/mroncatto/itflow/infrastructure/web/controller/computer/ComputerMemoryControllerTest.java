@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryDto;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryRequestDto;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class ComputerMemoryControllerTest {
         final String brandName = "Memory brand";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerMemory)
                 .content(objectMapper.writeValueAsString(
-                        ComputerMemoryDto.builder()
+                        ComputerMemoryRequestDto.builder()
                                 .active(true)
                                 .brandName(brandName)
                                 .size("2000")
@@ -65,7 +65,7 @@ class ComputerMemoryControllerTest {
         final String brandName = "Memory brand edit";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerMemory)
                 .content(objectMapper.writeValueAsString(
-                        ComputerMemoryDto.builder()
+                        ComputerMemoryRequestDto.builder()
                                 .id(1L)
                                 .active(true)
                                 .brandName(brandName)

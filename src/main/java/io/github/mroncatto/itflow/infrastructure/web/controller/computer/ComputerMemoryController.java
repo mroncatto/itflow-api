@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryDto;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerMemoryRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerMemory;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerMemoryService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -58,9 +58,9 @@ public class ComputerMemoryController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerMemory> save(@RequestBody @Validated(ComputerMemoryDto.ComputerMemoryView.ComputerMemoryPost.class)
-                                               @JsonView(ComputerMemoryDto.ComputerMemoryView.ComputerMemoryPost.class) ComputerMemoryDto computerMemoryDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(computerMemoryDto, result), CREATED);
+    public ResponseEntity<ComputerMemory> save(@RequestBody @Validated(ComputerMemoryRequestDto.ComputerMemoryView.ComputerMemoryPost.class)
+                                               @JsonView(ComputerMemoryRequestDto.ComputerMemoryView.ComputerMemoryPost.class) ComputerMemoryRequestDto computerMemoryRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(computerMemoryRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific computer memory", security = {
@@ -72,9 +72,9 @@ public class ComputerMemoryController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerMemory> update(@RequestBody @Validated(ComputerMemoryDto.ComputerMemoryView.ComputerMemoryPut.class)
-                                                 @JsonView(ComputerMemoryDto.ComputerMemoryView.ComputerMemoryPut.class) ComputerMemoryDto computerMemoryDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(computerMemoryDto, result), OK);
+    public ResponseEntity<ComputerMemory> update(@RequestBody @Validated(ComputerMemoryRequestDto.ComputerMemoryView.ComputerMemoryPut.class)
+                                                 @JsonView(ComputerMemoryRequestDto.ComputerMemoryView.ComputerMemoryPut.class) ComputerMemoryRequestDto computerMemoryRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(computerMemoryRequestDto, result), OK);
     }
 
     @Operation(summary = "Get computer memory by ID", security = {

@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.company;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.company.dto.BranchDto;
+import io.github.mroncatto.itflow.domain.company.dto.BranchRequestDto;
 import io.github.mroncatto.itflow.domain.company.entity.Branch;
 import io.github.mroncatto.itflow.domain.company.service.BranchService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -68,9 +68,9 @@ public class BranchController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Branch> save(@RequestBody @Validated(BranchDto.BranchView.BranchPost.class)
-                                       @JsonView(BranchDto.BranchView.BranchPost.class) BranchDto branchDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.branchService.save(branchDto, result), CREATED);
+    public ResponseEntity<Branch> save(@RequestBody @Validated(BranchRequestDto.BranchView.BranchPost.class)
+                                       @JsonView(BranchRequestDto.BranchView.BranchPost.class) BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.branchService.save(branchRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific company branch", security = {
@@ -82,8 +82,8 @@ public class BranchController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Branch> update(@RequestBody @Validated(BranchDto.BranchView.BranchPut.class)
-                                         @JsonView(BranchDto.BranchView.BranchPut.class) BranchDto dto, BindingResult result) throws BadRequestException, NoResultException {
+    public ResponseEntity<Branch> update(@RequestBody @Validated(BranchRequestDto.BranchView.BranchPut.class)
+                                         @JsonView(BranchRequestDto.BranchView.BranchPut.class) BranchRequestDto dto, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.branchService.update(dto, result), OK);
     }
 

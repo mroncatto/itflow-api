@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.user.dto.UserDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
 import io.github.mroncatto.itflow.domain.user.entity.Role;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.MethodOrderer;
@@ -46,7 +46,7 @@ class UserControllerTest {
     void UserShouldBeCreatedAndReturn201() throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.user)
                 .content(objectMapper.writeValueAsString(
-                        UserDto.builder()
+                        UserRequestDto.builder()
                         .fullName("itflow")
                         .username("itflow")
                         .email("itflow@test.com")
@@ -67,7 +67,7 @@ class UserControllerTest {
         final String username = "/itflow";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.user + username)
                 .content(objectMapper.writeValueAsString(
-                        UserDto.builder()
+                        UserRequestDto.builder()
                                 .fullName("Itflow updated")
                                 .username("itflow")
                                 .email("itflow@test.com")

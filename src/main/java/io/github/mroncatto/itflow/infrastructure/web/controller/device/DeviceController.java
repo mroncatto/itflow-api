@@ -3,8 +3,8 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.device;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceDto;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceStaffDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceRequestDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceStaffRequestDto;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffService;
@@ -73,9 +73,9 @@ public class DeviceController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Device> save(@RequestBody @Validated(DeviceDto.DeviceView.DevicePost.class)
-                                       @JsonView(DeviceDto.DeviceView.DevicePost.class) DeviceDto deviceDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(deviceDto, result), CREATED);
+    public ResponseEntity<Device> save(@RequestBody @Validated(DeviceRequestDto.DeviceView.DevicePost.class)
+                                       @JsonView(DeviceRequestDto.DeviceView.DevicePost.class) DeviceRequestDto deviceRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(deviceRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Add or update an employee to a device", security = {
@@ -87,9 +87,9 @@ public class DeviceController {
     @PutMapping(EndpointUrlConstant.staffId)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> updateStaff(@PathVariable("id") Long id,
-                                              @RequestBody @Validated(DeviceStaffDto.DeviceStaffView.DeviceStaffPut.class)
-                                              @JsonView(DeviceStaffDto.DeviceStaffView.DeviceStaffPut.class) DeviceStaffDto deviceStaffDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.staffService.updateStaff(deviceStaffDto, id, result), CREATED);
+                                              @RequestBody @Validated(DeviceStaffRequestDto.DeviceStaffView.DeviceStaffPut.class)
+                                              @JsonView(DeviceStaffRequestDto.DeviceStaffView.DeviceStaffPut.class) DeviceStaffRequestDto deviceStaffRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.staffService.updateStaff(deviceStaffRequestDto, id, result), CREATED);
     }
 
     @Operation(summary = "Update a specific device", security = {
@@ -101,9 +101,9 @@ public class DeviceController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Device> update(@RequestBody @Validated(DeviceDto.DeviceView.DevicePut.class)
-                                             @JsonView(DeviceDto.DeviceView.DevicePut.class) DeviceDto deviceDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(deviceDto, result), OK);
+    public ResponseEntity<Device> update(@RequestBody @Validated(DeviceRequestDto.DeviceView.DevicePut.class)
+                                             @JsonView(DeviceRequestDto.DeviceView.DevicePut.class) DeviceRequestDto deviceRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(deviceRequestDto, result), OK);
     }
 
     @Operation(summary = "Get device by ID", security = {

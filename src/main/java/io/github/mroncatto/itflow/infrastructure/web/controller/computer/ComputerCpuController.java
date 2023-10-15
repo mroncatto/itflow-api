@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuDto;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerCpuService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -57,9 +57,9 @@ public class ComputerCpuController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerCpu> save(@RequestBody @Validated(ComputerCpuDto.ComputerCpuView.ComputerCpuPost.class)
-                                            @JsonView(ComputerCpuDto.ComputerCpuView.ComputerCpuPost.class) ComputerCpuDto computerCpuDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(computerCpuDto, result), CREATED);
+    public ResponseEntity<ComputerCpu> save(@RequestBody @Validated(ComputerCpuRequestDto.ComputerCpuView.ComputerCpuPost.class)
+                                            @JsonView(ComputerCpuRequestDto.ComputerCpuView.ComputerCpuPost.class) ComputerCpuRequestDto computerCpuRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(computerCpuRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific computer cpu", security = {
@@ -71,9 +71,9 @@ public class ComputerCpuController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerCpu> update(@RequestBody @Validated(ComputerCpuDto.ComputerCpuView.ComputerCpuPut.class)
-                                              @JsonView(ComputerCpuDto.ComputerCpuView.ComputerCpuPut.class) ComputerCpuDto computerCpuDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(computerCpuDto, result), OK);
+    public ResponseEntity<ComputerCpu> update(@RequestBody @Validated(ComputerCpuRequestDto.ComputerCpuView.ComputerCpuPut.class)
+                                              @JsonView(ComputerCpuRequestDto.ComputerCpuView.ComputerCpuPut.class) ComputerCpuRequestDto computerCpuRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(computerCpuRequestDto, result), OK);
     }
 
     @Operation(summary = "Get computer cpu by ID", security = {

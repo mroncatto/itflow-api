@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class LicenseKeyDto {
+public class LicenseKeyRequestDto {
 
     public interface LicenseKeyView {
         interface LicenseKeyPost {}
@@ -22,13 +22,13 @@ public class LicenseKeyDto {
     private Long id;
 
     @Size(groups = {LicenseKeyView.LicenseKeyPut.class, LicenseKeyView.LicenseKeyPost.class},
-            max = 45, message = "The code field must contain max 45 characters")
+            max = 45, message = "[{field.code}] {validation.max}")
     private String key;
 
     @JsonView({LicenseKeyView.LicenseKeyPut.class, LicenseKeyView.LicenseKeyPost.class})
     private SoftwareLicense softwareLicense;
 
     @NotNull(groups = {LicenseKeyView.LicenseKeyPut.class, LicenseKeyView.LicenseKeyPost.class},
-            message = "The volume field is required")
+            message = "[{field.volume}] {validation.required}")
     private int volume;
 }

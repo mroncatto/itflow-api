@@ -3,8 +3,8 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.user;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.user.dto.UserDto;
-import io.github.mroncatto.itflow.domain.user.dto.UserProfileDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserProfileRequestDto;
 import io.github.mroncatto.itflow.domain.user.entity.Role;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
@@ -86,8 +86,8 @@ public class UserController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(ADMIN_ONLY)
-    public ResponseEntity<User> save(@RequestBody @Validated(UserDto.UserView.UserPost.class)
-                                         @JsonView(UserDto.UserView.UserPost.class) UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
+    public ResponseEntity<User> save(@RequestBody @Validated(UserRequestDto.UserView.UserPost.class)
+                                         @JsonView(UserRequestDto.UserView.UserPost.class) UserRequestDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByUsername, AlreadExistingUserByEmail {
         return new ResponseEntity<>(this.userService.save(dto, result), CREATED);
     }
 
@@ -101,8 +101,8 @@ public class UserController {
     @PutMapping(EndpointUrlConstant.username)
     @PreAuthorize(HELPDESK_OR_ADMIN)
     public ResponseEntity<User> update(@PathVariable("username") String username,
-                                       @RequestBody @Validated(UserDto.UserView.UserPut.class)
-                                       @JsonView(UserDto.UserView.UserPut.class) UserDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
+                                       @RequestBody @Validated(UserRequestDto.UserView.UserPut.class)
+                                       @JsonView(UserRequestDto.UserView.UserPut.class) UserRequestDto dto, BindingResult result) throws BadRequestException, AlreadExistingUserByEmail {
         return new ResponseEntity<>(this.userService.update(username, dto, result), OK);
     }
 
@@ -148,8 +148,8 @@ public class UserController {
     @ResponseStatus(value = OK)
     @PutMapping(EndpointUrlConstant.profile)
     public ResponseEntity<User> updateProfile(@RequestBody
-                                                  @Validated(UserProfileDto.UserProfileView.ProfileUpdate.class)
-                                                  @JsonView(UserProfileDto.UserProfileView.ProfileUpdate.class) UserProfileDto dto) throws AlreadExistingUserByEmail, BadRequestException {
+                                                  @Validated(UserProfileRequestDto.UserProfileView.ProfileUpdate.class)
+                                                  @JsonView(UserProfileRequestDto.UserProfileView.ProfileUpdate.class) UserProfileRequestDto dto) throws AlreadExistingUserByEmail, BadRequestException {
         return new ResponseEntity<>(this.userService.updateProfile(dto), OK);
     }
 

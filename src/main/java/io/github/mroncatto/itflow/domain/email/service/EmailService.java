@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.email.service;
 
+import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.email.model.AbstractEmailService;
 import io.github.mroncatto.itflow.domain.email.entity.EmailSendEvent;
 import io.github.mroncatto.itflow.domain.email.entity.vo.EmailTemplate;
@@ -17,13 +18,14 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class EmailService extends AbstractEmailService {
     private final EmailSendEventService eventService;
+    private final MessageService messageService;
 
     public void welcome(User user, String password){
         try {
         EmailSendEvent event = EmailSendEvent.builder()
                 .eventDate(new Date())
                 .template(EmailTemplate.WELCOME)
-                .subject("Welcome")
+                .subject(messageService.getMessage("email.welcome"))
                 .recipients(getRecipients(user.getEmail()))
                 .eventDataList(getVariables(WelcomeVariable.getValues(), password))
                 .build();
@@ -40,7 +42,7 @@ public class EmailService extends AbstractEmailService {
             EmailSendEvent event = EmailSendEvent.builder()
                     .eventDate(new Date())
                     .template(EmailTemplate.RESET_PASSWORD)
-                    .subject("Password Reset")
+                    .subject(messageService.getMessage("email.password_reset"))
                     .recipients(getRecipients(user.getEmail()))
                     .eventDataList(getVariables(ResetPasswordVariable.getValues(), password))
                     .build();

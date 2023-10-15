@@ -3,8 +3,8 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.device;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuDto;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuRequestDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerRequestDto;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceComputerService;
@@ -44,9 +44,9 @@ public class DeviceComputerController {
     @PutMapping(EndpointUrlConstant.computerId)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> updateComputer(@PathVariable("id") Long id,
-                                                 @RequestBody @Validated(DeviceComputerDto.DeviceComputerView.DeviceComputerPut.class)
-                                                 @JsonView(DeviceComputerDto.DeviceComputerView.DeviceComputerPut.class) DeviceComputerDto deviceComputerDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.updateComputer(deviceComputerDto, id, result), CREATED);
+                                                 @RequestBody @Validated(DeviceComputerRequestDto.DeviceComputerView.DeviceComputerPut.class)
+                                                 @JsonView(DeviceComputerRequestDto.DeviceComputerView.DeviceComputerPut.class) DeviceComputerRequestDto deviceComputerRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.updateComputer(deviceComputerRequestDto, id, result), CREATED);
     }
 
     @Operation(summary = "Remove computer from device by ID", security = {
@@ -71,8 +71,8 @@ public class DeviceComputerController {
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> addDeviceComputerCpu(@PathVariable("id") Long id,
                                                        @RequestBody @Validated()
-                                         @JsonView() DeviceComputerCpuDto deviceComputerCpuDto, BindingResult result) throws NoResultException, BadRequestException {
-        return new ResponseEntity<>(this.service.addDeviceComputerCpu(deviceComputerCpuDto, id, result), OK);
+                                         @JsonView() DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addDeviceComputerCpu(deviceComputerCpuRequestDto, id, result), OK);
     }
 
 }

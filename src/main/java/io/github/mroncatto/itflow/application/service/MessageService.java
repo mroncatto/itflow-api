@@ -20,4 +20,11 @@ public class MessageService {
         return messageSource.getMessage(message, args, locale);
     }
 
+    public String getMessageNotFound(String field) {
+        java.util.Locale locale = LocaleContextHolder.getLocale();
+        String notFoundMessage = messageSource.getMessage("exception.not_found", null, locale);
+        String fieldMessage = messageSource.getMessage("field.".concat(field), null, locale);
+        return fieldMessage.concat(": " ).concat(notFoundMessage);
+    }
+
 }

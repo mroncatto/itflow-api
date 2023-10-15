@@ -68,14 +68,13 @@ spring:
       default-view-inclusion: true
 springdoc:
   swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs/
+    enabled: true
     filter: false
     path: /
     doc-expansion: none
 logging:
   level:
-    root: INFO
+    root: DEBUG
     org:
       hibernate:
         SQL: DEBUG

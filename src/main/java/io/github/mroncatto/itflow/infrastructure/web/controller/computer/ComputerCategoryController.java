@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.computer;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerCategoryDto;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerCategoryRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerCategoryService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -57,9 +57,9 @@ public class ComputerCategoryController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerCategory> save(@RequestBody @Validated(ComputerCategoryDto.ComputerCategoryView.ComputerCategoryPost.class)
-                                                 @JsonView(ComputerCategoryDto.ComputerCategoryView.ComputerCategoryPost.class) ComputerCategoryDto computerCategoryDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.service.save(computerCategoryDto, result), CREATED);
+    public ResponseEntity<ComputerCategory> save(@RequestBody @Validated(ComputerCategoryRequestDto.ComputerCategoryView.ComputerCategoryPost.class)
+                                                 @JsonView(ComputerCategoryRequestDto.ComputerCategoryView.ComputerCategoryPost.class) ComputerCategoryRequestDto computerCategoryRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.service.save(computerCategoryRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific computer category", security = {
@@ -71,9 +71,9 @@ public class ComputerCategoryController {
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<ComputerCategory> update(@RequestBody @Validated(ComputerCategoryDto.ComputerCategoryView.ComputerCategoryPut.class)
-                                                   @JsonView(ComputerCategoryDto.ComputerCategoryView.ComputerCategoryPut.class) ComputerCategoryDto computerCategoryDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.service.update(computerCategoryDto, result), OK);
+    public ResponseEntity<ComputerCategory> update(@RequestBody @Validated(ComputerCategoryRequestDto.ComputerCategoryView.ComputerCategoryPut.class)
+                                                   @JsonView(ComputerCategoryRequestDto.ComputerCategoryView.ComputerCategoryPut.class) ComputerCategoryRequestDto computerCategoryRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.service.update(computerCategoryRequestDto, result), OK);
     }
 
     @Operation(summary = "Get computer category by ID", security = {

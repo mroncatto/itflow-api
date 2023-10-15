@@ -1,30 +1,32 @@
 package io.github.mroncatto.itflow.domain.computer.service;
 
 import io.github.mroncatto.itflow.application.model.AbstractService;
+import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.commons.helper.CompareHelper;
 import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
-import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuDto;
+import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerCpuService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerCpuRepository;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class ComputerCpuService extends AbstractService implements IComputerCpuService {
-
     private final IComputerCpuRepository repository;
+    private final MessageService messageService;
     private final FilterService filterService;
 
     @Override
@@ -33,30 +35,31 @@ public class ComputerCpuService extends AbstractService implements IComputerCpuS
     }
 
     @Override
-    public ComputerCpu save(ComputerCpuDto computerCpuDto, BindingResult result) throws BadRequestException {
+    public ComputerCpu save(ComputerCpuRequestDto computerCpuRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
-        var computerCpu = new ComputerCpu();
-        BeanUtils.copyProperties(computerCpuDto, computerCpu);
-        return this.repository.save(computerCpu);
+        log.debug(">>>CREATING COMPUTER CPU: {}", computerCpuRequestDto.toString());
+        return this.repository.save(computerCpuRequestDto.convert());
     }
 
     @Override
-    public ComputerCpu update(ComputerCpuDto computerCpuDto, BindingResult result) throws BadRequestException, NoResultException {
+    public ComputerCpu update(ComputerCpuRequestDto computerCpuRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        ComputerCpu cpu = this.findById(computerCpuDto.getId());
-        cpu.setBrandName(computerCpuDto.getBrandName());
-        cpu.setModel(computerCpuDto.getModel());
-        cpu.setGeneration(computerCpuDto.getGeneration());
-        cpu.setSocket(computerCpuDto.getSocket());
-        cpu.setFrequency(computerCpuDto.getFrequency());
-        cpu.setFsb(computerCpuDto.getFsb());
-        cpu.setCore(computerCpuDto.getCore());
+        ComputerCpu cpu = this.findById(computerCpuRequestDto.getId());
+        cpu.setBrandName(computerCpuRequestDto.getBrandName());
+        cpu.setModel(computerCpuRequestDto.getModel());
+        cpu.setGeneration(computerCpuRequestDto.getGeneration());
+        cpu.setSocket(computerCpuRequestDto.getSocket());
+        cpu.setFrequency(computerCpuRequestDto.getFrequency());
+        cpu.setFsb(computerCpuRequestDto.getFsb());
+        cpu.setCore(computerCpuRequestDto.getCore());
+        log.debug(">>>UPDATING COMPUTER CPU: {}", computerCpuRequestDto.toString());
         return this.repository.save(cpu);
     }
 
     @Override
     public ComputerCpu findById(Long id) throws NoResultException {
-        return this.repository.findById(id).orElseThrow(() -> new NoResultException("COMPUTER CPU NOT FOUND"));
+        return this.repository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("computer_cpu")));
     }
 
     @Override
@@ -65,6 +68,7 @@ public class ComputerCpuService extends AbstractService implements IComputerCpuS
     }
 
     public List<ComputerCpu> findAll(String filter) {
+        log.debug(">>>FILTERING COMPUTER CPU BY: {}", filter);
         return this.repository.findAll((root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(filterService.likeFilter(builder, root, "brandName", filter));
@@ -80,6 +84,7 @@ public class ComputerCpuService extends AbstractService implements IComputerCpuS
     public ComputerCpu deleteById(Long id) throws NoResultException {
         ComputerCpu cpu = this.findById(id);
         cpu.setActive(false);
+        log.debug(">>>DELETING COMPUTER CPU BY: {}", id);
         return this.repository.save(cpu);
     }
 }

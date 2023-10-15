@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.staff;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.staff.dto.StaffDto;
+import io.github.mroncatto.itflow.domain.staff.dto.StaffRequestDto;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
 import io.github.mroncatto.itflow.domain.staff.model.IStaffService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
@@ -57,16 +57,16 @@ public class StaffController {
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Staff> save(@RequestBody @Validated(StaffDto.StaffView.StaffPost.class) @JsonView(StaffDto.StaffView.StaffPost.class) StaffDto staffDto, BindingResult result) throws BadRequestException {
-        return new ResponseEntity<>(this.staffService.save(staffDto, result), CREATED);
+    public ResponseEntity<Staff> save(@RequestBody @Validated(StaffRequestDto.StaffView.StaffPost.class) @JsonView(StaffRequestDto.StaffView.StaffPost.class) StaffRequestDto staffRequestDto, BindingResult result) throws BadRequestException {
+        return new ResponseEntity<>(this.staffService.save(staffRequestDto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific worker", security = {@SecurityRequirement(name = BEARER_AUTH)}, responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Staff.class))), @ApiResponse(responseCode = RESPONSE_400, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))), @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))), @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Staff> update(@RequestBody @Validated(StaffDto.StaffView.StaffPut.class) @JsonView(StaffDto.StaffView.StaffPut.class) StaffDto staffDto, BindingResult result) throws BadRequestException, NoResultException {
-        return new ResponseEntity<>(this.staffService.update(staffDto, result), OK);
+    public ResponseEntity<Staff> update(@RequestBody @Validated(StaffRequestDto.StaffView.StaffPut.class) @JsonView(StaffRequestDto.StaffView.StaffPut.class) StaffRequestDto staffRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+        return new ResponseEntity<>(this.staffService.update(staffRequestDto, result), OK);
     }
 
     @Operation(summary = "Get worker by UUID", security = {@SecurityRequirement(name = BEARER_AUTH)}, responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Staff.class))), @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))), @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})

@@ -3,7 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.device;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceCategoryDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceCategoryRequestDto;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ class DeviceCategoryControllerTest {
         final String categoryName = "Category name";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.deviceCategory)
                 .content(objectMapper.writeValueAsString(
-                        DeviceCategoryDto.builder()
+                        DeviceCategoryRequestDto.builder()
                                 .name(categoryName)
                                 .active(true)
                                 .build()))
@@ -62,7 +62,7 @@ class DeviceCategoryControllerTest {
         final String categoryName = "Category name edit";
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.deviceCategory)
                 .content(objectMapper.writeValueAsString(
-                        DeviceCategoryDto.builder()
+                        DeviceCategoryRequestDto.builder()
                                 .id(2L)
                                 .name(categoryName)
                                 .active(true)
