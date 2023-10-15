@@ -12,7 +12,7 @@ public abstract class   AbstractExceptionHandling {
         return new ResponseEntity<>(CustomHttpResponse.builder()
                 .status(status.value())
                 .error(status.name())
-                .message(message.toUpperCase())
+                .message(message)
                 .timestamp(currentDate())
                 .build(), status);
     }
