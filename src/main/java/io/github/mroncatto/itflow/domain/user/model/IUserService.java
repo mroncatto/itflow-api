@@ -1,17 +1,17 @@
 package io.github.mroncatto.itflow.domain.user.model;
 
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
 import io.github.mroncatto.itflow.domain.user.dto.UserProfileRequestDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
+import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
 import io.github.mroncatto.itflow.domain.user.exception.UserNotFoundException;
-import io.github.mroncatto.itflow.domain.user.entity.Role;
-import io.github.mroncatto.itflow.domain.user.entity.User;
+import jakarta.persistence.NoResultException;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
 import java.util.List;
 import java.util.UUID;
 

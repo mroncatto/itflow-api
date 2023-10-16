@@ -120,7 +120,6 @@ public class UserService extends AbstractService implements IUserService {
         validateResult(result);
         validateUniqueUsername(userRequestDto);
         validateUniqueEmail(userRequestDto.getEmail(), userRequestDto.getUsername());
-        validateEmailField(userRequestDto.getEmail());
         String randomPassword = generateRandomAlphanumeric(6, false);
         var user = new User();
         BeanUtils.copyProperties(userRequestDto, user);
@@ -137,7 +136,6 @@ public class UserService extends AbstractService implements IUserService {
         validateResult(result);
         User user = this.findUserByUsername(username);
         validateUniqueEmail(userRequestDto.getEmail(), userRequestDto.getUsername());
-        validateEmailField(userRequestDto.getEmail());
         user.setFullName(userRequestDto.getFullName());
         user.setEmail(userRequestDto.getEmail());
         user.setStaff(userRequestDto.getStaff());
@@ -163,13 +161,10 @@ public class UserService extends AbstractService implements IUserService {
     }
 
     @Override
-    public User updateProfile(UserProfileRequestDto profileDto) throws AlreadExistingUserByEmail, BadRequestException {
+    public User updateProfile(UserProfileRequestDto profileDto) throws AlreadExistingUserByEmail {
         String username = getContext().getAuthentication().getName();
         User user = this.findUserByUsername(username);
         validateUniqueEmail(profileDto.getEmail(), username);
-        validateNullFields(profileDto.getEmail(), profileDto.getFullName());
-        validateEmptyFields(profileDto.getEmail(), profileDto.getFullName());
-        validateEmailField(profileDto.getEmail());
         user.setEmail(profileDto.getEmail());
         user.setFullName(profileDto.getFullName());
         log.debug(">>>UPDATING USER PROFILE: {}", profileDto);

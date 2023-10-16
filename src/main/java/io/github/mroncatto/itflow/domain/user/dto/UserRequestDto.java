@@ -3,6 +3,7 @@ package io.github.mroncatto.itflow.domain.user.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class UserRequestDto {
     @NotEmpty(message = "[{field.email}] {validation.required}", groups = {UserRequestDto.UserView.UserPost.class, UserRequestDto.UserView.UserPut.class})
     @Size(min = 5, max = 100, groups = {UserRequestDto.UserView.UserPost.class, UserRequestDto.UserView.UserPut.class},
             message = "[{field.email}] {validation.between}")
+    @Email(message = "{validation.email}", groups = {UserRequestDto.UserView.UserPost.class, UserRequestDto.UserView.UserPut.class})
     private String email;
 
     @NotEmpty(message = "[{field.username}] {validation.required}", groups = {UserRequestDto.UserView.UserPost.class})
