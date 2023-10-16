@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 
-public abstract class   AbstractExceptionHandling {
+public abstract class AbstractExceptionHandling {
 
     protected ResponseEntity<CustomHttpResponse> build(HttpStatus status, String message){
         return new ResponseEntity<>(CustomHttpResponse.builder()

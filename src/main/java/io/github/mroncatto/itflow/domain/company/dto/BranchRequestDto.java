@@ -34,7 +34,8 @@ public class BranchRequestDto {
             max = 45, message = "[{field.name}] {validation.max}")
     private String name;
 
-    @JsonView({BranchView.BranchPut.class, BranchView.BranchPost.class})
+    @NotNull(groups = {BranchView.BranchPut.class, BranchView.BranchPost.class},
+            message = "[{field.company}] {validation.required}")
     private Company company;
 
     @JsonView({BranchView.BranchPut.class, BranchView.BranchPost.class})

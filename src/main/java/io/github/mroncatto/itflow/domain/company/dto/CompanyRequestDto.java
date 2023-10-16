@@ -30,13 +30,13 @@ public class CompanyRequestDto {
 
     @NotBlank(groups = {CompanyView.CompanyPut.class, CompanyView.CompanyPost.class},
             message = "[{field.name}] {validation.required}")
-    @Size(max = 45, message = "[{field.name}] {validation.max}")
+    @Size(groups = {CompanyView.CompanyPut.class, CompanyView.CompanyPost.class},
+            max = 45, message = "[{field.name}] {validation.max}")
     @JsonView({CompanyView.CompanyPut.class, CompanyView.CompanyPost.class})
     private String name;
 
-    @Size(groups = {CompanyView.CompanyPut.class, CompanyView.CompanyPost.class},
-            min = 5, max = 45,
-            message = "[{field.document}] {validation.between}")
+    @Size(groups = {CompanyView.CompanyPut.class, CompanyView.CompanyPost.class}, max = 45,
+            message = "[{field.document}] {validation.max}")
     @JsonView({CompanyView.CompanyPut.class, CompanyView.CompanyPost.class})
     private String document;
 

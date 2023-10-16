@@ -2,7 +2,7 @@ package io.github.mroncatto.itflow.domain.device.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class DeviceCategoryRequestDto {
     @JsonView(DeviceCategoryView.DeviceCategoryPut.class)
     private Long id;
 
-    @NotNull(groups = {DeviceCategoryView.DeviceCategoryPost.class, DeviceCategoryView.DeviceCategoryPut.class},
+    @NotEmpty(groups = {DeviceCategoryView.DeviceCategoryPost.class, DeviceCategoryView.DeviceCategoryPut.class},
             message = "[{field.name}] {validation.required}")
     @Size(groups = {DeviceCategoryView.DeviceCategoryPost.class, DeviceCategoryView.DeviceCategoryPut.class},
             max = 45, message = "[{field.name}] {validation.max}")
