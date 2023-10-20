@@ -16,8 +16,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.IsTrue;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -93,8 +100,8 @@ public class ComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.page)
-    public ResponseEntity<Page<ComputerCpu>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
-        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
+    public ResponseEntity<Page<ComputerCpu>> findAll(@PathVariable("page") int page) {
+        return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
     }
 
     @Operation(summary = "Disable a computer cpu by ID", security = {
@@ -109,13 +116,22 @@ public class ComputerCpuController {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
 
-    @Operation(summary = "Get all computer CPUs by Filters", security = {
+    @Operation(summary = "Get all computer autocomplete filter", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerCpu.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.autoComplete)
-    public ResponseEntity<List<ComputerCpu>> findAll(@PathVariable("filter") String filter) {
-        return new ResponseEntity<>(this.service.findAll(filter), OK);
+    public ResponseEntity<List<ComputerCpu>> findAll(
+            @Conjunction(value = {
+                    @Or({
+                            @Spec(path = "id", params = "filter", spec = Equal.class),
+                            @Spec(path = "brandName", params = "filter", spec = LikeIgnoreCase.class),
+                    }),
+            }, and = {
+                    @Spec(path = "active", defaultVal = "true" ,spec = IsTrue.class)
+            })
+            Specification<ComputerCpu> spec) {
+        return new ResponseEntity<>(this.service.findAll(spec), OK);
     }
 }

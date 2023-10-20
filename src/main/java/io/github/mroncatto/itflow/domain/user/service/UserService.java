@@ -3,10 +3,9 @@ package io.github.mroncatto.itflow.domain.user.service;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
-import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
 import io.github.mroncatto.itflow.domain.user.dto.UserProfileRequestDto;
+import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
 import io.github.mroncatto.itflow.domain.user.entity.Role;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
@@ -15,7 +14,6 @@ import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
 import io.github.mroncatto.itflow.domain.user.exception.UserNotFoundException;
 import io.github.mroncatto.itflow.domain.user.model.IUserService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IUserRepository;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -47,7 +44,6 @@ public class UserService extends AbstractService implements IUserService {
     private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
-    private final FilterService filterService;
     private final MessageService messageService;
 
     public User login(String username) {
@@ -63,25 +59,8 @@ public class UserService extends AbstractService implements IUserService {
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable,
-                              String filter) {
-        log.debug(">>>FILTERING USER BY: {}", filter);
-        return this.userRepository.findAll(
-                (Specification<User>) (root, query, builder) -> {
-
-                    List<Predicate> predicates = new ArrayList<>();
-                    predicates.add(filterService.equalsFilter(builder,root,"active", true));
-
-                    if (nonNull(filter)){
-                        Predicate predicateFullName = filterService.likeFilter(builder, root,"fullName", filter);
-                        Predicate predicateUsername = filterService.likeFilter(builder, root,"username", filter);
-                        Predicate predicateEmail = filterService.likeFilter(builder, root,"email", filter);
-                        predicates.add(builder.or(predicateFullName, predicateUsername, predicateEmail));
-                    }
-
-                    return builder.and(predicates.toArray(Predicate[]::new));
-
-                }, pageable);
+    public Page<User> findAll(Specification<User> spec, Pageable pageable) {
+        return this.userRepository.findAll(spec, pageable);
     }
 
     @Override

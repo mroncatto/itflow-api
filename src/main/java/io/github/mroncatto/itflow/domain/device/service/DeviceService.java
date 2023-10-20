@@ -3,22 +3,18 @@ package io.github.mroncatto.itflow.domain.device.service;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuRequestDto;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerRequestDto;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceRequestDto;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceStaffRequestDto;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
-import io.github.mroncatto.itflow.domain.device.entity.DeviceComputer;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
-import io.github.mroncatto.itflow.domain.device.entity.DeviceStaff;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceComputerService;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IDeviceRepository;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.Predicate;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -28,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
@@ -36,12 +31,10 @@ import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.
 
 @Service
 @Log4j2
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DeviceService extends AbstractService implements IDeviceService, IDeviceStaffService, IDeviceComputerService {
     private final IDeviceRepository repository;
-    private final FilterService filterService;
     private final MessageService messageService;
-
 
     @Override
     public List<Device> findAll() {
@@ -49,38 +42,9 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Page<Device> findAll(Pageable pageable, String filter, List<String> departments, List<String> categories) {
-        log.debug(">>>FILTERING DEVICE BY: {}", filter);
-        log.debug(">>>AND FILTERING DEPARTMENTS: {}", departments);
-        log.debug(">>>AND FILTERING CATEGORIES: {}", categories);
-        Page<Device> result = this.repository.findAll((Specification<Device>) (root, query, builder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            //TODO: Improve situacion device to many types
-
-            if (nonNull(filter)) {
-                Predicate predicateID = filterService.equalsFilter(builder, root, "id", convertToLong(filter));
-                Predicate predicateCode = filterService.equalsFilter(builder, root, "code", filter);
-                Predicate predicateTag = filterService.likeFilter(builder, root, "tag", filter);
-                Predicate predicateHost = filterService.likeFilter(builder, root, "hostname", filter);
-                predicates.add(builder.or(predicateID, predicateCode, predicateTag, predicateHost));
-            }
-
-            if (nonNull(departments))
-                predicates.add(filterService.whereInFilter(root, "department", "id", departments));
-            if (nonNull(categories))
-                predicates.add(filterService.whereInFilter(root, "deviceCategory", "id", categories));
-
-            return builder.and(predicates.toArray(Predicate[]::new));
-
-        }, pageable);
-
-       /* result.getContent().forEach(device -> {
-            if (nonNull(device.getDeviceComputer()))
-                Hibernate.initialize(device.getDeviceComputer().getDeviceComputerCpu());
-        });*/
-
-        return result;
+    @Transactional
+    public Page<Device> findAll(Specification<Device> spec, Pageable pageable) {
+        return this.repository.findAll(spec, pageable);
     }
 
     @Override
@@ -100,11 +64,9 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device updateStaff(DeviceStaffRequestDto deviceStaffRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        deviceStaffRequestDto.setId(id);
         deviceStaffRequestDto.setDevice(device);
-        var deviceStaff = new DeviceStaff();
-        BeanUtils.copyProperties(deviceStaffRequestDto, deviceStaff);
-        device.setDeviceStaff(deviceStaff);
+        deviceStaffRequestDto.setId(id);
+        device.setDeviceStaff(deviceStaffRequestDto.convert());
         log.debug(">>>UPDATING STAFF: {}", deviceStaffRequestDto.toString());
         return this.repository.save(device);
     }
@@ -113,12 +75,9 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device updateComputer(DeviceComputerRequestDto deviceComputerRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        deviceComputerRequestDto.setId(id);
         deviceComputerRequestDto.setDevice(device);
-
-        var deviceComputer = new DeviceComputer();
-        BeanUtils.copyProperties(deviceComputerRequestDto, deviceComputer);
-        device.setDeviceComputer(deviceComputer);
+        deviceComputerRequestDto.setId(id);
+        device.setDeviceComputer(deviceComputerRequestDto.convert());
         log.debug(">>>UPDATING DEVICE COMPUTER: {}", deviceComputerRequestDto.toString());
         return this.repository.save(device);
     }

@@ -1,25 +1,24 @@
 package io.github.mroncatto.itflow.domain.staff.service;
 
+import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.application.model.AbstractService;
-import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.staff.dto.StaffRequestDto;
-import io.github.mroncatto.itflow.domain.staff.model.IStaffService;
 import io.github.mroncatto.itflow.domain.staff.entity.Staff;
+import io.github.mroncatto.itflow.domain.staff.model.IStaffService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IStaffRepository;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.Predicate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,39 +30,21 @@ import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.
 @RequiredArgsConstructor
 public class StaffService extends AbstractService implements IStaffService {
     private final IStaffRepository repository;
-    private final FilterService filterService;
     private final MessageService messageService;
 
     @Override
+    @Cacheable(value = "Staff", key = "#root.method.name")
     public List<Staff> findAll() {
         return this.repository.findAllByActiveTrue();
     }
 
     @Override
-    public Page<Staff> findAll(Pageable pageable, String filter, List<String> departments, List<String> occupations) {
-        log.debug(">>>FILTERING STAFF BY: {}", filter);
-        log.debug(">>>AND DEPARTMENTS: {}", departments);
-        log.debug(">>>AND OCCUPATIONS: {}", occupations);
-        return this.repository.findAll((Specification<Staff>) (root, query, builder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(filterService.equalsFilter(builder, root, "active", true));
-
-            if (nonNull(filter)) {
-                Predicate predicateFullname = filterService.likeFilter(builder, root, "fullName", filter);
-                Predicate predicateEmail = filterService.likeFilter(builder, root, "email", filter);
-                predicates.add(builder.or(predicateFullname, predicateEmail));
-            }
-
-            if (nonNull(departments)) predicates.add(filterService.whereInFilter(root, "department", "id", departments));
-            if (nonNull(occupations)) predicates.add(filterService.whereInFilter(root, "occupation", "id", occupations));
-
-            return builder.and(predicates.toArray(Predicate[]::new));
-
-        }, pageable);
+    public Page<Staff> findAll(Specification<Staff> spec, Pageable pageable) {
+        return this.repository.findAll(spec, pageable);
     }
 
     @Override
+    @CacheEvict(value = "Staff", allEntries = true)
     public Staff save(StaffRequestDto staffRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
         validateUniqueEmail(staffRequestDto);
@@ -74,6 +55,7 @@ public class StaffService extends AbstractService implements IStaffService {
     }
 
     @Override
+    @CacheEvict(value = "Staff", allEntries = true)
     public Staff update(StaffRequestDto staffRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
         validateUniqueEmail(staffRequestDto);
@@ -94,6 +76,7 @@ public class StaffService extends AbstractService implements IStaffService {
     }
 
     @Override
+    @CacheEvict(value = "Staff", allEntries = true)
     public Staff deleteById(String uuid) throws NoResultException {
         Staff staff = this.findById(uuid);
         staff.setActive(false);

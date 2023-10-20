@@ -1,14 +1,13 @@
 package io.github.mroncatto.itflow.domain.commons.service.filter;
 
-import org.springframework.stereotype.Service;
-
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+
 import java.util.List;
 
-@Service
+@Deprecated()
 public class FilterService implements FilterStrategy {
     @Override
     public Predicate equalsFilter(CriteriaBuilder builder, Root<?> root, String param, Object filter) {

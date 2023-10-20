@@ -19,7 +19,7 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"deviceStaff", "deviceComputer"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Device extends Auditable<String> implements Serializable {
 

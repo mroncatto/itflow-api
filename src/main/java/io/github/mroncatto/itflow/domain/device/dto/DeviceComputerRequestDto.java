@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
+import io.github.mroncatto.itflow.domain.device.entity.DeviceComputer;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "device")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeviceComputerRequestDto {
 
@@ -36,4 +38,10 @@ public class DeviceComputerRequestDto {
 
     @JsonView(DeviceComputerView.DeviceComputerPut.class)
     private boolean virtual;
+
+    public DeviceComputer convert() {
+        var deviceComputer = new DeviceComputer();
+        BeanUtils.copyProperties(this, deviceComputer);
+        return deviceComputer;
+    }
 }

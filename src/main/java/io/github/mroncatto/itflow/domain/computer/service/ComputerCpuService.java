@@ -3,22 +3,19 @@ package io.github.mroncatto.itflow.domain.computer.service;
 import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.commons.helper.CompareHelper;
-import io.github.mroncatto.itflow.domain.commons.service.filter.FilterService;
 import io.github.mroncatto.itflow.domain.computer.dto.ComputerCpuRequestDto;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCpu;
 import io.github.mroncatto.itflow.domain.computer.model.IComputerCpuService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IComputerCpuRepository;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +24,6 @@ import java.util.List;
 public class ComputerCpuService extends AbstractService implements IComputerCpuService {
     private final IComputerCpuRepository repository;
     private final MessageService messageService;
-    private final FilterService filterService;
 
     @Override
     public List<ComputerCpu> findAll() {
@@ -63,21 +59,13 @@ public class ComputerCpuService extends AbstractService implements IComputerCpuS
     }
 
     @Override
-    public Page<ComputerCpu> findAll(Pageable pageable, String filter) {
+    public Page<ComputerCpu> findAll(Pageable pageable) {
         return this.repository.findAllByActiveTrue(pageable);
     }
 
-    public List<ComputerCpu> findAll(String filter) {
-        log.debug(">>>FILTERING COMPUTER CPU BY: {}", filter);
-        return this.repository.findAll((root, query, builder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(filterService.likeFilter(builder, root, "brandName", filter));
-
-            if(CompareHelper.isNumber(filter))
-                predicates.add(filterService.equalsFilter(builder, root, "id", convertToLong(filter)));
-
-            return builder.or(predicates.toArray(Predicate[]::new));
-        });
+    @Override
+    public List<ComputerCpu> findAll(Specification<ComputerCpu> spec) {
+        return this.repository.findAll(spec);
     }
 
     @Override

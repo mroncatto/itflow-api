@@ -103,31 +103,31 @@ public class ExceptionHandling extends AbstractExceptionHandling {
 
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<CustomHttpResponse> securityException(SecurityException e) {
-        log.error("Invalid JWT signature: {}", e.getMessage());
+        log.error(">>>Invalid JWT signature: {}", e.getMessage());
         return build(HttpStatus.UNAUTHORIZED, messageService.getMessage("exception.invalid_jwt_signature"));
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<CustomHttpResponse> malformedJwtException(MalformedJwtException e) {
-        log.error("Invalid JWT token: {}", e.getMessage());
+        log.error(">>>Invalid JWT token: {}", e.getMessage());
         return build(HttpStatus.UNAUTHORIZED, messageService.getMessage("exception.invalid_jwt_token"));
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<CustomHttpResponse> expiredJwtException(ExpiredJwtException e) {
-        log.error("JWT token is expired: {}", e.getMessage());
+        log.error(">>>JWT token is expired: {}", e.getMessage());
         return build(HttpStatus.UNAUTHORIZED, messageService.getMessage("exception.expired_jwt_token"));
     }
 
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<CustomHttpResponse> unsupportedJwtException(UnsupportedJwtException e) {
-        log.error("JWT token is unsupported: {}", e.getMessage());
+        log.error(">>>JWT token is unsupported: {}", e.getMessage());
         return build(HttpStatus.UNAUTHORIZED, messageService.getMessage("exception.unsupported_jwt_token"));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CustomHttpResponse> illegalArgumentException(IllegalArgumentException e) {
-        log.error("JWT claims string is empty: {}", e.getMessage());
+        log.error(">>>JWT claims string is empty: {}", e.getMessage());
         return build(HttpStatus.UNAUTHORIZED, messageService.getMessage("exception.illegal_arg_jwt_token"));
     }
 }

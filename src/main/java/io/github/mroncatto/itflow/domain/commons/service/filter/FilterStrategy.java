@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.List;
 
+@Deprecated()
 public interface FilterStrategy {
     Predicate equalsFilter(CriteriaBuilder builder, Root<?> root, String param, Object filter);
     Predicate likeFilter(CriteriaBuilder builder, Root<?> root, String param, String filter);
