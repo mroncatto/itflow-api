@@ -56,6 +56,10 @@ public class ComputerCpuRequestDto {
     private String core;
 
     @Size(groups = {ComputerCpuView.ComputerCpuPut.class, ComputerCpuView.ComputerCpuPost.class},
+            max = 25, message = "[{field.thread}] {validation.max}")
+    private String thread;
+
+    @Size(groups = {ComputerCpuView.ComputerCpuPut.class, ComputerCpuView.ComputerCpuPost.class},
             max = 25, message = "[{field.frequency}] {validation.max}")
     private String frequency;
 

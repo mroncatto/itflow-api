@@ -8,7 +8,6 @@ import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerRequestDto;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceRequestDto;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceStaffRequestDto;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
-import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceComputerService;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceService;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceStaffService;
@@ -27,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.isNull;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Service
@@ -77,7 +77,10 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
         Device device = this.findById(id);
         deviceComputerRequestDto.setDevice(device);
         deviceComputerRequestDto.setId(id);
-        device.setDeviceComputer(deviceComputerRequestDto.convert());
+        if(nonNull(device.getDeviceComputer()))
+            device.updateDeviceComputer(deviceComputerRequestDto.convert());
+        else
+            device.setDeviceComputer(deviceComputerRequestDto.convert());
         log.debug(">>>UPDATING DEVICE COMPUTER: {}", deviceComputerRequestDto.toString());
         return this.repository.save(device);
     }
@@ -135,13 +138,13 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerCpu(DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if(nonNull(device.getDeviceComputer()))
+        if(isNull(device.getDeviceComputer()))
             throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
 
-        var deviceComputerCpu = new DeviceComputerCpu();
-        BeanUtils.copyProperties(deviceComputerCpuRequestDto, deviceComputerCpu);
+        var deviceComputerCpu = deviceComputerCpuRequestDto.convert();
+        deviceComputerCpu.setDeviceComputer(device.getDeviceComputer());
         deviceComputerCpu.addEmbeddedKey();
-        //device.getDeviceComputer().setCpu(deviceComputerCpu);
+        device.getDeviceComputer().getComputerCpuList().add(deviceComputerCpu);
         return this.repository.save(device);
     }
 

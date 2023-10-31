@@ -1,5 +1,6 @@
 package io.github.mroncatto.itflow.domain.device.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerCategory;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import org.hibernate.Hibernate;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -39,13 +41,10 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean virtual;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "computer_cpu_id", referencedColumnName = "device_computer_id")
-//    @ToString.Exclude
-//    @JsonIgnoreProperties({"deviceComputer"})
-//    private DeviceComputerCpu cpu;
-
-    // FIXME: REMOVER CHAVE COMPOSTA, ESTA CAUSANDO PROBLEMAS !!!!!!!!!!!!!!!1
+    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnoreProperties({"deviceComputer"})
+    private List<DeviceComputerCpu> computerCpuList;
 
     @Override
     public boolean equals(Object o) {

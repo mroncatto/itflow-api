@@ -3,6 +3,7 @@ package io.github.mroncatto.itflow.domain.computer.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerMemory;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -35,7 +36,7 @@ public class ComputerMemoryRequestDto {
             max = 45, message = "[{field.brand_name}] {validation.max}")
     private String brandName;
 
-    @NotNull(groups = {ComputerMemoryView.ComputerMemoryPut.class, ComputerMemoryView.ComputerMemoryPost.class},
+    @NotEmpty(groups = {ComputerMemoryView.ComputerMemoryPut.class, ComputerMemoryView.ComputerMemoryPost.class},
             message = "[{field.type}] {validation.required}")
     @Size(groups = {ComputerMemoryView.ComputerMemoryPut.class, ComputerMemoryView.ComputerMemoryPost.class},
             max = 25, message = "[{field.type}] {validation.max}")
@@ -43,6 +44,8 @@ public class ComputerMemoryRequestDto {
 
     @Size(groups = {ComputerMemoryView.ComputerMemoryPut.class, ComputerMemoryView.ComputerMemoryPost.class},
             max = 25, message = "[{field.size}] {validation.max}")
+    @NotEmpty(groups = {ComputerMemoryView.ComputerMemoryPut.class, ComputerMemoryView.ComputerMemoryPost.class},
+            message = "[{field.size}] {validation.required}")
     private String size;
 
     @Size(groups = {ComputerMemoryView.ComputerMemoryPut.class, ComputerMemoryView.ComputerMemoryPost.class},

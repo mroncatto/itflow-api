@@ -224,6 +224,7 @@ CREATE TABLE IF NOT EXISTS "computer_cpu" (
     "generation" VARCHAR(25),
     "socket" VARCHAR(25) NOT NULL,
     "core" VARCHAR(25),
+    "thread" VARCHAR(25),
     "frequency" VARCHAR(25),
     "fsb" VARCHAR(25),
     "active" boolean NOT NULL DEFAULT TRUE,
@@ -233,8 +234,7 @@ CREATE TABLE IF NOT EXISTS "computer_cpu" (
 CREATE TABLE IF NOT EXISTS "device_computer_cpu" (
     "device_computer_id" BIGINT NOT NULL,
     "computer_cpu_id" BIGINT NOT NULL,
-    "vcpu" VARCHAR(11) NOT NULL DEFAULT 1,
-    "unit" VARCHAR(11) NOT NULL DEFAULT 1,
+    "core" VARCHAR(11) NOT NULL DEFAULT 1,
     CONSTRAINT "DEVICE_COMPUTER_CPU_PK" PRIMARY KEY (device_computer_id, computer_cpu_id),
     CONSTRAINT "DEVICE_COMPUTER_DEVICE_COMPUTER_CPU_FK" FOREIGN KEY (device_computer_id) REFERENCES device_computer(device_id),
     CONSTRAINT "COMPUTER_CPU_DEVICE_COMPUTER_CPU_FK" FOREIGN KEY (computer_cpu_id) REFERENCES computer_cpu(id)

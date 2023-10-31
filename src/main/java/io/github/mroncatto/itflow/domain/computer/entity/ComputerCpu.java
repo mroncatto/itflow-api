@@ -41,6 +41,9 @@ public class ComputerCpu implements Serializable {
     private String core;
 
     @Column(length = 25)
+    private String thread;
+
+    @Column(length = 25)
     private String frequency;
 
     @Column(length = 25)

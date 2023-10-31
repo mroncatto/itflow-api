@@ -40,6 +40,9 @@ public class CompanyRequestDto {
     @JsonView({CompanyView.CompanyPut.class, CompanyView.CompanyPost.class})
     private String document;
 
+    @JsonView(CompanyView.CompanyPost.class)
+    private boolean active;
+
     public Company convert() {
         var company = new Company();
         BeanUtils.copyProperties(this, company);

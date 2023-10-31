@@ -70,8 +70,8 @@ public class DeviceComputerController {
     @PutMapping(EndpointUrlConstant.deviceComputerCpu)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> addDeviceComputerCpu(@PathVariable("id") Long id,
-                                                       @RequestBody @Validated()
-                                         @JsonView() DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+                                                       @RequestBody @Validated(DeviceComputerCpuRequestDto.DeviceComputerCpuView.DeviceComputerCpuPut.class)
+                                                        @JsonView(DeviceComputerCpuRequestDto.DeviceComputerCpuView.DeviceComputerCpuPut.class) DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, BindingResult result) throws NoResultException, BadRequestException {
         return new ResponseEntity<>(this.service.addDeviceComputerCpu(deviceComputerCpuRequestDto, id, result), OK);
     }
 

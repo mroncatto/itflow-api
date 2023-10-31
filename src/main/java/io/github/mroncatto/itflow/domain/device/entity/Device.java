@@ -74,4 +74,10 @@ public class Device extends Auditable<String> implements Serializable {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public void updateDeviceComputer(DeviceComputer deviceComputer) {
+        this.getDeviceComputer().setComputerCategory(deviceComputer.getComputerCategory());
+        this.getDeviceComputer().setDescription(deviceComputer.getDescription());
+        this.getDeviceComputer().setVirtual(deviceComputer.isVirtual());
+    }
 }

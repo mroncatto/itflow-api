@@ -16,7 +16,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -65,7 +67,12 @@ public class ComputerCpuService extends AbstractService implements IComputerCpuS
 
     @Override
     public List<ComputerCpu> findAll(Specification<ComputerCpu> spec) {
-        return this.repository.findAll(spec);
+        return this.repository.findAll(spec)
+                .stream()
+                .sorted(Comparator.comparing(ComputerCpu::getModel))
+                .limit(10)
+                .collect(Collectors.toList());
+        // TODO: Filtrar e ordenar a nivel de banco
     }
 
     @Override

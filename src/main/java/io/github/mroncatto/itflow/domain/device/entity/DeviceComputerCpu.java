@@ -28,18 +28,15 @@ public class DeviceComputerCpu implements Serializable {
     private DeviceComputerCpuPK id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "computer_cpu_id")
+    @JoinColumn(name = "device_computer_id", updatable = false, insertable = false)
     private DeviceComputer deviceComputer;
 
     @ManyToOne(optional = false)
-    @JoinColumn(updatable = false, insertable = false)
+    @JoinColumn(name = "computer_cpu_id", updatable = false, insertable = false)
     private ComputerCpu computerCpu;
 
     @Column(length = 11, nullable = false)
-    private String vcpu;
-
-    @Column(length = 11, nullable = false)
-    private String unit;
+    private String core;
 
     @Override
     public boolean equals(Object o) {
@@ -56,8 +53,9 @@ public class DeviceComputerCpu implements Serializable {
 
     public void addEmbeddedKey() {
         if (nonNull(computerCpu) && nonNull(deviceComputer)) {
-            id.setComputerCpu(computerCpu.getId());
-            id.setDeviceComputer(deviceComputer.getId());
+            this.id = new DeviceComputerCpuPK();
+            this.id.setComputerCpu(computerCpu.getId());
+            this.id.setDeviceComputer(deviceComputer.getId());
         }
     }
 }
