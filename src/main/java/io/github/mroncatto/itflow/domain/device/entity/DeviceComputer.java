@@ -46,6 +46,16 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
     @JsonIgnoreProperties({"deviceComputer"})
     private List<DeviceComputerCpu> computerCpuList;
 
+    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnoreProperties({"deviceComputer"})
+    private List<DeviceComputerMemory> computerMemoryList;
+
+    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnoreProperties({"deviceComputer"})
+    private List<DeviceComputerStorage> computerStorageList;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

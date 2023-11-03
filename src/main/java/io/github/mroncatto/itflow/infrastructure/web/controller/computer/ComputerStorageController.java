@@ -16,8 +16,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.IsTrue;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -107,5 +114,24 @@ public class ComputerStorageController {
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<ComputerStorage> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
+    }
+
+    @Operation(summary = "Get all computer storage autocomplete filter", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerStorage.class)))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @GetMapping(EndpointUrlConstant.autoComplete)
+    public ResponseEntity<List<ComputerStorage>> findAll(
+            @Conjunction(value = {
+                    @Or({
+                            @Spec(path = "id", params = "filter", spec = Equal.class),
+                            @Spec(path = "brandName", params = "filter", spec = LikeIgnoreCase.class),
+                    }),
+            }, and = {
+                    @Spec(path = "active", defaultVal = "true" ,spec = IsTrue.class)
+            })
+            Specification<ComputerStorage> spec) {
+        return new ResponseEntity<>(this.service.findAll(spec), OK);
     }
 }

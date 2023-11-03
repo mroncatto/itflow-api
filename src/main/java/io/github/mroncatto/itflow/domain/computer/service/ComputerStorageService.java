@@ -12,10 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -64,5 +67,15 @@ public class ComputerStorageService extends AbstractService implements IComputer
         computerStorage.setActive(false);
         log.debug(">>>DELETING COMPUTER STORAGE BY: {}", id);
         return this.repository.save(computerStorage);
+    }
+
+    @Override
+    public List<ComputerStorage> findAll(Specification<ComputerStorage> spec) {
+        return this.repository.findAll(spec)
+                .stream()
+                .sorted(Comparator.comparing(ComputerStorage::getBrandName))
+                .limit(10)
+                .collect(Collectors.toList());
+        // TODO: Filtrar e ordenar a nivel de banco
     }
 }

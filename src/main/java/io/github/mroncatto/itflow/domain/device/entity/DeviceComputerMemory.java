@@ -1,6 +1,7 @@
 package io.github.mroncatto.itflow.domain.device.entity;
 
 import io.github.mroncatto.itflow.domain.computer.entity.ComputerMemory;
+import io.github.mroncatto.itflow.domain.device.entity.pk.DeviceComputerMemoryPK;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,8 @@ import org.hibernate.Hibernate;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
+
+import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Entity
 @Table
@@ -21,18 +24,19 @@ public class DeviceComputerMemory implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private DeviceComputerMemoryPK id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "device_computer_id")
+    @JoinColumn(name = "device_computer_id", updatable = false, insertable = false)
     private DeviceComputer deviceComputer;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "computer_memory_id", updatable = false, insertable = false)
     private ComputerMemory computerMemory;
 
-    private int unit;
+    @Column(length = 11, nullable = false)
+    private int modules;
 
     @Override
     public boolean equals(Object o) {
@@ -44,6 +48,14 @@ public class DeviceComputerMemory implements Serializable {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id);
+    }
+
+    public void addEmbeddedKey() {
+        if (nonNull(computerMemory) && nonNull(deviceComputer)) {
+            this.id = new DeviceComputerMemoryPK();
+            this.id.setComputerMemory(computerMemory.getId());
+            this.id.setDeviceComputer(deviceComputer.getId());
+        }
     }
 }

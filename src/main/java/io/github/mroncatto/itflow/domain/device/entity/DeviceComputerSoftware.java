@@ -4,12 +4,12 @@ import io.github.mroncatto.itflow.domain.commons.model.Auditable;
 import io.github.mroncatto.itflow.domain.device.entity.pk.DeviceComputerSoftwarePK;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
 import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicenseKey;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;

@@ -116,7 +116,7 @@ public class ComputerCpuController {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
     }
 
-    @Operation(summary = "Get all computer autocomplete filter", security = {
+    @Operation(summary = "Get all computer cpu autocomplete filter", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerCpu.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})

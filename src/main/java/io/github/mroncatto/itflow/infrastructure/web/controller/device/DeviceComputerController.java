@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuRequestDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerMemoryRequestDto;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerRequestDto;
+import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerStorageRequestDto;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
+import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerMemory;
 import io.github.mroncatto.itflow.domain.device.model.IDeviceComputerService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,7 +64,7 @@ public class DeviceComputerController {
         return new ResponseEntity<>(this.service.deleteComputerFromDevice(id), OK);
     }
 
-    @Operation(summary = "Add or update an computer to a device", security = {
+    @Operation(summary = "Add or update an computer cpu to a computer device", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceComputerCpu.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
@@ -74,5 +77,35 @@ public class DeviceComputerController {
                                                         @JsonView(DeviceComputerCpuRequestDto.DeviceComputerCpuView.DeviceComputerCpuPut.class) DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, BindingResult result) throws NoResultException, BadRequestException {
         return new ResponseEntity<>(this.service.addDeviceComputerCpu(deviceComputerCpuRequestDto, id, result), OK);
     }
+
+    @Operation(summary = "Add or update an computer memory to a computer device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceComputerMemory.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = CREATED)
+    @PutMapping(EndpointUrlConstant.deviceComputerMemory)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<Device> addDeviceComputerMemory(@PathVariable("id") Long id,
+                                                       @RequestBody @Validated(DeviceComputerMemoryRequestDto.DeviceComputerMemoryView.DeviceComputerMemoryPut.class)
+                                                       @JsonView(DeviceComputerMemoryRequestDto.DeviceComputerMemoryView.DeviceComputerMemoryPut.class) DeviceComputerMemoryRequestDto deviceComputerMemoryRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addDeviceComputerMemory(deviceComputerMemoryRequestDto, id, result), OK);
+    }
+
+    @Operation(summary = "Add or update an computer storage to a computer device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceComputerMemory.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = CREATED)
+    @PutMapping(EndpointUrlConstant.deviceComputerStorage)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<Device> addDeviceComputerStorage(@PathVariable("id") Long id,
+                                                          @RequestBody @Validated(DeviceComputerStorageRequestDto.DeviceComputerStorageView.DeviceComputerStoragePut.class)
+                                                          @JsonView(DeviceComputerStorageRequestDto.DeviceComputerStorageView.DeviceComputerStoragePut.class) DeviceComputerStorageRequestDto deviceComputerStorageRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addDeviceComputerStorage(deviceComputerStorageRequestDto, id, result), OK);
+    }
+
+
 
 }
