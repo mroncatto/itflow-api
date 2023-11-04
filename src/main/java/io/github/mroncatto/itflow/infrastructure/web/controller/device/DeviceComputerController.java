@@ -1,6 +1,7 @@
 package io.github.mroncatto.itflow.infrastructure.web.controller.device;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.Nulls;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuRequestDto;
@@ -78,6 +79,19 @@ public class DeviceComputerController {
         return new ResponseEntity<>(this.service.addDeviceComputerCpu(deviceComputerCpuRequestDto, id, result), OK);
     }
 
+    @Operation(summary = "Remove a computer cpu from a computer device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Nulls.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @DeleteMapping(EndpointUrlConstant.deviceComputerCpuDelete)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<?> removeDeviceComputerCpu(@PathVariable("id") Long id, @PathVariable("cpuId") Long cpuId) throws NoResultException, BadRequestException {
+        this.service.deleteDeviceComputerCpu(id, cpuId);
+        return ResponseEntity.ok(null);
+    }
+
     @Operation(summary = "Add or update an computer memory to a computer device", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceComputerMemory.class))),
@@ -92,6 +106,19 @@ public class DeviceComputerController {
         return new ResponseEntity<>(this.service.addDeviceComputerMemory(deviceComputerMemoryRequestDto, id, result), OK);
     }
 
+    @Operation(summary = "Remove a computer memory from a computer device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Nulls.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @DeleteMapping(EndpointUrlConstant.deviceComputerMemoryDelete)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<?> removeDeviceComputerMemory(@PathVariable("id") Long id, @PathVariable("memoryId") Long memoryId) throws NoResultException, BadRequestException {
+        this.service.deleteDeviceComputerMemory(id, memoryId);
+        return ResponseEntity.ok(null);
+    }
+
     @Operation(summary = "Add or update an computer storage to a computer device", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
             @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceComputerMemory.class))),
@@ -104,6 +131,19 @@ public class DeviceComputerController {
                                                           @RequestBody @Validated(DeviceComputerStorageRequestDto.DeviceComputerStorageView.DeviceComputerStoragePut.class)
                                                           @JsonView(DeviceComputerStorageRequestDto.DeviceComputerStorageView.DeviceComputerStoragePut.class) DeviceComputerStorageRequestDto deviceComputerStorageRequestDto, BindingResult result) throws NoResultException, BadRequestException {
         return new ResponseEntity<>(this.service.addDeviceComputerStorage(deviceComputerStorageRequestDto, id, result), OK);
+    }
+
+    @Operation(summary = "Remove a computer storage from a computer device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Nulls.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @DeleteMapping(EndpointUrlConstant.deviceComputerStorageDelete)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<?> removeDeviceComputerStorage(@PathVariable("id") Long id, @PathVariable("storageId") Long storageId) throws NoResultException, BadRequestException {
+        this.service.deleteDeviceComputerStorage(id, storageId);
+        return ResponseEntity.ok(null);
     }
 
 

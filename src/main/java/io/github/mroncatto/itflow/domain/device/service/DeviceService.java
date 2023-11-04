@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.Collections;
 import java.util.List;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
@@ -75,7 +74,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
         Device device = this.findById(id);
         deviceComputerRequestDto.setDevice(device);
         deviceComputerRequestDto.setId(id);
-        if(nonNull(device.getDeviceComputer()))
+        if (nonNull(device.getDeviceComputer()))
             device.updateDeviceComputer(deviceComputerRequestDto.convert());
         else
             device.setDeviceComputer(deviceComputerRequestDto.convert());
@@ -141,7 +140,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerCpu(DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if(isNull(device.getDeviceComputer()))
+        if (isNull(device.getDeviceComputer()))
             throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
 
         var deviceComputerCpu = deviceComputerCpuRequestDto.convert();
@@ -154,19 +153,15 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
 
     @Override
     @Transactional
-    public Device deleteDeviceComputerCpu(Long id) throws NoResultException {
+    public void deleteDeviceComputerCpu(Long id, Long cpuId) throws NoResultException, BadRequestException {
         Device device = this.findById(id);
-        device.getDeviceComputer().setComputerCpuList(Collections.emptyList());
-        log.debug(">>>REMOVE COMPUTER CPU FROM DEVICE BY ID: {}", id);
-        // TODO: Revisar -- nao tem como filtrar com esses parametros
-        return null;
-
-        /*
-        Device device = this.findById(id);
-        device.setDeviceStaff(null);
-        log.debug(">>>REMOVE STAFF FROM DEVICE BY ID: {}", id);
-        return this.repository.save(device);
-         */
+        if (isNull(device.getDeviceComputer()))
+            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        device.getDeviceComputer()
+                .getComputerCpuList()
+                .removeIf(cpuList -> cpuList.getComputerCpu().getId().equals(cpuId));
+        log.debug(">>>REMOVE COMPUTER CPU FROM DEVICE, cpuId: {}", cpuId);
+        this.repository.save(device);
     }
 
     @Override
@@ -174,7 +169,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerMemory(DeviceComputerMemoryRequestDto deviceComputerMemoryRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if(isNull(device.getDeviceComputer()))
+        if (isNull(device.getDeviceComputer()))
             throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
 
         var deviceComputerMemory = deviceComputerMemoryRequestDto.convert();
@@ -186,9 +181,17 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     }
 
     @Override
-    public Device deleteDeviceComputerMemory(Long id) throws NoResultException {
-        return null;
-        // TODO: Revisar -- nao tem como filtrar com esses parametros
+    @Transactional
+    public void deleteDeviceComputerMemory(Long id, Long memoryId) throws NoResultException, BadRequestException {
+        Device device = this.findById(id);
+        if (isNull(device.getDeviceComputer()))
+            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+
+        device.getDeviceComputer()
+                .getComputerMemoryList()
+                .removeIf(memoryList -> memoryList.getComputerMemory().getId().equals(memoryId));
+        log.debug(">>>REMOVE COMPUTER MEMORY FROM DEVICE, memoryId: {}", memoryId);
+        this.repository.save(device);
     }
 
     @Override
@@ -196,7 +199,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerStorage(DeviceComputerStorageRequestDto deviceComputerStorageRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if(isNull(device.getDeviceComputer()))
+        if (isNull(device.getDeviceComputer()))
             throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
 
         var deviceComputerStorage = deviceComputerStorageRequestDto.convert();
@@ -208,9 +211,17 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     }
 
     @Override
-    public Device deleteDeviceComputerStorage(Long id) throws NoResultException {
-        return null;
-        // TODO: Revisar -- nao tem como filtrar com esses parametros
+    @Transactional
+    public void deleteDeviceComputerStorage(Long id, Long storageId) throws NoResultException, BadRequestException {
+        Device device = this.findById(id);
+        if (isNull(device.getDeviceComputer()))
+            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+
+        device.getDeviceComputer()
+                .getComputerStorageList()
+                .removeIf(memoryList -> memoryList.getComputerStorage().getId().equals(storageId));
+        log.debug(">>>REMOVE COMPUTER STORAGE FROM DEVICE, storageId: {}", storageId);
+        this.repository.save(device);
     }
 
     private void validateUniqueCode(DeviceRequestDto deviceRequestDto) throws BadRequestException {

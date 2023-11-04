@@ -12,8 +12,11 @@ public class EndpointUrlConstant {
     public static final String staffId = "/staff/{id}";
     public static final String computerId = "/computer/{id}";
     public static final String deviceComputerCpu = "/computer/{id}/cpu";
+    public static final String deviceComputerCpuDelete = "/computer/{id}/cpu/{cpuId}";
     public static final String deviceComputerMemory = "/computer/{id}/memory";
+    public static final String deviceComputerMemoryDelete = "/computer/{id}/memory/{memoryId}";
     public static final String deviceComputerStorage = "/computer/{id}/storage";
+    public static final String deviceComputerStorageDelete = "/computer/{id}/storage/{storageId}";
     public static final String filterDevice = "/filter/device";
     public static final String username = "/{username}";
     public static final String role = "/role";

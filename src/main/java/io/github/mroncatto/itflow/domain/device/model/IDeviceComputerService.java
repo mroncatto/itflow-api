@@ -13,9 +13,9 @@ public interface IDeviceComputerService {
     Device updateComputer(DeviceComputerRequestDto deviceComputerRequestDto, Long id, BindingResult result) throws BadRequestException;
     Device deleteComputerFromDevice(Long id) throws NoResultException;
     Device addDeviceComputerCpu(DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, Long id, BindingResult result) throws BadRequestException;
-    Device deleteDeviceComputerCpu(Long id) throws NoResultException;
+    void deleteDeviceComputerCpu(Long id, Long cpuId) throws NoResultException, BadRequestException;
     Device addDeviceComputerMemory(DeviceComputerMemoryRequestDto deviceComputerMemoryRequestDto, Long id, BindingResult result) throws BadRequestException;
-    Device deleteDeviceComputerMemory(Long id) throws NoResultException;
+    void deleteDeviceComputerMemory(Long id, Long memoryId) throws NoResultException, BadRequestException;
     Device addDeviceComputerStorage(DeviceComputerStorageRequestDto deviceComputerStorageRequestDto, Long id, BindingResult result) throws BadRequestException;
-    Device deleteDeviceComputerStorage(Long id) throws NoResultException;
+    void deleteDeviceComputerStorage(Long id, Long storageId) throws NoResultException, BadRequestException;
 }

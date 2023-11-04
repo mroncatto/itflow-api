@@ -54,11 +54,11 @@ public class Device extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean active;
 
-    @OneToOne(mappedBy = "device", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToOne(mappedBy = "device", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonIgnoreProperties("device")
     private DeviceStaff deviceStaff;
 
-    @OneToOne(mappedBy = "device", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToOne(mappedBy = "device", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonIgnoreProperties({"device"})
     private DeviceComputer deviceComputer;
 

@@ -41,17 +41,17 @@ public class DeviceComputer extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean virtual;
 
-    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnoreProperties({"deviceComputer"})
     private List<DeviceComputerCpu> computerCpuList;
 
-    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnoreProperties({"deviceComputer"})
     private List<DeviceComputerMemory> computerMemoryList;
 
-    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "deviceComputer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnoreProperties({"deviceComputer"})
     private List<DeviceComputerStorage> computerStorageList;
