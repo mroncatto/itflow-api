@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareRequestDto;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.*;
@@ -37,6 +38,25 @@ class SoftwareLicenseControllerTest {
 
     @Test
     @Order(1)
+    @DisplayName("Should create a software and return code 201")
+    @WithMockUser(username = "admin", authorities = "HELPDESK")
+    void createSoftware() throws Exception {
+        final String softwareName = "Software test";
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerSoftware)
+                .content(objectMapper.writeValueAsString(
+                        SoftwareRequestDto.builder()
+                                .name(softwareName)
+                                .build()))
+                .contentType(APPLICATION_JSON_VALUE);
+        mvc.perform(request).andExpectAll(
+                MockMvcResultMatchers.status().isCreated(),
+                MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
+                MockMvcResultMatchers.jsonPath("name", Is.is(softwareName))
+        );
+    }
+
+    @Test
+    @Order(2)
     @DisplayName("Should create a software license and return code 201")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {

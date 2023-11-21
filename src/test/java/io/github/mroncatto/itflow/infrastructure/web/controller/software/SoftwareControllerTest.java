@@ -45,7 +45,6 @@ class SoftwareControllerTest {
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerSoftware)
                 .content(objectMapper.writeValueAsString(
                         SoftwareRequestDto.builder()
-                                .id(2L)
                                 .name(softwareName)
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
@@ -65,7 +64,7 @@ class SoftwareControllerTest {
         RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerSoftware)
                 .content(objectMapper.writeValueAsString(
                         Software.builder()
-                                .id(2L)
+                                .id(1L)
                                 .name(softwareName)
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
@@ -108,7 +107,7 @@ class SoftwareControllerTest {
     @WithMockUser(username = "admin")
     void findById() throws Exception {
         final String softwareName = "Software test edit";
-        final String id = "/2";
+        final String id = "/1";
         RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerSoftware + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
@@ -123,7 +122,7 @@ class SoftwareControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void addLicense() throws Exception {
         final String licenseDesc = "License test";
-        final String endpoint = "/2/license";
+        final String endpoint = "/1/license";
         RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerSoftware + endpoint)
                 .content(objectMapper.writeValueAsString(
                         SoftwareLicenseRequestDto.builder()
@@ -143,7 +142,7 @@ class SoftwareControllerTest {
     @DisplayName("Should find and disable a software by ID and return code 200")
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
-        final String id = "/2";
+        final String id = "/1";
         RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.computerSoftware + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),

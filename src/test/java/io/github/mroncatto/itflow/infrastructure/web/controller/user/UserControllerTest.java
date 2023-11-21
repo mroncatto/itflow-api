@@ -85,7 +85,7 @@ class UserControllerTest {
     @Order(3)
     @WithMockUser(username = "admin")
     void shouldReturnPagination() throws Exception {
-        final String page = "/page/1";
+        final String page = "?page=1";
         RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.user + page);
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())

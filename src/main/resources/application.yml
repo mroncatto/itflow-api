@@ -1,0 +1,52 @@
+app:
+  version: '@project.version@'
+  timezone: 'America/Asuncion'
+  login:
+    attempts: 5
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  servlet:
+    multipart.max-file-size: 5MB
+    multipart.max-request-size: 5MB
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    open-in-view: true
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+  messages:
+    basename: messages
+    encoding: ISO-8859-1
+    fallback-to-system-locale: true
+  web:
+    locale: en
+  jackson:
+    mapper:
+      default-view-inclusion: true
+springdoc:
+  swagger-ui:
+    enabled: true
+    filter: false
+    path: /
+    doc-expansion: none
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%clr(%5p)] %logger{36} - %msg%n"
+    file: "%d %p %c{1.} [%t] %m%n"
+  file:
+    name: ${user.home}/logs/itflow/itflow-api.log
+  logback:
+    rollingpolicy:
+      max-file-size: 20MB
+      max-history: 10

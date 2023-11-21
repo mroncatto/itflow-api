@@ -111,7 +111,7 @@ class DeviceControllerTest {
     @DisplayName("Should find all devices and return page format and code 200")
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
-        final String page = "/page/1";
+        final String page = "?page=1";
         RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.device + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),

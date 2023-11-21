@@ -1,6 +1,3 @@
--- EXTENSIONS
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- SEQUENCES
 CREATE SEQUENCE COMPANY_SEQ START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE BRANCH_SEQ START WITH 1 INCREMENT BY 1;
@@ -22,7 +19,7 @@ CREATE SEQUENCE LICENSE_KEY_SEQ START WITH 1 INCREMENT BY 1;
 -- DDL
 CREATE TABLE IF NOT EXISTS "account"
 (
-    "id" uuid DEFAULT uuid_generate_v4() NOT NULL,
+    "id" uuid NOT NULL,
     "full_name" varchar(75) NOT NULL,
     "avatar" varchar(75) NULL,
     "email" varchar(45) NOT NULL,
@@ -94,7 +91,7 @@ CREATE TABLE IF NOT EXISTS "occupation" (
 );
 
 CREATE TABLE IF NOT EXISTS "staff" (
-    "id" uuid DEFAULT uuid_generate_v4() NOT NULL,
+    "id" uuid NOT NULL,
     "full_name" varchar(75) NOT NULL,
     "email" varchar(45) NOT NULL,
     "department_id" bigint NOT NULL,

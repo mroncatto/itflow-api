@@ -82,7 +82,7 @@ class StaffControllerTest {
     @DisplayName("Should find all staff and return page format and code 200")
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
-        final String page = "/page/1";
+        final String page = "?page=1";
         RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.staff + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
