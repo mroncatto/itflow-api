@@ -17,6 +17,7 @@ import java.util.UUID;
 
 public interface IUserService extends IAbstractUserService {
 
+    User login(String username);
     User findUserById(UUID id) throws UserNotFoundException;
     User findUserByUsername(String username);
     User findUserByEmail(String email) throws UserNotFoundException;

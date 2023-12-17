@@ -20,12 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import jakarta.persistence.NoResultException;
+
 import java.util.List;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class SoftwareService extends AbstractService implements ISoftwareService {
+    public static final String SOFTWARE = "software";
     private final ISoftwareRepository repository;
     private final MessageService messageService;
 
@@ -47,9 +49,11 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     }
 
     @Override
+    @Transactional
     public Software update(SoftwareRequestDto softwareRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Software software = this.findById(softwareRequestDto.getId());
+        Software software = this.repository.findById(softwareRequestDto.getId()).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound(SOFTWARE)));
         software.setName(softwareRequestDto.getName());
         software.setDeveloper(softwareRequestDto.getDeveloper());
         log.debug(">>>UPDATING SOFTWARE: {}", softwareRequestDto);
@@ -60,7 +64,7 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     @Transactional(readOnly = true)
     public Software findById(Long id) throws NoResultException {
         Software software = this.repository.findById(id).orElseThrow(()
-                -> new NoResultException(messageService.getMessageNotFound("software")));
+                -> new NoResultException(messageService.getMessageNotFound(SOFTWARE)));
         Hibernate.initialize(software.getLicenses());
         return software;
     }
@@ -70,16 +74,15 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     public Page<Software> findAll(Pageable pageable, String filter) {
         log.debug(">>>FILTERING SOFTWARE BY: {}", filter);
         Page<Software> allActiveSoftwarePage = this.repository.findAllByActiveTrue(pageable);
-        allActiveSoftwarePage.getContent().forEach(software -> {
-            Hibernate.initialize(software.getLicenses());
-        });
+        allActiveSoftwarePage.getContent().forEach(software -> Hibernate.initialize(software.getLicenses()));
         return allActiveSoftwarePage;
     }
 
     @Override
     @Transactional
     public Software deleteById(Long id) throws NoResultException {
-        Software software = this.findById(id);
+        Software software = this.repository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound(SOFTWARE)));
         software.setActive(false);
         Hibernate.initialize(software.getLicenses());
         log.debug(">>>DELETING SOFTWARE BY: {}", id);
@@ -90,7 +93,8 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     @Transactional
     public Software addLicense(Long id, SoftwareLicenseRequestDto licenseDto, BindingResult result) throws NoResultException, BadRequestException {
         validateResult(result);
-        Software software = this.findById(id);
+        Software software = this.repository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound(SOFTWARE)));
         var license = new SoftwareLicense();
         BeanUtils.copyProperties(licenseDto, license);
         license.setSoftware(software);

@@ -41,7 +41,6 @@ public class UserRequestDto {
     @JsonView(UserRequestDto.UserView.UserPut.class)
     private Staff staff;
 
-    @JsonView({UserRequestDto.UserView.UserPut.class, UserRequestDto.UserView.UserPost.class})
-    private boolean active;
-
+    @JsonView(UserRequestDto.UserView.UserPost.class)
+    private boolean nonLocked;
 }

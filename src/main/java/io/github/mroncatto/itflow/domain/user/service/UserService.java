@@ -46,6 +46,7 @@ public class UserService extends AbstractService implements IUserService {
     private final EmailService emailService;
     private final MessageService messageService;
 
+    @Override
     public User login(String username) {
         User user = this.userRepository.findUserByUsername(username);
         user.setLastLoginDate(currentDate());
@@ -104,6 +105,7 @@ public class UserService extends AbstractService implements IUserService {
         BeanUtils.copyProperties(userRequestDto, user);
         user.setPassword(passwordEncoder.encode(randomPassword));
         user.setPasswordNonExpired(true);
+        user.setActive(true);
         user.setJoinDate(new Date());
         this.emailService.welcome(user, randomPassword);
         log.debug(">>>CREATING USER: {}", userRequestDto);

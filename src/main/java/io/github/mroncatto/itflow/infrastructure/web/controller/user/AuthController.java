@@ -31,7 +31,7 @@ public class AuthController {
             @ApiResponse(responseCode = RESPONSE_403, description = "Bad Credentials / Blocked Account / Invalid account", content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = CustomHttpResponse.class)))) })
     @ResponseStatus(value = HttpStatus.OK)
     @PostMapping(SecurityConstant.AUTHENTICATION_URL)
-    private ResponseEntity<JwtTokenDto> login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<JwtTokenDto> login(@RequestParam String username, @RequestParam String password) {
         return ResponseEntity.ok(authenticationService.login(username, password));
     }
 }

@@ -6,6 +6,8 @@ import java.util.Date;
 @Slf4j
 public class CompareHelper {
 
+    private CompareHelper() {}
+
     public static boolean biggerThan(Date dateA, Date dateB){
         boolean result = false;
         try {

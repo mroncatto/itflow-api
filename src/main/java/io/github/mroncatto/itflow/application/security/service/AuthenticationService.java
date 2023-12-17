@@ -23,7 +23,7 @@ public class AuthenticationService {
             loginAttemptService.addUserToLoginAttemptCache(username);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             loginAttemptService.evictUserFromLoginAttemptCache(username);
-            var user = userService.findUserByUsername(username);
+            var user = userService.login(username);
             var token = tokenProvider.generate(UserDetailsImpl.build(user));
             return JwtTokenDto.builder()
                     .access_token(token)
