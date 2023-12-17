@@ -42,7 +42,7 @@ class SoftwareLicenseControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void createSoftware() throws Exception {
         final String softwareName = "Software test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerSoftware)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_SOFTWARE)
                 .content(objectMapper.writeValueAsString(
                         SoftwareRequestDto.builder()
                                 .name(softwareName)
@@ -61,7 +61,7 @@ class SoftwareLicenseControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String licenseDesc = "License test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerLicense)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_LICENSE)
                 .content(objectMapper.writeValueAsString(
                         SoftwareLicenseRequestDto.builder()
                                 .active(true)

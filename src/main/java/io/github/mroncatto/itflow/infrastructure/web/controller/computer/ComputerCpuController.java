@@ -40,7 +40,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.computerCpu)
+@RequestMapping(value = EndpointUrlConstant.COMPUTER_CPU)
 @Tag(name = "Computer", description = "Computer properties")
 @RequiredArgsConstructor
 public class ComputerCpuController {
@@ -89,7 +89,7 @@ public class ComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.id)
+    @GetMapping(EndpointUrlConstant.ID)
     public ResponseEntity<ComputerCpu> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
@@ -99,7 +99,7 @@ public class ComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.page)
+    @GetMapping(EndpointUrlConstant.PAGE)
     public ResponseEntity<Page<ComputerCpu>> findAll(@PathVariable("page") int page) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE)), OK);
     }
@@ -110,7 +110,7 @@ public class ComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.id)
+    @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<ComputerCpu> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
@@ -121,7 +121,7 @@ public class ComputerCpuController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerCpu.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.autoComplete)
+    @GetMapping(EndpointUrlConstant.AUTO_COMPLETE)
     public ResponseEntity<List<ComputerCpu>> findAll(
             @Conjunction(value = {
                     @Or({

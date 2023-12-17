@@ -41,7 +41,7 @@ class BranchControllerTest {
     @WithMockUser(username = "admin", authorities ="HELPDESK")
     void save() throws Exception  {
         final String branchName = "Branch test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.branch)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.BRANCH)
                 .content(objectMapper.writeValueAsString(
                         BranchRequestDto.builder()
                                 .company(Company
@@ -65,7 +65,7 @@ class BranchControllerTest {
     @WithMockUser(username = "admin", authorities ="HELPDESK")
     void update() throws Exception {
         final String branchName = "Branch test edited";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.branch)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.BRANCH)
                 .content(objectMapper.writeValueAsString(
                         BranchRequestDto.builder()
                                 .id(2L)
@@ -88,7 +88,7 @@ class BranchControllerTest {
     @DisplayName("Should find all branches and return code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.branch);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.BRANCH);
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -101,7 +101,7 @@ class BranchControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.branch + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.BRANCH + page);
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -115,7 +115,7 @@ class BranchControllerTest {
     void findById() throws Exception {
         final String branchName = "Branch test edited";
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.branch + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.BRANCH + id);
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -128,7 +128,7 @@ class BranchControllerTest {
     @WithMockUser(username = "admin", authorities = "MANAGER")
     void deleteById() throws Exception {
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.branch + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.BRANCH + id);
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

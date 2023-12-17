@@ -34,7 +34,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.department)
+@RequestMapping(value = EndpointUrlConstant.DEPARTMENT)
 @Tag(name = "Company", description = "Companies, branches, and departments")
 @RequiredArgsConstructor
 public class DepartmentController {
@@ -55,7 +55,7 @@ public class DepartmentController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Department.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.filterStaff)
+    @GetMapping(EndpointUrlConstant.FILTER_STAFF)
     public ResponseEntity<List<Department>> findAllUsingByStaff() {
         return new ResponseEntity<>(this.departmentService.findByStaffIsNotNull(), OK);
     }
@@ -65,7 +65,7 @@ public class DepartmentController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.page)
+    @GetMapping(EndpointUrlConstant.PAGE)
     public ResponseEntity<Page<Department>> findAll(@PathVariable("page") int page,  @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.departmentService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -103,7 +103,7 @@ public class DepartmentController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.id)
+    @GetMapping(EndpointUrlConstant.ID)
     public ResponseEntity<Department> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.departmentService.findById(id), OK);
     }
@@ -114,7 +114,7 @@ public class DepartmentController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.id)
+    @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(MANAGER_OR_ADMIN)
     public ResponseEntity<Department> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.departmentService.deleteById(id), OK);

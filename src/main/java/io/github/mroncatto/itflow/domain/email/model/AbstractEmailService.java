@@ -16,18 +16,6 @@ import static io.github.mroncatto.itflow.application.config.constant.Application
 @Slf4j
 public abstract class AbstractEmailService {
 
-//    protected String getDomain() {
-//        String domain = "localhost";
-//        try {
-//            URI uri = new URI(ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString());
-//            String host = uri.getHost();
-//            domain = host.startsWith("www.") ? host.substring(4) : host;
-//        } catch (Exception e) {
-//            log.error("Error while getting domain url: {}", e.getMessage());
-//        }
-//        return domain;
-//    }
-
     private String getDomain() {
         return "itflow.com"; //TODO: Criar metodo para registrar dominio
     }

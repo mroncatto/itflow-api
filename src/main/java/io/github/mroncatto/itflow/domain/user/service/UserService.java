@@ -6,7 +6,7 @@ import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
 import io.github.mroncatto.itflow.domain.user.dto.UserProfileRequestDto;
 import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
-import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.UserRole;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
@@ -28,13 +28,13 @@ import org.springframework.validation.BindingResult;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 import static io.github.mroncatto.itflow.domain.commons.helper.GeneratorHelper.generateRandomAlphanumeric;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.isNull;
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
 @Service
@@ -133,7 +133,7 @@ public class UserService extends AbstractService implements IUserService {
     }
 
     @Override
-    public User updateUserRoles(String username, List<Role> roles) {
+    public User updateUserRoles(String username, List<UserRole> roles) {
         User user = this.findUserByUsernameActiveOnly(username);
         user.setRole(roles);
         this.userRepository.save(user);
@@ -195,12 +195,12 @@ public class UserService extends AbstractService implements IUserService {
                 .findFirst()
                 .orElse(null);
 
-        if (nonNull(anyuser) && distinct(anyuser.getUsername(), username))
+        if (Objects.nonNull(anyuser) && distinct(anyuser.getUsername(), username))
             throw new AlreadExistingUserByEmail("");
 }
 
     private void validateUniqueUsername(UserRequestDto user) throws AlreadExistingUserByUsername {
-        if (nonNull(this.userRepository.findUserByUsername(user.getUsername())))
+        if (Objects.nonNull(this.userRepository.findUserByUsername(user.getUsername())))
             throw new AlreadExistingUserByUsername("");
     }
 

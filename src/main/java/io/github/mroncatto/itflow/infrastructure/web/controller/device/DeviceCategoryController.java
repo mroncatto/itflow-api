@@ -27,7 +27,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.deviceCategory)
+@RequestMapping(value = EndpointUrlConstant.DEVICE_CATEGORY)
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
 public class DeviceCategoryController {
@@ -62,28 +62,28 @@ public class DeviceCategoryController {
 
     //@CustomSwaggerFindOne(summary = "Get device category by ID", schema = DeviceCategory.class)
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.id)
+    @GetMapping(EndpointUrlConstant.ID)
     public ResponseEntity<DeviceCategory> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
 
     //@CustomSwaggerList(summary = "Get all device categories with pagination", schema = Page.class)
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.page)
+    @GetMapping(EndpointUrlConstant.PAGE)
     public ResponseEntity<Page<DeviceCategory>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.service.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
    // @CustomSwaggerList(summary = "Get all distinct device categories being used by the device module", schema = Page.class)
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.filterDevice)
+    @GetMapping(EndpointUrlConstant.FILTER_DEVICE)
     public ResponseEntity<List<DeviceCategory>> findAllUsingByDevice() {
         return new ResponseEntity<>(this.service.findByDeviceIsNotNull(), OK);
     }
 
    // @CustomSwaggerFindOne(summary = "Disable a device category by ID", schema = DeviceCategory.class)
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.id)
+    @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<DeviceCategory> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);

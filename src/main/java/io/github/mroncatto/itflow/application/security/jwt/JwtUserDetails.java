@@ -16,9 +16,7 @@ public class JwtUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        account.getRole().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getRole()));
-        });
+        account.getRole().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getRole())));
         return authorities;
     }
 

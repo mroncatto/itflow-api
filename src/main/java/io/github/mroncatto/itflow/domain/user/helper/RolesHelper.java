@@ -1,6 +1,8 @@
 package io.github.mroncatto.itflow.domain.user.helper;
 
 public class RolesHelper {
+
+    //FIXME: Corrigir formato de roles
     private static final String ADMIN = "ADMIN";
     private static final String MANAGER = "MANAGER";
     private static final String COORDINATOR = "COORDINATOR";

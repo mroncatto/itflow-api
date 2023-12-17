@@ -41,7 +41,7 @@ class DepartmentControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String departmentName = "Department test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.department)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.DEPARTMENT)
                 .content(objectMapper.writeValueAsString(
                         DepartmentRequestDto.builder()
                                 .branch(
@@ -66,7 +66,7 @@ class DepartmentControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String departmentName = "Department test edited";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.department)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.DEPARTMENT)
                 .content(objectMapper.writeValueAsString(
                         DepartmentRequestDto.builder()
                                 .id(2L)
@@ -91,7 +91,7 @@ class DepartmentControllerTest {
     @DisplayName("Should find all departments and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.department);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEPARTMENT);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -105,7 +105,7 @@ class DepartmentControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.department + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEPARTMENT + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -117,7 +117,7 @@ class DepartmentControllerTest {
     @DisplayName("Should find all departments filtered by staff and return code 200")
     @WithMockUser(username = "admin")
     void findAllUsingByStaff() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.department + EndpointUrlConstant.filterStaff);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEPARTMENT + EndpointUrlConstant.FILTER_STAFF);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON)
@@ -131,7 +131,7 @@ class DepartmentControllerTest {
     void findById() throws Exception {
         final String departmentName = "Department test edited";
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.department + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEPARTMENT + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -145,7 +145,7 @@ class DepartmentControllerTest {
     @WithMockUser(username = "admin", authorities = "MANAGER")
     void deleteById() throws Exception {
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.department + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.DEPARTMENT + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

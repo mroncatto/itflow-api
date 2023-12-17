@@ -12,8 +12,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
-
 @Entity
 @Table
 @Getter
@@ -52,7 +50,7 @@ public class DeviceComputerCpu implements Serializable {
     }
 
     public void addEmbeddedKey() {
-        if (nonNull(computerCpu) && nonNull(deviceComputer)) {
+        if (Objects.nonNull(computerCpu) && Objects.nonNull(deviceComputer)) {
             this.id = new DeviceComputerCpuPK();
             this.id.setComputerCpu(computerCpu.getId());
             this.id.setDeviceComputer(deviceComputer.getId());

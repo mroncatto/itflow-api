@@ -15,7 +15,6 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static io.github.mroncatto.itflow.application.config.constant.ApplicationConstant.APP_NAME;
 import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
@@ -24,22 +23,21 @@ import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.increa
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    private final String JWT_SECRET;
-    private final int JWT_EXPIRE;
+    private final String jwtSecret;
+    private final int jwtExpire;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret, @Value("${jwt.expire}") int expire) {
-        this.JWT_SECRET = secret;
-        this.JWT_EXPIRE = expire;
+        this.jwtSecret = secret;
+        this.jwtExpire = expire;
     }
     public String generate(UserDetails userDetails) {
         return Jwts.builder()
                 .claim("roles", userDetails.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toList()))
+                        .map(GrantedAuthority::getAuthority).toList())
                 .setAudience(APP_NAME)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(currentDate())
-                .setExpiration(increaseDate(JWT_EXPIRE))
+                .setExpiration(increaseDate(jwtExpire))
                 .setIssuer(ServletUriComponentsBuilder.fromCurrentContextPath().path("").toUriString())
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
@@ -77,6 +75,6 @@ public class JwtTokenProvider {
     }
 
     private SecretKey getSignInKey() {
-        return Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -37,9 +37,9 @@ public class DeviceComputerMemoryRequestDto {
 
 
     public DeviceComputerMemory convert() {
-        var DeviceComputerMemory = new DeviceComputerMemory();
-        BeanUtils.copyProperties(this, DeviceComputerMemory);
-        return DeviceComputerMemory;
+        var deviceComputerMemory = new DeviceComputerMemory();
+        BeanUtils.copyProperties(this, deviceComputerMemory);
+        return deviceComputerMemory;
     }
 
 }

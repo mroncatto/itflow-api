@@ -68,7 +68,7 @@ public class User extends Auditable<String> implements Serializable {
     private boolean passwordNonExpired;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    private List<Role> role;
+    private List<UserRole> role;
 
     @OneToOne()
     @JsonIgnoreProperties("user")

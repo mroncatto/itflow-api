@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @NoRepositoryBean
-public interface IAbstractStaffRepository<T, ID extends Serializable> extends IAbstractRepository<T, ID> {
+public interface IAbstractStaffRepository<T, U extends Serializable> extends IAbstractRepository<T, U> {
     List<T> findAllByActiveTrue();
     Page<T> findAllByActiveTrue(Pageable pageable);
 }

@@ -21,15 +21,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Objects;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.isNull;
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Service
 @Log4j2
 @AllArgsConstructor
 public class DeviceService extends AbstractService implements IDeviceService, IDeviceStaffService, IDeviceComputerService {
+    public static final String BAD_REQUEST_DEVICE_DOES_NOT_HAVE_COMPUTER = "badRequest.device_does_not_have_computer";
+    public static final String BAD_REQUEST_DEVICE_ALREADY_EXISTS_BY_CODE = "badRequest.device_already_exists_by_code";
     private final IDeviceRepository repository;
     private final MessageService messageService;
 
@@ -48,7 +50,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device save(DeviceRequestDto deviceRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
 
-        if (nonNull(deviceRequestDto.getCode()) && !deviceRequestDto.getCode().isBlank())
+        if (Objects.nonNull(deviceRequestDto.getCode()) && !deviceRequestDto.getCode().isBlank())
             validateUniqueCode(deviceRequestDto);
 
         var device = new Device();
@@ -74,7 +76,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
         Device device = this.findById(id);
         deviceComputerRequestDto.setDevice(device);
         deviceComputerRequestDto.setId(id);
-        if (nonNull(device.getDeviceComputer()))
+        if (Objects.nonNull(device.getDeviceComputer()))
             device.updateDeviceComputer(deviceComputerRequestDto.convert());
         else
             device.setDeviceComputer(deviceComputerRequestDto.convert());
@@ -85,7 +87,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     @Override
     public Device update(DeviceRequestDto deviceRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        if (nonNull(deviceRequestDto.getCode()) && !deviceRequestDto.getCode().isBlank())
+        if (Objects.nonNull(deviceRequestDto.getCode()) && !deviceRequestDto.getCode().isBlank())
             validateUniqueCode(deviceRequestDto);
         Device device = this.findById(deviceRequestDto.getId());
         device.setCode(deviceRequestDto.getCode());
@@ -100,12 +102,8 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Device findById(Long id) throws NoResultException {
-        Device device = this.repository.findById(id).orElseThrow(() -> new NoResultException("DEVICE NOT FOUND"));
-       /* if (nonNull(device.getDeviceComputer()))
-            Hibernate.initialize(device.getDeviceComputer().getCpu());*/
-        return device;
+        return this.repository.findById(id).orElseThrow(() -> new NoResultException("DEVICE NOT FOUND"));
     }
 
     @Override
@@ -140,8 +138,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerCpu(DeviceComputerCpuRequestDto deviceComputerCpuRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if (isNull(device.getDeviceComputer()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        validateExistsDeviceComputer(device);
 
         var deviceComputerCpu = deviceComputerCpuRequestDto.convert();
         deviceComputerCpu.setDeviceComputer(device.getDeviceComputer());
@@ -155,8 +152,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     @Transactional
     public void deleteDeviceComputerCpu(Long id, Long cpuId) throws NoResultException, BadRequestException {
         Device device = this.findById(id);
-        if (isNull(device.getDeviceComputer()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        validateExistsDeviceComputer(device);
         device.getDeviceComputer()
                 .getComputerCpuList()
                 .removeIf(cpuList -> cpuList.getComputerCpu().getId().equals(cpuId));
@@ -169,8 +165,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerMemory(DeviceComputerMemoryRequestDto deviceComputerMemoryRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if (isNull(device.getDeviceComputer()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        validateExistsDeviceComputer(device);
 
         var deviceComputerMemory = deviceComputerMemoryRequestDto.convert();
         deviceComputerMemory.setDeviceComputer(device.getDeviceComputer());
@@ -184,8 +179,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     @Transactional
     public void deleteDeviceComputerMemory(Long id, Long memoryId) throws NoResultException, BadRequestException {
         Device device = this.findById(id);
-        if (isNull(device.getDeviceComputer()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        validateExistsDeviceComputer(device);
 
         device.getDeviceComputer()
                 .getComputerMemoryList()
@@ -199,8 +193,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     public Device addDeviceComputerStorage(DeviceComputerStorageRequestDto deviceComputerStorageRequestDto, Long id, BindingResult result) throws BadRequestException {
         validateResult(result);
         Device device = this.findById(id);
-        if (isNull(device.getDeviceComputer()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        validateExistsDeviceComputer(device);
 
         var deviceComputerStorage = deviceComputerStorageRequestDto.convert();
         deviceComputerStorage.setDeviceComputer(device.getDeviceComputer());
@@ -214,8 +207,7 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     @Transactional
     public void deleteDeviceComputerStorage(Long id, Long storageId) throws NoResultException, BadRequestException {
         Device device = this.findById(id);
-        if (isNull(device.getDeviceComputer()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_does_not_have_computer"));
+        validateExistsDeviceComputer(device);
 
         device.getDeviceComputer()
                 .getComputerStorageList()
@@ -227,10 +219,16 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
     private void validateUniqueCode(DeviceRequestDto deviceRequestDto) throws BadRequestException {
         Device anydevice = this.repository.findAllByCode(deviceRequestDto.getCode())
                 .stream()
+                .filter(Objects::nonNull)
                 .filter(Device::isActive)
                 .findFirst().orElse(null);
 
-        if (nonNull(anydevice) && distinct(anydevice.getId(), deviceRequestDto.getId()))
-            throw new BadRequestException(messageService.getMessage("badRequest.device_already_exists_by_code"));
+        if (Objects.nonNull(anydevice) && distinct(anydevice.getId(), deviceRequestDto.getId()))
+            throw new BadRequestException(messageService.getMessage(BAD_REQUEST_DEVICE_ALREADY_EXISTS_BY_CODE));
+    }
+
+    private void validateExistsDeviceComputer(Device device) throws BadRequestException {
+        if (isNull(device.getDeviceComputer()))
+            throw new BadRequestException(messageService.getMessage(BAD_REQUEST_DEVICE_DOES_NOT_HAVE_COMPUTER));
     }
 }

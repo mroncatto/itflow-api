@@ -40,7 +40,7 @@ class DeviceCategoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String categoryName = "Category name";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.deviceCategory)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.DEVICE_CATEGORY)
                 .content(objectMapper.writeValueAsString(
                         DeviceCategoryRequestDto.builder()
                                 .name(categoryName)
@@ -60,7 +60,7 @@ class DeviceCategoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String categoryName = "Category name edit";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.deviceCategory)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.DEVICE_CATEGORY)
                 .content(objectMapper.writeValueAsString(
                         DeviceCategoryRequestDto.builder()
                                 .id(2L)
@@ -80,7 +80,7 @@ class DeviceCategoryControllerTest {
     @DisplayName("Should find all device categories and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.deviceCategory);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE_CATEGORY);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -94,7 +94,7 @@ class DeviceCategoryControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.deviceCategory + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE_CATEGORY + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -106,7 +106,7 @@ class DeviceCategoryControllerTest {
     @DisplayName("Should find a device categories using by device and return code 200")
     @WithMockUser(username = "admin")
     void findAllUsingByDevice() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.deviceCategory + EndpointUrlConstant.filterDevice);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE_CATEGORY + EndpointUrlConstant.FILTER_DEVICE);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -120,7 +120,7 @@ class DeviceCategoryControllerTest {
     void findById() throws Exception {
         final String categoryName = "Category name edit";
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.deviceCategory + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE_CATEGORY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -134,7 +134,7 @@ class DeviceCategoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.deviceCategory + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.DEVICE_CATEGORY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

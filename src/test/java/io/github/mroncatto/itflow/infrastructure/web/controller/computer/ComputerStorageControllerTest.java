@@ -40,7 +40,7 @@ class ComputerStorageControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String brandName = "Storage brand";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerStorage)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_STORAGE)
                 .content(objectMapper.writeValueAsString(
                         ComputerStorageRequestDto.builder()
                                 .active(true)
@@ -62,7 +62,7 @@ class ComputerStorageControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String brandName = "Storage brand edited";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerStorage)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.COMPUTER_STORAGE)
                 .content(objectMapper.writeValueAsString(
                         ComputerStorageRequestDto.builder()
                                 .id(1L)
@@ -84,7 +84,7 @@ class ComputerStorageControllerTest {
     @DisplayName("Should find all computer storages and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerStorage);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_STORAGE);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -98,7 +98,7 @@ class ComputerStorageControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception  {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerStorage + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_STORAGE + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -112,7 +112,7 @@ class ComputerStorageControllerTest {
     void findById() throws Exception {
         final String brandName = "Storage brand edited";
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerStorage + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_STORAGE + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -126,7 +126,7 @@ class ComputerStorageControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.computerStorage + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.COMPUTER_STORAGE + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

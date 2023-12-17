@@ -40,7 +40,7 @@ class ComputerMemoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String brandName = "Memory brand";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerMemory)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_MEMORY)
                 .content(objectMapper.writeValueAsString(
                         ComputerMemoryRequestDto.builder()
                                 .active(true)
@@ -63,7 +63,7 @@ class ComputerMemoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String brandName = "Memory brand edit";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerMemory)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.COMPUTER_MEMORY)
                 .content(objectMapper.writeValueAsString(
                         ComputerMemoryRequestDto.builder()
                                 .id(1L)
@@ -86,7 +86,7 @@ class ComputerMemoryControllerTest {
     @DisplayName("Should find all computer memories and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerMemory);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_MEMORY);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -100,7 +100,7 @@ class ComputerMemoryControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerMemory + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_MEMORY + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -114,7 +114,7 @@ class ComputerMemoryControllerTest {
     void findById() throws Exception {
         final String brandName = "Memory brand edit";
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerMemory + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_MEMORY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -128,7 +128,7 @@ class ComputerMemoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.computerMemory + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.COMPUTER_MEMORY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

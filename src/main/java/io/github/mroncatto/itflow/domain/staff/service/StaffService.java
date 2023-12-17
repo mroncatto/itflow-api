@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
 
 @Service
 @Log4j2
@@ -90,7 +90,7 @@ public class StaffService extends AbstractService implements IStaffService {
                 .filter(Staff::isActive)
                 .findFirst().orElse(null);
 
-        if (nonNull(anystaff) && distinct(anystaff.getId(), staffRequestDto.getId()))
+        if (Objects.nonNull(anystaff) && distinct(anystaff.getId(), staffRequestDto.getId()))
             throw new BadRequestException(messageService.getMessage("badRequest.employee_already_exists_by_email"));
     }
 }

@@ -34,7 +34,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.branch)
+@RequestMapping(value = EndpointUrlConstant.BRANCH)
 @Tag(name = "Company", description = "Companies, branches, and departments")
 @RequiredArgsConstructor
 public class BranchController {
@@ -55,7 +55,7 @@ public class BranchController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.page)
+    @GetMapping(EndpointUrlConstant.PAGE)
     public ResponseEntity<Page<Branch>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.branchService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -93,7 +93,7 @@ public class BranchController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.id)
+    @GetMapping(EndpointUrlConstant.ID)
     public ResponseEntity<Branch> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.branchService.findById(id), OK);
     }
@@ -104,7 +104,7 @@ public class BranchController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.id)
+    @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(MANAGER_OR_ADMIN)
     public ResponseEntity<Branch> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.branchService.deleteById(id), OK);

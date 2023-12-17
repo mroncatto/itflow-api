@@ -40,7 +40,7 @@ class CompanyControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String companyName = "Company test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.company)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPANY)
                 .content(objectMapper.writeValueAsString(
                         Company.builder()
                                 .name(companyName)
@@ -60,7 +60,7 @@ class CompanyControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String companyName = "Company test edited";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.company)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.COMPANY)
                 .content(objectMapper.writeValueAsString(
                         Company.builder()
                                 .id(2L)
@@ -80,7 +80,7 @@ class CompanyControllerTest {
     @DisplayName("Should find all companies and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.company);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPANY);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -94,7 +94,7 @@ class CompanyControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.company + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPANY + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -108,7 +108,7 @@ class CompanyControllerTest {
     void findById() throws Exception {
         final String companyName = "Company test edited";
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.company + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPANY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -122,7 +122,7 @@ class CompanyControllerTest {
     @WithMockUser(username = "admin", authorities = "MANAGER")
     void deleteById() throws Exception {
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.company + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.COMPANY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

@@ -40,7 +40,7 @@ class ComputerCpuControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String brandName = "BrandName test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerCpu)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_CPU)
                 .content(objectMapper.writeValueAsString(
                         ComputerCpuRequestDto.builder()
                                 .active(true)
@@ -63,7 +63,7 @@ class ComputerCpuControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String brandName = "BrandName test edit";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerCpu)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.COMPUTER_CPU)
                 .content(objectMapper.writeValueAsString(
                         ComputerCpuRequestDto.builder()
                                 .id(1L)
@@ -86,7 +86,7 @@ class ComputerCpuControllerTest {
     @DisplayName("Should find all computer cpu and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerCpu);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_CPU);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -100,7 +100,7 @@ class ComputerCpuControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerCpu + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_CPU + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -114,7 +114,7 @@ class ComputerCpuControllerTest {
     void findById() throws Exception {
         final String brandName = "BrandName test edit";
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerCpu + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_CPU + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -128,7 +128,7 @@ class ComputerCpuControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.computerCpu + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.COMPUTER_CPU + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

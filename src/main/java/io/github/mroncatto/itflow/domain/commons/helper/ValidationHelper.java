@@ -4,9 +4,8 @@ import java.util.Objects;
 
 public class ValidationHelper {
 
-    public static boolean nonNull(Object o){
-        return Objects.nonNull(o);
-    }
+    private ValidationHelper() {}
+
     public static boolean nonNullAndNonEmpty(Object o){
         return Objects.nonNull(o) && o.toString().length() > 0;
     }

@@ -7,8 +7,7 @@ import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-
-import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.nonNull;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -38,7 +37,7 @@ public class DeviceComputerStorage implements Serializable {
     private int size;
 
     public void addEmbeddedKey() {
-        if (nonNull(computerStorage) && nonNull(deviceComputer)) {
+        if (Objects.nonNull(computerStorage) && Objects.nonNull(deviceComputer)) {
             this.id = new DeviceComputerStoragePK();
             this.id.setComputerStorage(computerStorage.getId());
             this.id.setDeviceComputer(deviceComputer.getId());

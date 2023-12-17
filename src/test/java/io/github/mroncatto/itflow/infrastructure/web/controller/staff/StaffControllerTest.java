@@ -43,7 +43,7 @@ class StaffControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String staffName = "Staff test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.staff)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.STAFF)
                 .content(objectMapper.writeValueAsString(
                         StaffRequestDto.builder()
                                 .fullName(staffName)
@@ -69,7 +69,7 @@ class StaffControllerTest {
     @DisplayName("Should find all staff and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.staff);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.STAFF);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -83,7 +83,7 @@ class StaffControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "?page=1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.staff + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.STAFF + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

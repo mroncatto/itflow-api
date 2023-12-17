@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.mroncatto.itflow.ItflowApiApplication;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
-import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.UserRole;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -44,13 +44,13 @@ class UserControllerTest {
     @Order(1)
     @WithMockUser(username = "admin", authorities ="ADMIN")
     void UserShouldBeCreatedAndReturn201() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.user)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.USER)
                 .content(objectMapper.writeValueAsString(
                         UserRequestDto.builder()
                         .fullName("itflow")
                         .username("itflow")
                         .email("itflow@test.com")
-                        .active(true)
+                        .nonLocked(true)
                         .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request)
@@ -65,13 +65,13 @@ class UserControllerTest {
     @WithMockUser(username = "admin", authorities ="ADMIN")
     void shouldChangeTheFullName() throws Exception {
         final String username = "/itflow";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.user + username)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.USER + username)
                 .content(objectMapper.writeValueAsString(
                         UserRequestDto.builder()
                                 .fullName("Itflow updated")
                                 .username("itflow")
                                 .email("itflow@test.com")
-                                .active(true)
+                                .nonLocked(true)
                                 .build()))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request)
@@ -86,7 +86,7 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void shouldReturnPagination() throws Exception {
         final String page = "?page=1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.user + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.USER + page);
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
@@ -99,8 +99,8 @@ class UserControllerTest {
     @WithMockUser(username = "admin")
     void shouldReturnForbiddenAccess() throws Exception {
         final String userRole = "/itflow/role";
-        List<Role> roles = new ArrayList<>();
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.user + userRole)
+        List<UserRole> roles = new ArrayList<>();
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.USER + userRole)
                 .content(objectMapper.writeValueAsString(roles))
                 .contentType(APPLICATION_JSON_VALUE);
         mvc.perform(request).andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();

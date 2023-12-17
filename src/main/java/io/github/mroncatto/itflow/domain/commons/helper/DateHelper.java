@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class DateHelper {
 
+    private DateHelper() {}
+
     public static Date currentDate(){
         Calendar calendar = Calendar.getInstance();
         return calendar.getTime();

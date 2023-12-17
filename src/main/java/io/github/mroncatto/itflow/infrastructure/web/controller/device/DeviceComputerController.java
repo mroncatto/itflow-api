@@ -33,7 +33,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.device)
+@RequestMapping(value = EndpointUrlConstant.DEVICE)
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
 public class DeviceComputerController {
@@ -45,7 +45,7 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping(EndpointUrlConstant.computerId)
+    @PutMapping(EndpointUrlConstant.COMPUTER_ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> updateComputer(@PathVariable("id") Long id,
                                                  @RequestBody @Validated(DeviceComputerRequestDto.DeviceComputerView.DeviceComputerPut.class)
@@ -59,7 +59,7 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.computerId)
+    @DeleteMapping(EndpointUrlConstant.COMPUTER_ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> deleteComputerFromDevice(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteComputerFromDevice(id), OK);
@@ -71,7 +71,7 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping(EndpointUrlConstant.deviceComputerCpu)
+    @PutMapping(EndpointUrlConstant.DEVICE_COMPUTER_CPU)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> addDeviceComputerCpu(@PathVariable("id") Long id,
                                                        @RequestBody @Validated(DeviceComputerCpuRequestDto.DeviceComputerCpuView.DeviceComputerCpuPut.class)
@@ -85,9 +85,9 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.deviceComputerCpuDelete)
+    @DeleteMapping(EndpointUrlConstant.DEVICE_COMPUTER_CPU_DELETE)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<?> removeDeviceComputerCpu(@PathVariable("id") Long id, @PathVariable("cpuId") Long cpuId) throws NoResultException, BadRequestException {
+    public ResponseEntity<Object> removeDeviceComputerCpu(@PathVariable("id") Long id, @PathVariable("cpuId") Long cpuId) throws NoResultException, BadRequestException {
         this.service.deleteDeviceComputerCpu(id, cpuId);
         return ResponseEntity.ok(null);
     }
@@ -98,7 +98,7 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping(EndpointUrlConstant.deviceComputerMemory)
+    @PutMapping(EndpointUrlConstant.DEVICE_COMPUTER_MEMORY)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> addDeviceComputerMemory(@PathVariable("id") Long id,
                                                        @RequestBody @Validated(DeviceComputerMemoryRequestDto.DeviceComputerMemoryView.DeviceComputerMemoryPut.class)
@@ -112,9 +112,9 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.deviceComputerMemoryDelete)
+    @DeleteMapping(EndpointUrlConstant.DEVICE_COMPUTER_MEMORY_DELETE)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<?> removeDeviceComputerMemory(@PathVariable("id") Long id, @PathVariable("memoryId") Long memoryId) throws NoResultException, BadRequestException {
+    public ResponseEntity<Object> removeDeviceComputerMemory(@PathVariable("id") Long id, @PathVariable("memoryId") Long memoryId) throws NoResultException, BadRequestException {
         this.service.deleteDeviceComputerMemory(id, memoryId);
         return ResponseEntity.ok(null);
     }
@@ -125,7 +125,7 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping(EndpointUrlConstant.deviceComputerStorage)
+    @PutMapping(EndpointUrlConstant.DEVICE_COMPUTER_STORAGE)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> addDeviceComputerStorage(@PathVariable("id") Long id,
                                                           @RequestBody @Validated(DeviceComputerStorageRequestDto.DeviceComputerStorageView.DeviceComputerStoragePut.class)
@@ -139,9 +139,9 @@ public class DeviceComputerController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.deviceComputerStorageDelete)
+    @DeleteMapping(EndpointUrlConstant.DEVICE_COMPUTER_STORAGE_DELETE)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<?> removeDeviceComputerStorage(@PathVariable("id") Long id, @PathVariable("storageId") Long storageId) throws NoResultException, BadRequestException {
+    public ResponseEntity<Object> removeDeviceComputerStorage(@PathVariable("id") Long id, @PathVariable("storageId") Long storageId) throws NoResultException, BadRequestException {
         this.service.deleteDeviceComputerStorage(id, storageId);
         return ResponseEntity.ok(null);
     }

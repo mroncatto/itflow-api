@@ -42,7 +42,7 @@ class DeviceControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String deviceHost = "Host Device";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.device)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.DEVICE)
                 .content(objectMapper.writeValueAsString(
                         DeviceRequestDto.builder()
                                 .hostname(deviceHost)
@@ -70,7 +70,7 @@ class DeviceControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String deviceHost = "Host Device edit";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.device)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.DEVICE)
                 .content(objectMapper.writeValueAsString(
                         DeviceRequestDto.builder()
                                 .id(1L)
@@ -98,7 +98,7 @@ class DeviceControllerTest {
     @DisplayName("Should find all devices and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.device);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -112,7 +112,7 @@ class DeviceControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "?page=1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.device + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -126,7 +126,7 @@ class DeviceControllerTest {
     void findById() throws Exception {
         final String deviceHost = "Host Device edit";
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.device + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.DEVICE + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -140,7 +140,7 @@ class DeviceControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.device + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.DEVICE + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

@@ -38,7 +38,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @Log4j2
-@RequestMapping(value = EndpointUrlConstant.company)
+@RequestMapping(value = EndpointUrlConstant.COMPANY)
 @Tag(name = "Company", description = "Companies, branches, and departments")
 @RequiredArgsConstructor
 public class CompanyController {
@@ -60,7 +60,7 @@ public class CompanyController {
             @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Page.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.page)
+    @GetMapping(EndpointUrlConstant.PAGE)
     public ResponseEntity<Page<Company>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.companyService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
@@ -100,7 +100,7 @@ public class CompanyController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.id)
+    @GetMapping(EndpointUrlConstant.ID)
     public ResponseEntity<Company> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.companyService.findById(id), OK);
     }
@@ -111,7 +111,7 @@ public class CompanyController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.id)
+    @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(MANAGER_OR_ADMIN)
     public ResponseEntity<Company> deleteById(@PathVariable("id") Long id) throws NoResultException {
         log.debug("DELETE disable CompanyDto by ID: {}", id);

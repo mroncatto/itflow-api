@@ -40,7 +40,7 @@ class OccupationControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String occupationName = "Occupation test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.occupation)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.OCCUPATION)
                 .content(objectMapper.writeValueAsString(
                         OccupationRequestDto.builder()
                                 .active(true)
@@ -60,7 +60,7 @@ class OccupationControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String occupationName = "Occupation test edited";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.occupation)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.OCCUPATION)
                 .content(objectMapper.writeValueAsString(
                         OccupationRequestDto.builder()
                                 .id(2L)
@@ -80,7 +80,7 @@ class OccupationControllerTest {
     @DisplayName("Should find all occupations and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.occupation);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.OCCUPATION);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -94,7 +94,7 @@ class OccupationControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.occupation + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.OCCUPATION + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -106,7 +106,7 @@ class OccupationControllerTest {
     @DisplayName("Should find all occupations filtered by staff and return code 200")
     @WithMockUser(username = "admin")
     void findAllUsingByStaff() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.occupation + EndpointUrlConstant.filterStaff);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.OCCUPATION + EndpointUrlConstant.FILTER_STAFF);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON)
@@ -120,7 +120,7 @@ class OccupationControllerTest {
     void findById() throws Exception {
         final String occupationName = "Occupation test edited";
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.occupation + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.OCCUPATION + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -134,7 +134,7 @@ class OccupationControllerTest {
     @WithMockUser(username = "admin", authorities = "MANAGER")
     void deleteById() throws Exception {
         final String id = "/2";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.occupation + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.OCCUPATION + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

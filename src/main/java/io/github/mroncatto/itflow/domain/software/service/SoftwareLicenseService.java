@@ -58,12 +58,9 @@ public class SoftwareLicenseService extends AbstractService implements ISoftware
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SoftwareLicense findById(Long id) throws NoResultException {
-        SoftwareLicense license = this.repository.findById(id).orElseThrow(()
+        return this.repository.findById(id).orElseThrow(()
                 -> new NoResultException(messageService.getMessageNotFound("software_license")));
-        Hibernate.initialize(license.getKeys());
-        return license;
     }
 
     @Override

@@ -8,7 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.io.Serializable;
 import java.util.List;
 @NoRepositoryBean
-public interface IAbstractDeviceRepository<T, ID extends Serializable> extends IAbstractRepository<T, ID> {
+public interface IAbstractDeviceRepository<T, U extends Serializable> extends IAbstractRepository<T, U> {
     List<T> findAllByActiveTrue();
     Page<T> findAllByActiveTrue(Pageable pageable);
 }

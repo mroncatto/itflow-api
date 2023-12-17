@@ -41,7 +41,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.staff)
+@RequestMapping(value = EndpointUrlConstant.STAFF)
 @Tag(name = "Staff", description = "Employees, customers and stakeholders.")
 @RequiredArgsConstructor
 public class StaffController {
@@ -49,7 +49,7 @@ public class StaffController {
 
     @Operation(summary = "Get all workers", security = {@SecurityRequirement(name = BEARER_AUTH)}, responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Staff.class)))), @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.all)
+    @GetMapping(EndpointUrlConstant.ALL)
     public ResponseEntity<List<Staff>> findAll() {
         return new ResponseEntity<>(this.staffService.findAll(), OK);
     }
@@ -90,14 +90,14 @@ public class StaffController {
 
     @Operation(summary = "Get worker by UUID", security = {@SecurityRequirement(name = BEARER_AUTH)}, responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Staff.class))), @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))), @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.uuid)
+    @GetMapping(EndpointUrlConstant.UUID)
     public ResponseEntity<Staff> findById(@PathVariable("uuid") String id) throws NoResultException {
         return new ResponseEntity<>(this.staffService.findById(id), OK);
     }
 
     @Operation(summary = "Delete worker by UUID", security = {@SecurityRequirement(name = BEARER_AUTH)}, responses = {@ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Staff.class))), @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))), @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.uuid)
+    @DeleteMapping(EndpointUrlConstant.UUID)
     public ResponseEntity<Staff> deleteById(@PathVariable("uuid") String id) throws NoResultException {
         return new ResponseEntity<>(this.staffService.deleteById(id), OK);
     }

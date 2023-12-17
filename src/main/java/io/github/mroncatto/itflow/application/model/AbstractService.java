@@ -26,7 +26,7 @@ public abstract class AbstractService {
     }
 
     protected static Long convertToLong(Object value) {
-        String data = value.toString().replaceAll("[^0-9]", "");
+        String data = value.toString().replaceAll("\\D", "");
         if (data.isEmpty() || data.isBlank()) data = "0";
         return Long.parseLong(data);
     }

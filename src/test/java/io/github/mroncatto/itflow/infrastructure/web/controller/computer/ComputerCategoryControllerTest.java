@@ -40,7 +40,7 @@ class ComputerCategoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String nameCategory = "Category test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerCategory)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_CATEGORY)
                 .content(objectMapper.writeValueAsString(
                         ComputerCategoryRequestDto.builder()
                                 .active(true)
@@ -60,7 +60,7 @@ class ComputerCategoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String nameCategory = "Category test edited";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerCategory)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.COMPUTER_CATEGORY)
                 .content(objectMapper.writeValueAsString(
                         ComputerCategoryRequestDto.builder()
                                 .id(1L)
@@ -80,7 +80,7 @@ class ComputerCategoryControllerTest {
     @DisplayName("Should find all computer categories and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerCategory);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_CATEGORY);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -94,7 +94,7 @@ class ComputerCategoryControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerCategory + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_CATEGORY + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -108,7 +108,7 @@ class ComputerCategoryControllerTest {
     void findById() throws Exception {
         final String nameCategory = "Category test edited";
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerCategory + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_CATEGORY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -122,7 +122,7 @@ class ComputerCategoryControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.computerCategory + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.COMPUTER_CATEGORY + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),

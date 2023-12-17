@@ -2,6 +2,8 @@ package io.github.mroncatto.itflow.domain.commons.helper;
 
 public class SwaggerPropertiesHelper {
 
+    private SwaggerPropertiesHelper() {}
+
     public static final String RESPONSE_200 = "200";
     public static final String RESPONSE_201 = "201";
     public static final String RESPONSE_400 = "400";

@@ -51,9 +51,7 @@ public class EmailSendService extends AbstractEmailService {
     private String buildTemplate(EmailTemplate template, List<EmailEventData> values) throws IOException, TemplateException {
         StringWriter stringWriter = new StringWriter();
         Map<String, Object> model = new HashMap<>();
-        values.forEach(v -> {
-            model.put(v.getVariableName(), v.getVariableValue());
-        });
+        values.forEach(v -> model.put(v.getVariableName(), v.getVariableValue()));
         configuration.getTemplate(template.toString() + ".ftlh").process(model, stringWriter);
         return stringWriter.getBuffer().toString();
     }

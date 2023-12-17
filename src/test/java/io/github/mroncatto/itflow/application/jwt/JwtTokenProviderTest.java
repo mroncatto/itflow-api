@@ -2,7 +2,7 @@ package io.github.mroncatto.itflow.application.jwt;
 
 import io.github.mroncatto.itflow.application.security.jwt.JwtTokenProvider;
 import io.github.mroncatto.itflow.application.security.jwt.JwtUserDetails;
-import io.github.mroncatto.itflow.domain.user.entity.Role;
+import io.github.mroncatto.itflow.domain.user.entity.UserRole;
 import io.github.mroncatto.itflow.domain.user.entity.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -25,8 +25,8 @@ class JwtTokenProviderTest {
     @Order(1)
     @Test
     void shouldGenerateAToken() {
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.builder().role("TEST").build());
+        List<UserRole> roles = new ArrayList<>();
+        roles.add(UserRole.builder().role("TEST").build());
         User account = User.builder()
                 .username("integration_test")
                 .role(roles)

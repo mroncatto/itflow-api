@@ -41,7 +41,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = EndpointUrlConstant.device)
+@RequestMapping(value = EndpointUrlConstant.DEVICE)
 @Tag(name = "Device", description = "Devices")
 @RequiredArgsConstructor
 public class DeviceController {
@@ -89,7 +89,7 @@ public class DeviceController {
             @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
-    @PutMapping(EndpointUrlConstant.staffId)
+    @PutMapping(EndpointUrlConstant.STAFF_ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> updateStaff(@PathVariable("id") Long id,
                                               @RequestBody @Validated(DeviceStaffRequestDto.DeviceStaffView.DeviceStaffPut.class)
@@ -117,7 +117,7 @@ public class DeviceController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @GetMapping(EndpointUrlConstant.id)
+    @GetMapping(EndpointUrlConstant.ID)
     public ResponseEntity<Device> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.findById(id), OK);
     }
@@ -128,7 +128,7 @@ public class DeviceController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.id)
+    @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.service.deleteById(id), OK);
@@ -140,7 +140,7 @@ public class DeviceController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.staffId)
+    @DeleteMapping(EndpointUrlConstant.STAFF_ID)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<Device> deleteStaffFromDevice(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.staffService.deleteStaffFromDevice(id), OK);

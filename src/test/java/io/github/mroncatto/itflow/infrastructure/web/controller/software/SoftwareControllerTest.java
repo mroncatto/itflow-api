@@ -42,7 +42,7 @@ class SoftwareControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void save() throws Exception {
         final String softwareName = "Software test";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerSoftware)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_SOFTWARE)
                 .content(objectMapper.writeValueAsString(
                         SoftwareRequestDto.builder()
                                 .name(softwareName)
@@ -61,7 +61,7 @@ class SoftwareControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void update() throws Exception {
         final String softwareName = "Software test edit";
-        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.computerSoftware)
+        RequestBuilder request = MockMvcRequestBuilders.put(EndpointUrlConstant.COMPUTER_SOFTWARE)
                 .content(objectMapper.writeValueAsString(
                         Software.builder()
                                 .id(1L)
@@ -80,7 +80,7 @@ class SoftwareControllerTest {
     @DisplayName("Should find all software and return not empty list and code 200")
     @WithMockUser(username = "admin")
     void findAll() throws Exception {
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerSoftware);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_SOFTWARE);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -94,7 +94,7 @@ class SoftwareControllerTest {
     @WithMockUser(username = "admin")
     void findAllPagination() throws Exception {
         final String page = "/page/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerSoftware + page);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_SOFTWARE + page);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -108,7 +108,7 @@ class SoftwareControllerTest {
     void findById() throws Exception {
         final String softwareName = "Software test edit";
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.computerSoftware + id);
+        RequestBuilder request = MockMvcRequestBuilders.get(EndpointUrlConstant.COMPUTER_SOFTWARE + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
@@ -123,7 +123,7 @@ class SoftwareControllerTest {
     void addLicense() throws Exception {
         final String licenseDesc = "License test";
         final String endpoint = "/1/license";
-        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.computerSoftware + endpoint)
+        RequestBuilder request = MockMvcRequestBuilders.post(EndpointUrlConstant.COMPUTER_SOFTWARE + endpoint)
                 .content(objectMapper.writeValueAsString(
                         SoftwareLicenseRequestDto.builder()
                                 .active(true)
@@ -143,7 +143,7 @@ class SoftwareControllerTest {
     @WithMockUser(username = "admin", authorities = "HELPDESK")
     void deleteById() throws Exception {
         final String id = "/1";
-        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.computerSoftware + id);
+        RequestBuilder request = MockMvcRequestBuilders.delete(EndpointUrlConstant.COMPUTER_SOFTWARE + id);
         mvc.perform(request).andExpectAll(
                 MockMvcResultMatchers.status().isOk(),
                 MockMvcResultMatchers.content().contentTypeCompatibleWith(APPLICATION_JSON),
