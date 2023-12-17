@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import net.kaczmarzyk.spring.data.jpa.domain.IsTrue;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
@@ -65,9 +64,9 @@ public class UserController {
                             @Spec(path = "username", params = "filter", spec = LikeIgnoreCase.class),
                             @Spec(path = "fullName", params = "filter", spec = LikeIgnoreCase.class)
                     }),
-            }, and = {
-                    @Spec(path = "active", defaultVal = "true" ,spec = IsTrue.class)
-            })
+            }/*, and = {
+                    @Spec(path = "active", params = "status", spec = IsTrue.class)
+            }*/)
             Specification<User> spec, @PageableDefault(size = 20) Pageable pageable) {
         return new ResponseEntity<>(this.userService.findAll(spec, pageable), OK);
     }
