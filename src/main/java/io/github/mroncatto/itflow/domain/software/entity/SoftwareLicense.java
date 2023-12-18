@@ -38,14 +38,14 @@ public class SoftwareLicense extends Auditable<String> implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date expireAt;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("licenses")
     private Software software;
 
     @Column(nullable = false)
     private boolean active;
 
-    @OneToMany(mappedBy = "softwareLicense", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "softwareLicense", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"softwareLicense"})
     @ToString.Exclude
     private List<SoftwareLicenseKey> keys;
@@ -61,5 +61,9 @@ public class SoftwareLicense extends Auditable<String> implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public void disable() {
+        this.active = false;
     }
 }

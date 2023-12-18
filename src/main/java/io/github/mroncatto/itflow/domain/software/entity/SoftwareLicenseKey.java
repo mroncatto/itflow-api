@@ -26,7 +26,7 @@ public class SoftwareLicenseKey implements Serializable {
 
     private String key;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private SoftwareLicense softwareLicense;
 
     private int volume;

@@ -8,8 +8,8 @@ import org.hibernate.Hibernate;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table
@@ -37,10 +37,10 @@ public class Software extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean active;
 
-    @OneToMany(mappedBy = "software", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "software", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnoreProperties({"software", "keys"})
     @ToString.Exclude
-    private List<SoftwareLicense> licenses;
+    private Set<SoftwareLicense> licenses;
 
     @Override
     public boolean equals(Object o) {

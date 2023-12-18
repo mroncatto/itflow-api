@@ -1,14 +1,15 @@
 package io.github.mroncatto.itflow.domain.software.service;
 
+import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.application.model.AbstractService;
-import io.github.mroncatto.itflow.domain.software.dto.SoftwareRequestDto;
 import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
-import io.github.mroncatto.itflow.domain.software.model.ISoftwareService;
+import io.github.mroncatto.itflow.domain.software.dto.SoftwareRequestDto;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
 import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicense;
+import io.github.mroncatto.itflow.domain.software.model.ISoftwareService;
 import io.github.mroncatto.itflow.infrastructure.persistence.ISoftwareRepository;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.Hibernate;
@@ -18,8 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
-
-import jakarta.persistence.NoResultException;
 
 import java.util.List;
 
@@ -49,7 +48,6 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     }
 
     @Override
-    @Transactional
     public Software update(SoftwareRequestDto softwareRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
         Software software = this.repository.findById(softwareRequestDto.getId()).orElseThrow(()
@@ -61,21 +59,15 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Software findById(Long id) throws NoResultException {
-        Software software = this.repository.findById(id).orElseThrow(()
+        return this.repository.findById(id).orElseThrow(()
                 -> new NoResultException(messageService.getMessageNotFound(SOFTWARE)));
-        Hibernate.initialize(software.getLicenses());
-        return software;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<Software> findAll(Pageable pageable, String filter) {
         log.debug(">>>FILTERING SOFTWARE BY: {}", filter);
-        Page<Software> allActiveSoftwarePage = this.repository.findAllByActiveTrue(pageable);
-        allActiveSoftwarePage.getContent().forEach(software -> Hibernate.initialize(software.getLicenses()));
-        return allActiveSoftwarePage;
+        return this.repository.findAllByActiveTrue(pageable);
     }
 
     @Override
@@ -84,7 +76,7 @@ public class SoftwareService extends AbstractService implements ISoftwareService
         Software software = this.repository.findById(id).orElseThrow(()
                 -> new NoResultException(messageService.getMessageNotFound(SOFTWARE)));
         software.setActive(false);
-        Hibernate.initialize(software.getLicenses());
+        software.getLicenses().forEach(SoftwareLicense::disable);
         log.debug(">>>DELETING SOFTWARE BY: {}", id);
         return this.repository.save(software);
     }
