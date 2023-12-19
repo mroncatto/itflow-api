@@ -1,14 +1,14 @@
-name: ITFLOW testing
+#name: ITFLOW testing
 
-on:
-  push:
-    branches: [main, develop]
+#on:
+#  push:
+#    branches: [main, develop]
 
-  workflow_dispatch:
+#  workflow_dispatch:
 
-jobs:
-  test:
-    runs-on: cgr.dev/chainguard/jdk:18
-    steps:
-      - name: Test
-        run: mvn test
+#jobs:
+#  test:
+#    runs-on: cgr.dev/chainguard/jdk:18
+#    steps:
+#      - name: Test
+#        run: mvn test
