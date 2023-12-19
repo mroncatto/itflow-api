@@ -11,7 +11,7 @@ import org.hibernate.Hibernate;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -52,11 +52,11 @@ public class User extends Auditable<String> implements Serializable {
     private String password;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date lastLoginDate;
+    private LocalDateTime lastLoginDate;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date joinDate;
+    private LocalDateTime joinDate;
 
     @Column(nullable = false)
     private boolean active;
@@ -67,7 +67,7 @@ public class User extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean passwordNonExpired;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserRole> role;
 
     @OneToOne()

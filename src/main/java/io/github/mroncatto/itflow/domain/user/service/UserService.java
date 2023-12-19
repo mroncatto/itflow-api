@@ -6,8 +6,8 @@ import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.email.service.EmailService;
 import io.github.mroncatto.itflow.domain.user.dto.UserProfileRequestDto;
 import io.github.mroncatto.itflow.domain.user.dto.UserRequestDto;
-import io.github.mroncatto.itflow.domain.user.entity.UserRole;
 import io.github.mroncatto.itflow.domain.user.entity.User;
+import io.github.mroncatto.itflow.domain.user.entity.UserRole;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByEmail;
 import io.github.mroncatto.itflow.domain.user.exception.AlreadExistingUserByUsername;
 import io.github.mroncatto.itflow.domain.user.exception.BadPasswordException;
@@ -26,13 +26,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 import static io.github.mroncatto.itflow.domain.commons.helper.CompareHelper.distinct;
-import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
 import static io.github.mroncatto.itflow.domain.commons.helper.GeneratorHelper.generateRandomAlphanumeric;
 import static io.github.mroncatto.itflow.domain.commons.helper.ValidationHelper.isNull;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
@@ -49,7 +48,7 @@ public class UserService extends AbstractService implements IUserService {
     @Override
     public User login(String username) {
         User user = this.userRepository.findUserByUsername(username);
-        user.setLastLoginDate(currentDate());
+        user.setLastLoginDate(LocalDateTime.now());
         userRepository.save(user);
         return user;
     }
@@ -106,7 +105,7 @@ public class UserService extends AbstractService implements IUserService {
         user.setPassword(passwordEncoder.encode(randomPassword));
         user.setPasswordNonExpired(true);
         user.setActive(true);
-        user.setJoinDate(new Date());
+        user.setJoinDate(LocalDateTime.now());
         this.emailService.welcome(user, randomPassword);
         log.debug(">>>CREATING USER: {}", userRequestDto);
         return this.userRepository.save(user);
