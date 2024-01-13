@@ -1,17 +1,17 @@
 package io.github.mroncatto.itflow.domain.software.service;
 
+import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.domain.software.dto.LicenseKeyRequestDto;
 import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
-import io.github.mroncatto.itflow.domain.software.model.ISoftwareLicenseService;
 import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicense;
 import io.github.mroncatto.itflow.domain.software.entity.SoftwareLicenseKey;
+import io.github.mroncatto.itflow.domain.software.model.ISoftwareLicenseService;
 import io.github.mroncatto.itflow.infrastructure.persistence.ISoftwareLicenseRepostory;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import jakarta.persistence.NoResultException;
 import java.util.List;
 
 @Service
@@ -30,11 +29,8 @@ public class SoftwareLicenseService extends AbstractService implements ISoftware
     private final MessageService messageService;
 
     @Override
-    @Transactional(readOnly = true)
     public List<SoftwareLicense> findAll() {
-        List<SoftwareLicense> licenses = this.repository.findAllByActiveTrue();
-        licenses.forEach(lic -> Hibernate.initialize(lic.getKeys()));
-        return licenses;
+        return this.repository.findAllByActiveTrue();
     }
 
     @Override
@@ -53,6 +49,7 @@ public class SoftwareLicenseService extends AbstractService implements ISoftware
         SoftwareLicense license = this.findById(softwareLicenseRequestDto.getId());
         license.setDescription(softwareLicenseRequestDto.getDescription());
         license.setCode(softwareLicenseRequestDto.getCode());
+        license.setExpireAt(softwareLicenseRequestDto.getExpireAt());
         log.debug(">>>UPDATING SOFTWARE LICENSE: {}", softwareLicenseRequestDto);
         return this.repository.save(license);
     }
@@ -66,17 +63,13 @@ public class SoftwareLicenseService extends AbstractService implements ISoftware
     @Override
     @Transactional(readOnly = true)
     public Page<SoftwareLicense> findAll(Pageable pageable, String filter) {
-        Page<SoftwareLicense> licensesPage = this.repository.findAllByActiveTrue(pageable);
-        licensesPage.getContent().forEach(lic -> Hibernate.initialize(lic.getKeys()));
-        return licensesPage;
+        return this.repository.findAllByActiveTrue(pageable);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SoftwareLicense deleteById(Long id) throws NoResultException {
         SoftwareLicense license = this.findById(id);
         license.setActive(false);
-        Hibernate.initialize(license.getKeys());
         //TODO: Validar licensa com keys em uso!
         return this.repository.save(license);
     }
@@ -86,7 +79,6 @@ public class SoftwareLicenseService extends AbstractService implements ISoftware
     public SoftwareLicense addLicenseKey(Long id, LicenseKeyRequestDto licenseKeyRequestDto, BindingResult result) throws NoResultException, BadRequestException {
         validateResult(result);
         SoftwareLicense license = this.findById(id);
-        Hibernate.initialize(license.getKeys());
         licenseKeyRequestDto.setSoftwareLicense(license);
         var licenseKey = new SoftwareLicenseKey();
         BeanUtils.copyProperties(licenseKeyRequestDto, licenseKey);
@@ -100,7 +92,6 @@ public class SoftwareLicenseService extends AbstractService implements ISoftware
     public SoftwareLicense RemoveLicenseKey(Long id, LicenseKeyRequestDto licenseKeyRequestDto, BindingResult result) throws NoResultException, BadRequestException {
         validateResult(result);
         SoftwareLicense license = this.findById(id);
-        Hibernate.initialize(license.getKeys());
         license.getKeys().removeIf(k -> k.getId().equals(licenseKeyRequestDto.getId()));
         log.debug(">>>REMOVE SOFTWARE LICENSE KEY: {}", licenseKeyRequestDto);
         return this.repository.save(license);

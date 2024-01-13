@@ -267,7 +267,7 @@ CREATE TABLE IF NOT EXISTS "software_license" (
     "id" BIGINT DEFAULT NEXTVAL('SOFTWARE_LICENSE_SEQ') NOT NULL,
     "description" VARCHAR(75) NOT NULL,
     "code" VARCHAR(45),
-    "expire_at" DATE,
+    "expire_at" TIMESTAMP,
     "software_id" BIGINT NOT NULL,
     "active" boolean NOT NULL DEFAULT TRUE,
     "created_date" TIMESTAMP,

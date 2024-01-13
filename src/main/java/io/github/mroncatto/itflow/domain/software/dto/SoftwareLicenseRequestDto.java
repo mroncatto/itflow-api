@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -41,7 +41,7 @@ public class SoftwareLicenseRequestDto {
     private String code;
 
     @JsonView({SoftwareLicenseView.SoftwareLicensePut.class, SoftwareLicenseView.SoftwareLicensePost.class})
-    private Date expireAt;
+    private LocalDateTime expireAt;
 
     @NotNull(groups = {SoftwareLicenseView.SoftwareLicensePut.class, SoftwareLicenseView.SoftwareLicensePost.class},
             message = "[{field.software}] {validation.required}")

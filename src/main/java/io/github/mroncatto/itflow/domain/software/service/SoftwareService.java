@@ -12,7 +12,6 @@ import io.github.mroncatto.itflow.infrastructure.persistence.ISoftwareRepository
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +32,7 @@ public class SoftwareService extends AbstractService implements ISoftwareService
     @Override
     @Transactional(readOnly = true)
     public List<Software> findAll() {
-        List<Software> allActiveSoftware = this.repository.findAllByActiveTrue();
-        allActiveSoftware.forEach(software -> Hibernate.initialize(software.getLicenses()));
-        return allActiveSoftware;
+        return this.repository.findAllByActiveTrue();
     }
 
     @Override

@@ -1,9 +1,8 @@
 package io.github.mroncatto.itflow.infrastructure.web.advice;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,8 +12,8 @@ import java.util.Date;
 @EqualsAndHashCode
 @ToString
 public class CustomHttpResponse {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    private Date timestamp;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    private LocalDateTime timestamp;
     private int status;
     private String error;
     private String message;

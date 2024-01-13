@@ -4,7 +4,7 @@ import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentDate;
+import static io.github.mroncatto.itflow.domain.commons.helper.DateHelper.currentLocalDateTime;
 
 public abstract class AbstractExceptionHandling {
 
@@ -13,7 +13,7 @@ public abstract class AbstractExceptionHandling {
                 .status(status.value())
                 .error(status.name())
                 .message(message)
-                .timestamp(currentDate())
+                .timestamp(currentLocalDateTime())
                 .build(), status);
     }
 }

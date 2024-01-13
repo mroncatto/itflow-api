@@ -8,7 +8,7 @@ import org.hibernate.Hibernate;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,11 +35,12 @@ public class SoftwareLicense extends Auditable<String> implements Serializable {
     @Column(length = 45)
     private String code;
 
-    @Temporal(TemporalType.DATE)
-    private LocalDate expireAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime expireAt;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JsonIgnoreProperties("licenses")
+    @ToString.Exclude
     private Software software;
 
     @Column(nullable = false)
