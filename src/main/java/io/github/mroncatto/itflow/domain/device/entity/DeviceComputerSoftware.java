@@ -36,6 +36,7 @@ public class DeviceComputerSoftware  extends Auditable<String> implements Serial
     private Software software;
 
     @ManyToOne()
+    //@JsonIgnoreProperties({"softwareLicenseKey", "softwareLicense.software"})
     private SoftwareLicenseKey softwareLicenseKey;
 
     @Override
@@ -49,5 +50,13 @@ public class DeviceComputerSoftware  extends Auditable<String> implements Serial
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public void addEmbeddedKey() {
+        if (Objects.nonNull(software) && Objects.nonNull(deviceComputer)) {
+            this.id = new DeviceComputerSoftwarePK();
+            this.id.setDeviceComputer(deviceComputer.getId());
+            this.id.setSoftware(software.getId());
+        }
     }
 }

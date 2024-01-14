@@ -1,5 +1,7 @@
 package io.github.mroncatto.itflow.domain.software.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerSoftware;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +10,7 @@ import org.hibernate.Hibernate;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +31,11 @@ public class SoftwareLicenseKey implements Serializable {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private SoftwareLicense softwareLicense;
+
+    @OneToMany(mappedBy = "softwareLicenseKey", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonIgnoreProperties({"deviceComputer", "software", "softwareLicenseKey"})
+    private List<DeviceComputerSoftware> assignedLicenses;
 
     private int volume;
 

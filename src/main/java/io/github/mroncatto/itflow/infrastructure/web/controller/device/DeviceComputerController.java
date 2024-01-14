@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.Nulls;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerCpuRequestDto;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerMemoryRequestDto;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerRequestDto;
-import io.github.mroncatto.itflow.domain.device.dto.DeviceComputerStorageRequestDto;
+import io.github.mroncatto.itflow.domain.device.dto.*;
 import io.github.mroncatto.itflow.domain.device.entity.Device;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerCpu;
 import io.github.mroncatto.itflow.domain.device.entity.DeviceComputerMemory;
@@ -144,6 +141,20 @@ public class DeviceComputerController {
     public ResponseEntity<Object> removeDeviceComputerStorage(@PathVariable("id") Long id, @PathVariable("storageId") Long storageId) throws NoResultException, BadRequestException {
         this.service.deleteDeviceComputerStorage(id, storageId);
         return ResponseEntity.ok(null);
+    }
+
+    @Operation(summary = "Add or update an computer software to a computer device", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DeviceComputerMemory.class))),
+            @ApiResponse(responseCode = RESPONSE_404, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = CREATED)
+    @PutMapping(EndpointUrlConstant.DEVICE_COMPUTER_SOFTWARE)
+    @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
+    public ResponseEntity<Device> addDeviceComputerSoftware(@PathVariable("id") Long id,
+                                                             @RequestBody @Validated(DeviceComputerSoftwareRequestDto.DeviceComputerSoftwareView.DeviceComputerSoftwarePost.class)
+                                                           @JsonView(DeviceComputerSoftwareRequestDto.DeviceComputerSoftwareView.DeviceComputerSoftwarePost.class) DeviceComputerSoftwareRequestDto computerSoftwareRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+        return new ResponseEntity<>(this.service.addDeviceComputerSoftware(computerSoftwareRequestDto, id, result), OK);
     }
 
 

@@ -3,6 +3,7 @@ package io.github.mroncatto.itflow.infrastructure.web.controller.software;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
+import io.github.mroncatto.itflow.domain.computer.entity.ComputerStorage;
 import io.github.mroncatto.itflow.domain.software.dto.SoftwareRequestDto;
 import io.github.mroncatto.itflow.domain.software.dto.SoftwareLicenseRequestDto;
 import io.github.mroncatto.itflow.domain.software.entity.Software;
@@ -17,8 +18,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.domain.IsTrue;
+import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Conjunction;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -122,5 +130,25 @@ public class SoftwareController {
                                                @RequestBody @Validated(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class)
                                                @JsonView(SoftwareLicenseRequestDto.SoftwareLicenseView.SoftwareLicenseAddLicense.class) SoftwareLicenseRequestDto licenseDto, BindingResult result) throws NoResultException, BadRequestException {
         return new ResponseEntity<>(this.service.addLicense(id, licenseDto, result), CREATED);
+    }
+
+    @Operation(summary = "Get all software autocomplete filter", security = {
+            @SecurityRequirement(name = BEARER_AUTH)}, responses = {
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = ComputerStorage.class)))),
+            @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
+    @ResponseStatus(value = OK)
+    @GetMapping(EndpointUrlConstant.AUTO_COMPLETE)
+    public ResponseEntity<List<Software>> findAllAutoComplete(
+            @Conjunction(value = {
+                    @Or({
+                            @Spec(path = "id", params = "filter", spec = Equal.class),
+                            @Spec(path = "name", params = "filter", spec = LikeIgnoreCase.class),
+                            @Spec(path = "developer", params = "filter", spec = LikeIgnoreCase.class),
+                    }),
+            }, and = {
+                    @Spec(path = "active", defaultVal = "true" ,spec = IsTrue.class)
+            })
+            Specification<Software> spec) {
+        return new ResponseEntity<>(this.service.findAll(spec), OK);
     }
 }

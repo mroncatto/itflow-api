@@ -216,6 +216,18 @@ public class DeviceService extends AbstractService implements IDeviceService, ID
         this.repository.save(device);
     }
 
+    @Override
+    public Device addDeviceComputerSoftware(DeviceComputerSoftwareRequestDto computerSoftwareRequestDto, Long id, BindingResult result) throws BadRequestException {
+        validateResult(result);
+        Device device = this.findById(id);
+        validateExistsDeviceComputer(device);
+        var deviceComputerSoftware = computerSoftwareRequestDto.convert();
+        deviceComputerSoftware.setDeviceComputer(device.getDeviceComputer());
+        deviceComputerSoftware.addEmbeddedKey();
+        device.getDeviceComputer().getComputerSoftwareList().add(deviceComputerSoftware);
+        return this.repository.save(device);
+    }
+
     private void validateUniqueCode(DeviceRequestDto deviceRequestDto) throws BadRequestException {
         Device anydevice = this.repository.findAllByCode(deviceRequestDto.getCode())
                 .stream()

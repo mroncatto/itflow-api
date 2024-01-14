@@ -130,11 +130,11 @@ public class SoftwareLicenseController {
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
-    @DeleteMapping(EndpointUrlConstant.UPDATE_LICENSE_KEY)
+    @PutMapping (EndpointUrlConstant.UPDATE_LICENSE_KEY)
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
     public ResponseEntity<SoftwareLicense> removeLicenseKey(@PathVariable("id") Long id,
-                                                            @RequestBody @Validated(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPost.class)
-                                                            @JsonView(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPost.class) LicenseKeyRequestDto licenseKeyRequestDto, BindingResult result) throws NoResultException, BadRequestException {
+                                                            @RequestBody @Validated(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPut.class)
+                                                            @JsonView(LicenseKeyRequestDto.LicenseKeyView.LicenseKeyPut.class) LicenseKeyRequestDto licenseKeyRequestDto, BindingResult result) throws NoResultException, BadRequestException {
         return new ResponseEntity<>(this.service.RemoveLicenseKey(id, licenseKeyRequestDto, result), OK);
     }
 }

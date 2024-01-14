@@ -46,7 +46,7 @@ public class SoftwareLicense extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     private boolean active;
 
-    @OneToMany(mappedBy = "softwareLicense", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "softwareLicense", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties({"softwareLicense"})
     @ToString.Exclude
     private List<SoftwareLicenseKey> keys;

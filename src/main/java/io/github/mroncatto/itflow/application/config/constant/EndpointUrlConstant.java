@@ -16,6 +16,7 @@ public class EndpointUrlConstant {
     public static final String DEVICE_COMPUTER_MEMORY = "/computer/{id}/memory";
     public static final String DEVICE_COMPUTER_MEMORY_DELETE = "/computer/{id}/memory/{memoryId}";
     public static final String DEVICE_COMPUTER_STORAGE = "/computer/{id}/storage";
+    public static final String DEVICE_COMPUTER_SOFTWARE = "/computer/{id}/software";
     public static final String DEVICE_COMPUTER_STORAGE_DELETE = "/computer/{id}/storage/{storageId}";
     public static final String FILTER_DEVICE = "/filter/device";
     public static final String USERNAME = "/{username}";
