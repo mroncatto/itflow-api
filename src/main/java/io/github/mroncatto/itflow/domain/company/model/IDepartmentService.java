@@ -2,14 +2,18 @@ package io.github.mroncatto.itflow.domain.company.model;
 
 import io.github.mroncatto.itflow.application.model.IAbstractService;
 import io.github.mroncatto.itflow.domain.company.dto.DepartmentRequestDto;
-import io.github.mroncatto.itflow.domain.company.entity.Department;
+import io.github.mroncatto.itflow.domain.company.dto.DepartmentResponseDto;
+import jakarta.persistence.NoResultException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import jakarta.persistence.NoResultException;
+import java.util.List;
 
-public interface IDepartmentService extends IAbstractService<Department, DepartmentRequestDto> {
-    Department findById(Long id) throws NoResultException;
-    Page<Department> findAll(Pageable pageable, String filter);
-    Department deleteById(Long id) throws NoResultException;
+public interface IDepartmentService extends IAbstractService<DepartmentResponseDto, DepartmentRequestDto> {
+    DepartmentResponseDto findById(Long id) throws NoResultException;
+
+    List<DepartmentResponseDto> findByStaffIsNotNull();
+
+    Page<DepartmentResponseDto> findAll(Pageable pageable, String filter);
+    DepartmentResponseDto deleteById(Long id) throws NoResultException;
 }

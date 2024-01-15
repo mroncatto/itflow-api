@@ -1,7 +1,6 @@
 package io.github.mroncatto.itflow.domain.company.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.github.mroncatto.itflow.domain.company.entity.Company;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BranchResDto implements Serializable {
+public class CompanyResponseDto implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -24,8 +23,7 @@ public class BranchResDto implements Serializable {
 
     private String name;
 
-    private Company company;
+    private String document;
 
     private boolean active;
-
 }

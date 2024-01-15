@@ -1,6 +1,6 @@
 package io.github.mroncatto.itflow.domain.company.entity;
 
-import io.github.mroncatto.itflow.domain.company.dto.BranchResDto;
+import io.github.mroncatto.itflow.domain.company.dto.BranchResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -49,9 +49,8 @@ public class Branch implements Serializable {
         return getClass().hashCode();
     }
 
-    public BranchResDto response()
-    {
-        var response = BranchResDto.builder().build();
+    public BranchResponseDto response() {
+        var response = BranchResponseDto.builder().build();
         BeanUtils.copyProperties(this, response);
         return response;
     }

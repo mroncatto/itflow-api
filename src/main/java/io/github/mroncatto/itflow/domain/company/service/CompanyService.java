@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.company.dto.CompanyRequestDto;
+import io.github.mroncatto.itflow.domain.company.dto.CompanyResponseDto;
 import io.github.mroncatto.itflow.domain.company.entity.Company;
 import io.github.mroncatto.itflow.domain.company.model.ICompanyService;
 import io.github.mroncatto.itflow.infrastructure.persistence.ICompanyRepository;
@@ -27,49 +28,58 @@ public class CompanyService extends AbstractService implements ICompanyService {
     private final MessageService messageService;
 
     @Override
-    public Company findById(Long id) throws NoResultException {
-        return this.companyRepository.findById(id).orElseThrow(()
-                -> new NoResultException(messageService.getMessageNotFound("company")));
+    public CompanyResponseDto findById(Long id) throws NoResultException {
+        return findCompanyById(id).response();
     }
 
     @Override
     @Cacheable(value = "Company", key = "#root.method.name")
-    public List<Company> findAll() {
-        return this.companyRepository.findAllByActiveTrue();
+    public List<CompanyResponseDto> findAll() {
+        var company = this.companyRepository.findAllByActiveTrue();
+        return company.stream().map(Company::response).toList();
     }
 
     @Override
-    public Page<Company> findAll(Pageable pageable, String filter) {
+    public Page<CompanyResponseDto> findAll(Pageable pageable, String filter) {
         log.debug(">>>FILTERING COMPANY BY: {}", filter);
-        return this.companyRepository.findAllByActiveTrue(pageable);
+        var company = this.companyRepository.findAllByActiveTrue(pageable);
+        return company.map(Company::response);
     }
 
     @Override
     @CacheEvict(value = "Company", allEntries = true)
-    public Company save(CompanyRequestDto companyRequestDto, BindingResult result) throws BadRequestException {
+    public CompanyResponseDto save(CompanyRequestDto companyRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
         log.debug(">>>CREATING COMPANY: {}", companyRequestDto.toString());
-        return this.companyRepository.save(companyRequestDto.convert());
+        var newCompany = this.companyRepository.save(companyRequestDto.convert());
+        return newCompany.response();
     }
 
     @Override
     @CacheEvict(value = "Company", allEntries = true)
-    public Company update(CompanyRequestDto companyRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+    public CompanyResponseDto update(CompanyRequestDto companyRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Company company = this.findById(companyRequestDto.getId());
+        Company company = this.findCompanyById(companyRequestDto.getId());
         company.setName(companyRequestDto.getName());
         company.setDocument(companyRequestDto.getDocument());
         log.debug(">>>UPDATING COMPANY: {}", companyRequestDto.toString());
-        return this.companyRepository.save(company);
+        var updatedCompany = this.companyRepository.save(company);
+        return updatedCompany.response();
     }
 
     @Override
     @CacheEvict(value = "Company", allEntries = true)
-    public Company deleteById(Long id) throws NoResultException {
-        Company company = this.findById(id);
+    public CompanyResponseDto deleteById(Long id) throws NoResultException {
+        Company company = this.findCompanyById(id);
         company.setActive(false);
         log.debug(">>>DELETING COMPANY BY: {}", id);
-        return this.companyRepository.save(company);
+        var deletedCompany = this.companyRepository.save(company);
+        return deletedCompany.response();
+    }
+
+    private Company findCompanyById(Long id) {
+        return this.companyRepository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("company")));
     }
 
 }

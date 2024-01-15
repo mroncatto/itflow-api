@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.company.dto.DepartmentRequestDto;
+import io.github.mroncatto.itflow.domain.company.dto.DepartmentResponseDto;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
-import io.github.mroncatto.itflow.domain.company.service.DepartmentService;
+import io.github.mroncatto.itflow.domain.company.model.IDepartmentService;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,25 +39,25 @@ import static org.springframework.http.HttpStatus.OK;
 @Tag(name = "Company", description = "Companies, branches, and departments")
 @RequiredArgsConstructor
 public class DepartmentController {
-    private final DepartmentService departmentService;
+    private final IDepartmentService departmentService;
 
     @Operation(summary = "Get all department", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Department.class)))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = DepartmentResponseDto.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    public ResponseEntity<List<Department>> findAll() {
+    public ResponseEntity<List<DepartmentResponseDto>> findAll() {
         return new ResponseEntity<>(this.departmentService.findAll(), OK);
     }
 
     @Operation(summary = "Get all distinct departments being used by the staff module", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Department.class)))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = DepartmentResponseDto.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.FILTER_STAFF)
-    public ResponseEntity<List<Department>> findAllUsingByStaff() {
+    public ResponseEntity<List<DepartmentResponseDto>> findAllUsingByStaff() {
         return new ResponseEntity<>(this.departmentService.findByStaffIsNotNull(), OK);
     }
 
@@ -66,57 +67,57 @@ public class DepartmentController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.PAGE)
-    public ResponseEntity<Page<Department>> findAll(@PathVariable("page") int page,  @RequestParam(required = false, name = "filter") String filter) {
+    public ResponseEntity<Page<DepartmentResponseDto>> findAll(@PathVariable("page") int page,  @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.departmentService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Create a new department", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DepartmentResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Department> save(@RequestBody @Validated(DepartmentRequestDto.DepartmentView.DepartmentPost.class)
+    public ResponseEntity<DepartmentResponseDto> save(@RequestBody @Validated(DepartmentRequestDto.DepartmentView.DepartmentPost.class)
                                                @JsonView(DepartmentRequestDto.DepartmentView.DepartmentPost.class) DepartmentRequestDto dto, BindingResult result) throws BadRequestException {
         return new ResponseEntity<>(this.departmentService.save(dto, result), CREATED);
     }
 
     @Operation(summary = "Update a specific department", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DepartmentResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Department> update(@RequestBody @Validated(DepartmentRequestDto.DepartmentView.DepartmentPut.class)
+    public ResponseEntity<DepartmentResponseDto> update(@RequestBody @Validated(DepartmentRequestDto.DepartmentView.DepartmentPut.class)
                                                  @JsonView(DepartmentRequestDto.DepartmentView.DepartmentPut.class) DepartmentRequestDto dto, BindingResult result) throws BadRequestException, NoResultException {
         return new ResponseEntity<>(this.departmentService.update(dto, result), OK);
     }
 
     @Operation(summary = "Get department by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DepartmentResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.ID)
-    public ResponseEntity<Department> findById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<DepartmentResponseDto> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.departmentService.findById(id), OK);
     }
 
     @Operation(summary = "Disable a department by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Department.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = DepartmentResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(MANAGER_OR_ADMIN)
-    public ResponseEntity<Department> deleteById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<DepartmentResponseDto> deleteById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.departmentService.deleteById(id), OK);
     }
 }

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.github.mroncatto.itflow.application.config.constant.EndpointUrlConstant;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.company.dto.CompanyRequestDto;
-import io.github.mroncatto.itflow.domain.company.entity.Company;
+import io.github.mroncatto.itflow.domain.company.dto.CompanyResponseDto;
 import io.github.mroncatto.itflow.domain.company.model.ICompanyService;
-import io.github.mroncatto.itflow.domain.staff.entity.Occupation;
 import io.github.mroncatto.itflow.infrastructure.web.advice.CustomHttpResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -46,11 +45,11 @@ public class CompanyController {
 
     @Operation(summary = "Get all companies", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = Company.class)))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, array = @ArraySchema(schema = @Schema(implementation = CompanyResponseDto.class)))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping()
-    public ResponseEntity<List<Company>> findAll() {
+    public ResponseEntity<List<CompanyResponseDto>> findAll() {
         return new ResponseEntity<>(this.companyService.findAll(), OK);
     }
 
@@ -61,19 +60,19 @@ public class CompanyController {
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.PAGE)
-    public ResponseEntity<Page<Company>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
+    public ResponseEntity<Page<CompanyResponseDto>> findAll(@PathVariable("page") int page, @RequestParam(required = false, name = "filter") String filter) {
         return new ResponseEntity<>(this.companyService.findAll(PageRequest.of(page, PAGE_SIZE), filter), OK);
     }
 
     @Operation(summary = "Create a new company", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Company.class))),
+            @ApiResponse(responseCode = RESPONSE_201, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CompanyResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = CREATED)
     @PostMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Company> save(@RequestBody @Validated(CompanyRequestDto.CompanyView.CompanyPost.class)
+    public ResponseEntity<CompanyResponseDto> save(@RequestBody @Validated(CompanyRequestDto.CompanyView.CompanyPost.class)
                                         @JsonView(CompanyRequestDto.CompanyView.CompanyPost.class) CompanyRequestDto dto, BindingResult result) throws BadRequestException {
         log.debug("POST save CompanyDto: {}", dto.getName());
         return new ResponseEntity<>(this.companyService.save(dto, result), CREATED);
@@ -81,14 +80,14 @@ public class CompanyController {
 
     @Operation(summary = "Update a specific company", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Company.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CompanyResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_400, description = BAD_REQUEST, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @PutMapping()
     @PreAuthorize(HELPDESK_OR_COORDINATOR_OR_MANAGER_OR_ADMIN)
-    public ResponseEntity<Company> update(@Valid @RequestBody @Validated(CompanyRequestDto.CompanyView.CompanyPut.class)
+    public ResponseEntity<CompanyResponseDto> update(@Valid @RequestBody @Validated(CompanyRequestDto.CompanyView.CompanyPut.class)
                                               @JsonView(CompanyRequestDto.CompanyView.CompanyPut.class) CompanyRequestDto dto, BindingResult result) throws BadRequestException, NoResultException {
         log.debug("PUT update CompanyDto: {}", dto.getName());
         return new ResponseEntity<>(this.companyService.update(dto, result), OK);
@@ -96,24 +95,24 @@ public class CompanyController {
 
     @Operation(summary = "Get company by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Company.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CompanyResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @GetMapping(EndpointUrlConstant.ID)
-    public ResponseEntity<Company> findById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<CompanyResponseDto> findById(@PathVariable("id") Long id) throws NoResultException {
         return new ResponseEntity<>(this.companyService.findById(id), OK);
     }
 
     @Operation(summary = "Disable a company by ID", security = {
             @SecurityRequirement(name = BEARER_AUTH)}, responses = {
-            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = Occupation.class))),
+            @ApiResponse(responseCode = RESPONSE_200, description = SUCCESSFUL, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CompanyResponseDto.class))),
             @ApiResponse(responseCode = RESPONSE_404, description = NOT_FOUND, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class))),
             @ApiResponse(responseCode = RESPONSE_401, description = UNAUTHORIZED, content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = CustomHttpResponse.class)))})
     @ResponseStatus(value = OK)
     @DeleteMapping(EndpointUrlConstant.ID)
     @PreAuthorize(MANAGER_OR_ADMIN)
-    public ResponseEntity<Company> deleteById(@PathVariable("id") Long id) throws NoResultException {
+    public ResponseEntity<CompanyResponseDto> deleteById(@PathVariable("id") Long id) throws NoResultException {
         log.debug("DELETE disable CompanyDto by ID: {}", id);
         return new ResponseEntity<>(this.companyService.deleteById(id), OK);
     }

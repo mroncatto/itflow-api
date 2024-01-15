@@ -1,9 +1,11 @@
 package io.github.mroncatto.itflow.domain.company.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.github.mroncatto.itflow.domain.company.dto.DepartmentResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -47,5 +49,11 @@ public class Department implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public DepartmentResponseDto response() {
+        var response = DepartmentResponseDto.builder().build();
+        BeanUtils.copyProperties(this, response);
+        return response;
     }
 }

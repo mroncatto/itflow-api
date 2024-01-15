@@ -4,7 +4,7 @@ import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.company.dto.BranchRequestDto;
-import io.github.mroncatto.itflow.domain.company.dto.BranchResDto;
+import io.github.mroncatto.itflow.domain.company.dto.BranchResponseDto;
 import io.github.mroncatto.itflow.domain.company.entity.Branch;
 import io.github.mroncatto.itflow.domain.company.model.IBranchService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IBranchRepository;
@@ -28,27 +28,27 @@ public class BranchService extends AbstractService implements IBranchService {
     private final MessageService messageService;
 
     @Override
-    public BranchResDto findById(Long id) throws NoResultException {
-        return this.getBranchById(id).response();
+    public BranchResponseDto findById(Long id) throws NoResultException {
+        return this.findBranchById(id).response();
     }
 
     @Override
     @Cacheable(value = "Branch", key = "#root.method.name")
-    public List<BranchResDto> findAll() {
-        List<Branch> branches = this.branchRepository.findAllByActiveTrue();
+    public List<BranchResponseDto> findAll() {
+        var branches = this.branchRepository.findAllByActiveTrue();
         return branches.stream().map(Branch::response).toList();
     }
 
     @Override
-    public Page<BranchResDto> findAll(Pageable pageable, String filter) {
+    public Page<BranchResponseDto> findAll(Pageable pageable, String filter) {
         log.debug(">>>FILTERING BRANCH BY: {}", filter);
-        Page<Branch> branches = this.branchRepository.findAllByActiveTrue(pageable);
+        var branches = this.branchRepository.findAllByActiveTrue(pageable);
         return branches.map(Branch::response);
     }
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public BranchResDto save(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException {
+    public BranchResponseDto save(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
         log.debug(">>>CREATING BRANCH: {}", branchRequestDto.toString());
         var newBranch = branchRequestDto.convert();
@@ -58,9 +58,9 @@ public class BranchService extends AbstractService implements IBranchService {
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public BranchResDto update(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+    public BranchResponseDto update(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Branch branch = this.getBranchById(branchRequestDto.getId());
+        Branch branch = this.findBranchById(branchRequestDto.getId());
         branch.setName(branchRequestDto.getName());
         branch.setCompany(branchRequestDto.getCompany());
         log.debug(">>>UPDATING BRANCH: {}", branchRequestDto.toString());
@@ -70,15 +70,15 @@ public class BranchService extends AbstractService implements IBranchService {
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public BranchResDto deleteById(Long id) throws NoResultException {
-        Branch branch = getBranchById(id);
+    public BranchResponseDto deleteById(Long id) throws NoResultException {
+        Branch branch = findBranchById(id);
         branch.setActive(false);
         log.debug(">>>DELETING BRANCH BY: {}", id);
         var branchDeleted = this.branchRepository.save(branch);
         return branchDeleted.response();
     }
 
-    private Branch getBranchById(Long id) {
+    private Branch findBranchById(Long id) {
         return this.branchRepository.findById(id).orElseThrow(()
                 -> new NoResultException(messageService.getMessageNotFound("branch")));
     }

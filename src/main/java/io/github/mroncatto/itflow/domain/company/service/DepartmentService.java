@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.company.dto.DepartmentRequestDto;
+import io.github.mroncatto.itflow.domain.company.dto.DepartmentResponseDto;
 import io.github.mroncatto.itflow.domain.company.entity.Department;
 import io.github.mroncatto.itflow.domain.company.model.IDepartmentService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IDepartmentRepository;
@@ -28,54 +29,65 @@ public class DepartmentService extends AbstractService implements IDepartmentSer
     private final MessageService messageService;
 
     @Override
-    public Department findById(Long id) throws NoResultException {
-        return this.departmentRepository.findById(id).orElseThrow(()
-                -> new NoResultException(messageService.getMessageNotFound("department")));
+    public DepartmentResponseDto findById(Long id) throws NoResultException {
+        return this.findDepartmentById(id).response();
     }
 
 
     @Override
     @Cacheable(value = "Department", key = "#root.method.name")
-    public List<Department> findAll() {
-        return this.departmentRepository.findAllByActiveTrue(Sort.by(Sort.Direction.ASC, "branch.name", "name"));
-    }
-
-    public List<Department> findByStaffIsNotNull() {
-        return this.departmentRepository.findByStaffIsNotNull();
+    public List<DepartmentResponseDto> findAll() {
+        var departments = this.departmentRepository.findAllByActiveTrue(Sort.by(Sort.Direction.ASC, "branch.name", "name"));
+        return departments.stream().map(Department::response).toList();
     }
 
     @Override
-    public Page<Department> findAll(Pageable pageable, String filter) {
+    public List<DepartmentResponseDto> findByStaffIsNotNull() {
+        var departments = this.departmentRepository.findByStaffIsNotNull();
+        return departments.stream().map(Department::response).toList();
+    }
+
+    @Override
+    public Page<DepartmentResponseDto> findAll(Pageable pageable, String filter) {
         log.debug(">>>FILTERING DEPARTMENT BY: {}", filter);
-        return this.departmentRepository.findAllByActiveTrue(pageable);
+        var pageDepartments = this.departmentRepository.findAllByActiveTrue(pageable);
+        return pageDepartments.map(Department::response);
     }
 
     @Override
     @CacheEvict(value = "Department", allEntries = true)
-    public Department save(DepartmentRequestDto departmentRequestDto, BindingResult result) throws BadRequestException {
+    public DepartmentResponseDto save(DepartmentRequestDto departmentRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
         log.debug(">>>CREATING DEPARTMENT: {}", departmentRequestDto.toString());
-        return this.departmentRepository.save(departmentRequestDto.convert());
+        var newDepartment = this.departmentRepository.save(departmentRequestDto.convert());
+        return newDepartment.response();
     }
 
     @Override
     @CacheEvict(value = "Department", allEntries = true)
-    public Department update(DepartmentRequestDto departmentRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+    public DepartmentResponseDto update(DepartmentRequestDto departmentRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Department dpto = this.findById(departmentRequestDto.getId());
+        Department dpto = this.findDepartmentById(departmentRequestDto.getId());
         dpto.setName(departmentRequestDto.getName());
         dpto.setBranch(departmentRequestDto.getBranch());
         log.debug(">>>UPDATING DEPARTMENT: {}", departmentRequestDto.toString());
-        return this.departmentRepository.save(dpto);
+        var updatedDepartment = this.departmentRepository.save(dpto);
+        return updatedDepartment.response();
     }
 
 
     @Override
     @CacheEvict(value = "Department", allEntries = true)
-    public Department deleteById(Long id) throws NoResultException {
-        Department  department = findById(id);
+    public DepartmentResponseDto deleteById(Long id) throws NoResultException {
+        Department  department = findDepartmentById(id);
         department.setActive(false);
         log.debug(">>>DELETING DEPARTMENT BY ID: {}", id);
-        return this.departmentRepository.save(department);
+        var deletedDepartment = this.departmentRepository.save(department);
+        return deletedDepartment.response();
+    }
+
+    private Department findDepartmentById(Long id) {
+        return this.departmentRepository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("department")));
     }
 }
