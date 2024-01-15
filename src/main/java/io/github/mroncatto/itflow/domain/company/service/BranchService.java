@@ -4,6 +4,7 @@ import io.github.mroncatto.itflow.application.model.AbstractService;
 import io.github.mroncatto.itflow.application.service.MessageService;
 import io.github.mroncatto.itflow.domain.commons.exception.BadRequestException;
 import io.github.mroncatto.itflow.domain.company.dto.BranchRequestDto;
+import io.github.mroncatto.itflow.domain.company.dto.BranchResDto;
 import io.github.mroncatto.itflow.domain.company.entity.Branch;
 import io.github.mroncatto.itflow.domain.company.model.IBranchService;
 import io.github.mroncatto.itflow.infrastructure.persistence.IBranchRepository;
@@ -27,48 +28,58 @@ public class BranchService extends AbstractService implements IBranchService {
     private final MessageService messageService;
 
     @Override
-    public Branch findById(Long id) throws NoResultException {
-        return this.branchRepository.findById(id).orElseThrow(()
-                -> new NoResultException(messageService.getMessageNotFound("branch")));
+    public BranchResDto findById(Long id) throws NoResultException {
+        return this.getBranchById(id).response();
     }
 
     @Override
     @Cacheable(value = "Branch", key = "#root.method.name")
-    public List<Branch> findAll() {
-        return this.branchRepository.findAllByActiveTrue();
+    public List<BranchResDto> findAll() {
+        List<Branch> branches = this.branchRepository.findAllByActiveTrue();
+        return branches.stream().map(Branch::response).toList();
     }
 
     @Override
-    public Page<Branch> findAll(Pageable pageable, String filter) {
+    public Page<BranchResDto> findAll(Pageable pageable, String filter) {
         log.debug(">>>FILTERING BRANCH BY: {}", filter);
-        return this.branchRepository.findAllByActiveTrue(pageable);
+        Page<Branch> branches = this.branchRepository.findAllByActiveTrue(pageable);
+        return branches.map(Branch::response);
     }
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public Branch save(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException {
+    public BranchResDto save(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException {
         validateResult(result);
         log.debug(">>>CREATING BRANCH: {}", branchRequestDto.toString());
-        return this.branchRepository.save(branchRequestDto.convert());
+        var newBranch = branchRequestDto.convert();
+        this.branchRepository.save(newBranch);
+        return newBranch.response();
     }
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public Branch update(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException, NoResultException {
+    public BranchResDto update(BranchRequestDto branchRequestDto, BindingResult result) throws BadRequestException, NoResultException {
         validateResult(result);
-        Branch branch = this.findById(branchRequestDto.getId());
+        Branch branch = this.getBranchById(branchRequestDto.getId());
         branch.setName(branchRequestDto.getName());
         branch.setCompany(branchRequestDto.getCompany());
         log.debug(">>>UPDATING BRANCH: {}", branchRequestDto.toString());
-        return this.branchRepository.save(branch);
+        var branchUpdated = this.branchRepository.save(branch);
+        return branchUpdated.response();
     }
 
     @Override
     @CacheEvict(value = "Branch", allEntries = true)
-    public Branch deleteById(Long id) throws NoResultException {
-        Branch branch = findById(id);
+    public BranchResDto deleteById(Long id) throws NoResultException {
+        Branch branch = getBranchById(id);
         branch.setActive(false);
         log.debug(">>>DELETING BRANCH BY: {}", id);
-        return this.branchRepository.save(branch);
+        var branchDeleted = this.branchRepository.save(branch);
+        return branchDeleted.response();
+    }
+
+    private Branch getBranchById(Long id) {
+        return this.branchRepository.findById(id).orElseThrow(()
+                -> new NoResultException(messageService.getMessageNotFound("branch")));
     }
 }

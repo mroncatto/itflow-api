@@ -1,9 +1,10 @@
 package io.github.mroncatto.itflow.domain.company.entity;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import io.github.mroncatto.itflow.domain.company.dto.BranchResDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -17,7 +18,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Branch implements Serializable {
 
     @Serial
@@ -47,5 +47,12 @@ public class Branch implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public BranchResDto response()
+    {
+        var response = BranchResDto.builder().build();
+        BeanUtils.copyProperties(this, response);
+        return response;
     }
 }
